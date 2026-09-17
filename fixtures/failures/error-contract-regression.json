@@ -1,0 +1,19 @@
+{
+  "scenario": "error-contract-regression",
+  "suite": "create.suite.ts",
+  "testName": "answers 409 for a duplicate productToken",
+  "expected": {
+    "status": 409,
+    "errorName": "Conflict",
+    "body": { "message": "Product with token TKN-A already exists", "error": "Conflict", "statusCode": 409 }
+  },
+  "received": {
+    "status": 400,
+    "errorName": "Bad Request",
+    "body": { "message": "productToken must be a string", "error": "Bad Request", "statusCode": 400 },
+    "stackExcerpt": "expected 400 to equal 409"
+  },
+  "ciRetryCount": 0,
+  "lastCommits": ["refactor: move DTO validation into service layer", "docs: expand README errors section"],
+  "environment": { "db": "ecommerce_test", "node": "24.19.0" }
+}

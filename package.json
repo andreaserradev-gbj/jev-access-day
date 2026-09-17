@@ -1,0 +1,29 @@
+{
+  "name": "typesafe-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Learning scaffold for TypeSafe AI System One models: CI test-failure triage and fintech checkout-risk cascade, with mock / LLM stand-in / real Jev providers.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "npm run build && node dist/cli.js",
+    "lint": "eslint src test",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vitest": "^4.0.14"
+  }
+}

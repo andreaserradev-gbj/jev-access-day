@@ -1,0 +1,14 @@
+{
+  "scenario": "bad-test",
+  "suite": "list.suite.ts",
+  "testName": "returns total equal to item count on page 1",
+  "expected": { "status": 200, "body": { "total": 3 } },
+  "received": {
+    "status": 200,
+    "body": { "total": 12 },
+    "stackExcerpt": "expect(received).toBe(expected)\nExpected: 3\nReceived: 12"
+  },
+  "ciRetryCount": 1,
+  "lastCommits": ["test: share seedThreeProducts fixture", "feat: keep 12-product dev seed in db/init.sql"],
+  "environment": { "db": "ecommerce_test", "seeded": "full-dev-seed" }
+}

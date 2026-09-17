@@ -1,0 +1,14 @@
+{
+  "scenario": "infra-outage",
+  "suite": "outbox.suite.ts",
+  "testName": "publishes stock_changed event after a successful update",
+  "expected": { "status": 200 },
+  "received": {
+    "errorName": "ConnectionError",
+    "body": null,
+    "stackExcerpt": "KafkaError: connect ECONNREFUSED 127.0.0.1:9092\n    at Broker.connect"
+  },
+  "ciRetryCount": 0,
+  "lastCommits": ["feat: add outbox publisher", "docs: decision record for topic auto-create"],
+  "environment": { "db": "ecommerce_test", "kafka_healthy": false, "mysql_healthy": true, "node": "24.19.0" }
+}

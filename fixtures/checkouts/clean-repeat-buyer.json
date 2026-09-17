@@ -1,0 +1,32 @@
+{
+  "checkout": {
+    "scenario": "clean-repeat-buyer",
+    "order": {
+      "totalUsd": 84.5,
+      "itemCount": 3,
+      "items": ["coffee beans 1kg", "milk pitcher", "filter papers"],
+      "fulfilment": "shipping"
+    },
+    "profile": {
+      "accountAgeDays": 743,
+      "lifetimeOrders": 31,
+      "lifetimeSpendUsd": 2140.75,
+      "name": "Giulia Rossi",
+      "addressCity": "Milan",
+      "phoneVerified": true,
+      "emailDomain": "gmail.com"
+    },
+    "session": {
+      "device": "known iPhone, app v3.2, face-id session",
+      "ipCountry": "IT",
+      "shippedCountry": "IT",
+      "enteredCardManually": false,
+      "minutesOnSite": 14
+    },
+    "context": {
+      "scheduledDeliveriesToday": ["grocery 10:00-12:00"],
+      "promoAbuseFlagsLast90d": 0
+    }
+  },
+  "economics": { "marginUsd": 22.0, "fraudLossUsd": 84.5, "ltvAtRiskUsd": 260.0 }
+}

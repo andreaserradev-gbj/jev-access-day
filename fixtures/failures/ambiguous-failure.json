@@ -1,0 +1,15 @@
+{
+  "scenario": "ambiguous-failure",
+  "suite": "stock.suite.ts",
+  "testName": "answers 409 when delta would take stock below zero",
+  "expected": { "status": 409, "errorName": "Conflict" },
+  "received": {
+    "status": 500,
+    "errorName": "Internal Server Error",
+    "body": { "message": "UPDATE would affect 0 rows" },
+    "stackExcerpt": "SequelizeDatabaseError: UPDATE would affect 0 rows"
+  },
+  "ciRetryCount": 1,
+  "lastCommits": ["perf: rewrite updateStock as guarded UPDATE", "chore: add CHECK constraint to init.sql"],
+  "environment": { "db": "ecommerce_test", "mysql_healthy": true }
+}

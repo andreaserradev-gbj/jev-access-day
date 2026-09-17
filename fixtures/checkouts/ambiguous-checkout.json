@@ -1,0 +1,32 @@
+{
+  "checkout": {
+    "scenario": "ambiguous-checkout",
+    "order": {
+      "totalUsd": 540.0,
+      "itemCount": 2,
+      "items": ["vacuum robot", "air purifier"],
+      "fulfilment": "shipping"
+    },
+    "profile": {
+      "accountAgeDays": 120,
+      "lifetimeOrders": 4,
+      "lifetimeSpendUsd": 210.0,
+      "name": "Sara Conti",
+      "addressCity": "Bologna",
+      "phoneVerified": true,
+      "emailDomain": "hotmail.com"
+    },
+    "session": {
+      "device": "new tablet browser",
+      "ipCountry": "IT",
+      "shippedCountry": "IT",
+      "enteredCardManually": true,
+      "minutesOnSite": 9
+    },
+    "context": {
+      "scheduledDeliveriesToday": [],
+      "promoAbuseFlagsLast90d": 2
+    }
+  },
+  "economics": { "marginUsd": 118.0, "fraudLossUsd": 590.0, "ltvAtRiskUsd": 210.0 }
+}

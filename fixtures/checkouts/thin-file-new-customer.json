@@ -1,0 +1,32 @@
+{
+  "checkout": {
+    "scenario": "thin-file-new-customer",
+    "order": {
+      "totalUsd": 129.0,
+      "itemCount": 2,
+      "items": ["espresso machine", "tamper"],
+      "fulfilment": "shipping"
+    },
+    "profile": {
+      "accountAgeDays": 2,
+      "lifetimeOrders": 0,
+      "lifetimeSpendUsd": 0,
+      "name": "Marco Bianchi",
+      "addressCity": "Turin",
+      "phoneVerified": false,
+      "emailDomain": "mail-quick.example"
+    },
+    "session": {
+      "device": "new Android browser, no app",
+      "ipCountry": "IT",
+      "shippedCountry": "IT",
+      "enteredCardManually": true,
+      "minutesOnSite": 6
+    },
+    "context": {
+      "scheduledDeliveriesToday": [],
+      "promoAbuseFlagsLast90d": 0
+    }
+  },
+  "economics": { "marginUsd": 34.0, "fraudLossUsd": 129.0, "ltvAtRiskUsd": 180.0 }
+}

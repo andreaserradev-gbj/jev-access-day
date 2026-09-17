@@ -1,0 +1,15 @@
+{
+  "scenario": "known-flake",
+  "suite": "concurrency.suite.ts",
+  "testName": "answers 409 once when two identical stock changes race",
+  "expected": { "status": 409, "errorName": "Conflict" },
+  "received": {
+    "status": 200,
+    "errorName": null,
+    "body": { "id": 3, "stock": 25 },
+    "stackExcerpt": "expect(received).toBe(expected) // Object.is equality\nExpected: 409\nReceived: 200"
+  },
+  "ciRetryCount": 2,
+  "lastCommits": ["test: extract concurrency suite", "chore: bump kafkajs to 2.2.4"],
+  "environment": { "mysql_healthy": true, "kafka_healthy": true, "node": "24.19.0" }
+}

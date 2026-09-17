@@ -1,0 +1,32 @@
+{
+  "checkout": {
+    "scenario": "bopis-edge",
+    "order": {
+      "totalUsd": 310.0,
+      "itemCount": 2,
+      "items": ["stand mixer", "pasta extruder"],
+      "fulfilment": "bopis"
+    },
+    "profile": {
+      "accountAgeDays": 58,
+      "lifetimeOrders": 2,
+      "lifetimeSpendUsd": 96.0,
+      "name": "Elena Ferrari",
+      "addressCity": "Bologna",
+      "phoneVerified": true,
+      "emailDomain": "libero.it"
+    },
+    "session": {
+      "device": "known laptop, saved wifi",
+      "ipCountry": "IT",
+      "shippedCountry": "IT",
+      "enteredCardManually": true,
+      "minutesOnSite": 22
+    },
+    "context": {
+      "scheduledDeliveriesToday": [],
+      "promoAbuseFlagsLast90d": 1
+    }
+  },
+  "economics": { "marginUsd": 62.0, "fraudLossUsd": 310.0, "ltvAtRiskUsd": 150.0 }
+}

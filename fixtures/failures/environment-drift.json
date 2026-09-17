@@ -1,0 +1,19 @@
+{
+  "scenario": "environment-drift",
+  "suite": "price.suite.ts",
+  "testName": "rejects a price sent as a JSON number",
+  "expected": { "status": 400 },
+  "received": {
+    "status": 201,
+    "body": { "id": 4, "price": "19.99" },
+    "stackExcerpt": "expected 201 to equal 400"
+  },
+  "ciRetryCount": 0,
+  "lastCommits": ["docs: changelog"],
+  "environment": {
+    "db": "ecommerce_test",
+    "node": "18.19.0 (pinned: 24)",
+    "note": "runner image drifted from .nvmrc",
+    "class_transformer_version": "0.5.1"
+  }
+}

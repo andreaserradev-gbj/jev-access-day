@@ -1,0 +1,40 @@
+{
+  "checkout": {
+    "scenario": "bureau-contradiction",
+    "order": {
+      "totalUsd": 890.0,
+      "itemCount": 1,
+      "items": ["professional espresso machine"],
+      "fulfilment": "shipping"
+    },
+    "profile": {
+      "accountAgeDays": 410,
+      "lifetimeOrders": 9,
+      "lifetimeSpendUsd": 780.0,
+      "name": "Luca Moretti",
+      "addressCity": "Naples",
+      "phoneVerified": true,
+      "emailDomain": "tim.it"
+    },
+    "session": {
+      "device": "known phone, app",
+      "ipCountry": "IT",
+      "shippedCountry": "IT",
+      "enteredCardManually": false,
+      "minutesOnSite": 31
+    },
+    "context": {
+      "scheduledDeliveriesToday": ["groceries 18:00-20:00"],
+      "promoAbuseFlagsLast90d": 0
+    }
+  },
+  "bureau": {
+    "bureau": "mock-bureau",
+    "scoreBand": "poor",
+    "bureauScore": 480,
+    "delinquenciesLast24m": 4,
+    "inquiriesLast30d": 5,
+    "latencyMs": 480
+  },
+  "economics": { "marginUsd": 178.0, "fraudLossUsd": 890.0, "ltvAtRiskUsd": 320.0 }
+}

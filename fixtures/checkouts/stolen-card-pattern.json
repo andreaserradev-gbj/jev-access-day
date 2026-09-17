@@ -1,0 +1,32 @@
+{
+  "checkout": {
+    "scenario": "stolen-card-pattern",
+    "order": {
+      "totalUsd": 1240.0,
+      "itemCount": 6,
+      "items": ["gpu", "gpu riser", "psu 1000w", "ssd 4tb", "ssd 4tb", "cpu"],
+      "fulfilment": "shipping"
+    },
+    "profile": {
+      "accountAgeDays": 1,
+      "lifetimeOrders": 0,
+      "lifetimeSpendUsd": 0,
+      "name": "J. Smith",
+      "addressCity": "Milan",
+      "phoneVerified": false,
+      "emailDomain": "mailinator.example"
+    },
+    "session": {
+      "device": "fresh browser profile, vpn exit node",
+      "ipCountry": "US",
+      "shippedCountry": "RO",
+      "enteredCardManually": true,
+      "minutesOnSite": 4
+    },
+    "context": {
+      "scheduledDeliveriesToday": [],
+      "promoAbuseFlagsLast90d": 0
+    }
+  },
+  "economics": { "marginUsd": 248.0, "fraudLossUsd": 1240.0, "ltvAtRiskUsd": 0.0 }
+}
