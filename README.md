@@ -86,11 +86,15 @@ npm start -- --provider=llm
 ```
 
 The stand-in calls Ollama Cloud's OpenAI-compatible chat endpoint with a JSON
-schema (`format`), samples `OLLAMA_SAMPLES` times at temperature 0.7, averages
-each question's distribution, and derives confidence from sample agreement
-(clamped with normalized entropy). Schema violations throw loudly — the
-type-error rate is *counted*, which is itself comparison data: Jev's is
-mathematically zero.
+schema (`format`), samples `OLLAMA_SAMPLES` times **concurrently** at
+temperature 0.7, averages each question's distribution, and derives confidence
+from sample agreement (clamped with normalized entropy). Schema violations and
+incomplete samples are retried per-sample (3 attempts) rather than fatal.
+
+**Expect slow runs**: 30–120s per triage fixture, 1–4min per checkout
+cascade (two asks). The full `--provider=llm` run takes ~15–25 minutes;
+progress lines stream to stderr. `--compare` runs mock + llm together and
+takes roughly twice as long. Mock runs take seconds.
 
 ### Provider: real (on access day)
 

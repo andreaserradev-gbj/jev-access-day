@@ -47,6 +47,9 @@ async function runTriage(client: SystemOneClient, failures: Map<string, JestFail
   console.log('═'.repeat(78));
 
   for (const [scenario, failure] of failures) {
+    if (client.name !== 'mock') {
+      console.error(`  [${client.name}] asking ${scenario}... (LLM: expect 30-120s per fixture)`);
+    }
     const response = await client.ask({
       state: buildTriageState(failure),
       questions: TRIAGE_QUESTIONS,
@@ -79,6 +82,9 @@ async function runCheckout(
   const summary: Array<Pick<CascadeResult, 'scenario' | 'stage1Route' | 'bureauCalled' | 'finalAction' | 'evApproveUsd'>> = [];
 
   for (const [scenario, fixture] of checkouts) {
+    if (client.name !== 'mock') {
+      console.error(`  [${client.name}] running cascade ${scenario}... (LLM: expect 1-4 min per fixture)`);
+    }
     const result = await runCascade(client, fixture);
     summary.push({
       scenario: result.scenario,
@@ -169,9 +175,13 @@ async function runDomain(
 ): Promise<ComparisonRow[]> {
   const client = createClient(provider, env);
   const rows: ComparisonRow[] = [];
+  const progress = (msg: string): void => {
+    if (client.name !== 'mock') console.error(`  [${client.name}/${domain}] ${msg}`);
+  };
 
   if (domain === 'triage') {
     for (const [scenario, failure] of loadFixtures<JestFailure>(join(FIXTURE_ROOT, 'failures'))) {
+      progress(`asking ${scenario}...`);
       const response = await client.ask({
         state: buildTriageState(failure),
         questions: TRIAGE_QUESTIONS,
@@ -190,6 +200,7 @@ async function runDomain(
   } else {
     const checkouts = loadFixtures<CheckoutFixture>(join(FIXTURE_ROOT, 'checkouts'));
     for (const [scenario, fixture] of checkouts) {
+      progress(`running cascade ${scenario}...`);
       const result = await runCascade(client, fixture);
       const tokens =
         result.stage1Usage.inputTokens + result.stage1Usage.outputTokens +
