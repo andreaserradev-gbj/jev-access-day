@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { decideTriage, TRIAGE_THRESHOLDS, type TriageAction } from '../src/triage/decide.js';
 import { MOCK_ANSWERS } from '../src/typesafe/mock.js';
+import { triageExpectation } from '../src/eval/expectations.js';
 import type { Answers } from '../src/typesafe/client.js';
 
 const triageScenarios = [
@@ -12,14 +13,14 @@ const triageScenarios = [
   'ambiguous-failure',
 ] as const;
 
-/** Expected routing per canned mock scenario — the contract the fixtures pin. */
+/** Ground truth shared with the eval harness (fixtures/expectations.json). */
 const expected: Record<(typeof triageScenarios)[number], TriageAction> = {
-  'known-flake': 'auto_retry',
-  'error-contract-regression': 'file_regression_p1',
-  'infra-outage': 'restart_infra',
-  'bad-test': 'fix_test',
-  'environment-drift': 'requeue_environment',
-  'ambiguous-failure': 'needs_human',
+  'known-flake': triageExpectation('known-flake').action,
+  'error-contract-regression': triageExpectation('error-contract-regression').action,
+  'infra-outage': triageExpectation('infra-outage').action,
+  'bad-test': triageExpectation('bad-test').action,
+  'environment-drift': triageExpectation('environment-drift').action,
+  'ambiguous-failure': triageExpectation('ambiguous-failure').action,
 };
 
 describe('triage decide()', () => {

@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "provider": "llm-local",
+  "domain": "triage",
+  "runIndex": 0,
+  "model": {
+    "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+    "baseUrl": "http://localhost:11434",
+    "samples": 5
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "ambiguous-failure",
+      "timestamp": "2026-09-18T05:14:30.327Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.1
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.95
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.87
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "bad_test": 0.12,
+            "environment": 0.05,
+            "infra": 0.06,
+            "real_regression": 0.77
+          },
+          "confidence": 0.441
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.18,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.09,
+            "1": 0.64,
+            "2": 0.27
+          },
+          "confidence": 0.221
+        }
+      },
+      "confidence": 0.441,
+      "usage": {
+        "inputTokens": 3945,
+        "outputTokens": 725,
+        "calls": 5,
+        "elapsedMs": 23184
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "bad-test",
+      "timestamp": "2026-09-18T05:14:55.099Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.07
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "bad_test": 0.72,
+            "environment": 0.05,
+            "infra": 0.04,
+            "real_regression": 0.19
+          },
+          "confidence": 0.401
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.195,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.838,
+            "1": 0.13,
+            "2": 0.033
+          },
+          "confidence": 0.336
+        }
+      },
+      "confidence": 0.401,
+      "usage": {
+        "inputTokens": 3950,
+        "outputTokens": 773,
+        "calls": 5,
+        "elapsedMs": 24772
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "environment-drift",
+      "timestamp": "2026-09-18T05:15:31.612Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.09
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.95
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.1
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "environment",
+          "probabilities": {
+            "bad_test": 0.1,
+            "environment": 0.6,
+            "infra": 0.05,
+            "real_regression": 0.25
+          },
+          "confidence": 0.255
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.524,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.58,
+            "1": 0.316,
+            "2": 0.104
+          },
+          "confidence": 0.129
+        }
+      },
+      "confidence": 0.255,
+      "usage": {
+        "inputTokens": 3985,
+        "outputTokens": 765,
+        "calls": 5,
+        "elapsedMs": 36513
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "error-contract-regression",
+      "timestamp": "2026-09-18T05:16:18.148Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.03
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.97
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.87
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "bad_test": 0.09,
+            "environment": 0.044,
+            "infra": 0.036,
+            "real_regression": 0.83
+          },
+          "confidence": 0.547
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.822,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.24,
+            "1": 0.698,
+            "2": 0.062
+          },
+          "confidence": 0.099
+        }
+      },
+      "confidence": 0.547,
+      "usage": {
+        "inputTokens": 4250,
+        "outputTokens": 779,
+        "calls": 5,
+        "elapsedMs": 46536
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "infra-outage",
+      "timestamp": "2026-09-18T05:17:08.282Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "action": "restart_infra",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.32
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.02
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.22
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "infra",
+          "probabilities": {
+            "bad_test": 0.03,
+            "environment": 0.042,
+            "infra": 0.89,
+            "real_regression": 0.038
+          },
+          "confidence": 0.664
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.405,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.7,
+            "1": 0.195,
+            "2": 0.105
+          },
+          "confidence": 0
+        }
+      },
+      "confidence": 0.664,
+      "usage": {
+        "inputTokens": 3950,
+        "outputTokens": 811,
+        "calls": 5,
+        "elapsedMs": 50134
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "known-flake",
+      "timestamp": "2026-09-18T05:17:55.674Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.41
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.97
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.3
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "bad_test": 0.55,
+            "environment": 0.05,
+            "infra": 0.07,
+            "real_regression": 0.33
+          },
+          "confidence": 0.257
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.774,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.38,
+            "1": 0.466,
+            "2": 0.154
+          },
+          "confidence": 0.057
+        }
+      },
+      "confidence": 0.257,
+      "usage": {
+        "inputTokens": 4100,
+        "outputTokens": 719,
+        "calls": 5,
+        "elapsedMs": 47392
+      }
+    }
+  ]
+}

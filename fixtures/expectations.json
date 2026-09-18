@@ -1,0 +1,60 @@
+{
+  "triage": {
+    "known-flake": {
+      "action": "auto_retry",
+      "because": "infra category, known flake pattern noul 0.93 >= 0.8 act threshold"
+    },
+    "error-contract-regression": {
+      "action": "file_regression_p1",
+      "because": "real_regression, severity 1.62 >= 1.5 P1 gate with severity confidence above gate"
+    },
+    "infra-outage": {
+      "action": "restart_infra",
+      "because": "infra category, flake pattern below act threshold (0.55 < 0.8) so no blind retry"
+    },
+    "bad-test": {
+      "action": "fix_test",
+      "because": "bad_test category, not plausibly from a commit (0.05 < 0.5) — stale/over-specified test"
+    },
+    "environment-drift": {
+      "action": "requeue_environment",
+      "because": "environment category, flake pattern below act threshold (0.41 < 0.8)"
+    },
+    "ambiguous-failure": {
+      "action": "needs_human",
+      "because": "category confidence 0.24 below the 0.5 floor — refuse to act"
+    }
+  },
+  "checkout": {
+    "clean-repeat-buyer": {
+      "stage1Route": "approve_fast_path",
+      "finalAction": "approve",
+      "because": "clear band at confidence 0.87 >= 0.65 fast-path gate — bureau skipped"
+    },
+    "stolen-card-pattern": {
+      "stage1Route": "decline_fast_path",
+      "finalAction": "decline",
+      "because": "suspicious band at confidence 0.79 >= 0.65 fast-path gate — bureau adds nothing"
+    },
+    "thin-file-new-customer": {
+      "stage1Route": "bureau_call",
+      "finalAction": "step_up",
+      "because": "band ambiguous below confidence floor; synthesis step_up at exactly the 0.55 step-up gate"
+    },
+    "bopis-edge": {
+      "stage1Route": "bureau_call",
+      "finalAction": "approve",
+      "because": "clear band but low confidence (0.32); bureau evidence then EV-positive approve at high confidence"
+    },
+    "bureau-contradiction": {
+      "stage1Route": "bureau_call",
+      "finalAction": "review",
+      "because": "synthesis confidence 0.35 below the 0.5 floor with bureau contradicting history"
+    },
+    "ambiguous-checkout": {
+      "stage1Route": "bureau_call",
+      "finalAction": "review",
+      "because": "synthesis step_up at confidence 0.18 below the 0.5 floor"
+    }
+  }
+}

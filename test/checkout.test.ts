@@ -7,6 +7,7 @@ import {
   type FinalAction,
 } from '../src/checkout/decide.js';
 import { MOCK_ANSWERS } from '../src/typesafe/mock.js';
+import { checkoutExpectation } from '../src/eval/expectations.js';
 import type { Answers, ChoiceAnswer } from '../src/typesafe/client.js';
 import { buildCheckoutState, buildSynthesisState } from '../src/checkout/state.js';
 import { PRE_BUREAU_QUESTIONS, SYNTHESIS_QUESTIONS } from '../src/checkout/questions.js';
@@ -15,16 +16,19 @@ import { cleanRepeatBuyer } from './helpers/fixtures.js';
 describe('checkout stage-1 decide()', () => {
   it('fast-path approves the clean repeat buyer (bureau skipped)', () => {
     const decision = decideStage1(MOCK_ANSWERS['clean-repeat-buyer'] as Answers);
+    expect(decision.route).toBe(checkoutExpectation('clean-repeat-buyer').stage1Route);
     expect(decision.route).toBe('approve_fast_path');
   });
 
   it('fast-path declines the stolen-card pattern (bureau skipped)', () => {
     const decision = decideStage1(MOCK_ANSWERS['stolen-card-pattern'] as Answers);
+    expect(decision.route).toBe(checkoutExpectation('stolen-card-pattern').stage1Route);
     expect(decision.route).toBe('decline_fast_path');
   });
 
   it('routes thin-file new customer to the bureau', () => {
     const decision = decideStage1(MOCK_ANSWERS['thin-file-new-customer'] as Answers);
+    expect(decision.route).toBe(checkoutExpectation('thin-file-new-customer').stage1Route);
     expect(decision.route).toBe('bureau_call');
   });
 
@@ -41,11 +45,13 @@ describe('checkout stage-3 EV decide()', () => {
 
   it('routes the bureau contradiction to human review (low confidence)', () => {
     const decision = decideStage3(MOCK_ANSWERS['bureau-contradiction'] as Answers, economics);
+    expect(decision.action).toBe(checkoutExpectation('bureau-contradiction').finalAction);
     expect(decision.action).toBe('review');
   });
 
   it('routes the ambiguous checkout to review (low confidence)', () => {
     const decision = decideStage3(MOCK_ANSWERS['ambiguous-checkout'] as Answers, economics);
+    expect(decision.action).toBe(checkoutExpectation('ambiguous-checkout').finalAction);
     expect(decision.action).toBe('review');
   });
 

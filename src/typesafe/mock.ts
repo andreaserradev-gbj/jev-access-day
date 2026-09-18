@@ -129,7 +129,7 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
     failure_category: {
       type: 'choice',
       choice: 'real_regression',
-      probabilities: { real_regression: 0.38, bad_test: 0.31, environment: 0.19, infra: 0.08 },
+      probabilities: { real_regression: 0.42, bad_test: 0.31, environment: 0.19, infra: 0.08 },
       confidence: 0.24,
     },
     regression_severity: {
@@ -155,7 +155,7 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
     risk_band: {
       type: 'choice',
       choice: 'clear',
-      probabilities: { clear: 0.91, ambiguous: 0.08, suspicious: 0.04 },
+      probabilities: { clear: 0.88, ambiguous: 0.08, suspicious: 0.04 },
       confidence: 0.87,
     },
   },
@@ -259,7 +259,7 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
       type: 'score',
       score: 2.52,
       legend: { '0': 'strong affordability', '1': 'adequate', '2': 'stretched', '3': 'distressed' },
-      probabilities: { '0': 0.04, '1': 0.16, '2': 0.52, '3': 0.32 },
+      probabilities: { '0': 0.08, '1': 0.16, '2': 0.52, '3': 0.24 },
       confidence: 0.56,
     },
     final_action: {

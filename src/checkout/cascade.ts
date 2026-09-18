@@ -1,4 +1,4 @@
-import type { SystemOneClient } from '../typesafe/client.js';
+import type { Answers, SystemOneClient } from '../typesafe/client.js';
 import {
   buildCheckoutState,
   buildSynthesisState,
@@ -17,9 +17,13 @@ export interface CascadeResult {
   scenario: string;
   stage1Route: Stage1Route;
   stage1Rationale: string[];
+  /** Full typed stage-1 answers, for eval run records. */
+  stage1Answers: Answers;
   bureauCalled: boolean;
   finalAction: FinalAction | null;
   finalRationale: string[];
+  /** Full typed stage-3 answers; null when stage 1 decided alone. */
+  stage3Answers: Answers | null;
   evApproveUsd: number | null;
   pFraudEstimate: number | null;
   stage1Usage: { elapsedMs: number; calls: number; inputTokens: number; outputTokens: number };
@@ -56,9 +60,11 @@ export async function runCascade(
       scenario: checkout.scenario,
       stage1Route: stage1.route,
       stage1Rationale: stage1.rationale,
+      stage1Answers: stage1Response.answers,
       bureauCalled: false,
       finalAction: stage1.route === 'approve_fast_path' ? 'approve' : 'decline',
       finalRationale: [...stage1.rationale, 'decided at stage 1: synthesis not needed'],
+      stage3Answers: null,
       evApproveUsd: null,
       pFraudEstimate: null,
       stage1Usage,
@@ -83,9 +89,11 @@ export async function runCascade(
     scenario: checkout.scenario,
     stage1Route: stage1.route,
     stage1Rationale: stage1.rationale,
+    stage1Answers: stage1Response.answers,
     bureauCalled: true,
     finalAction: stage3.action,
     finalRationale: [...stage1.rationale, ...stage3.rationale],
+    stage3Answers: stage3Response.answers,
     evApproveUsd: stage3.evApproveUsd,
     pFraudEstimate: stage3.pFraudEstimate,
     stage1Usage,

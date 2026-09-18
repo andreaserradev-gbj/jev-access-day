@@ -33,6 +33,20 @@ export interface LlmProviderConfig {
   baseUrl: string;
   samples: number;
   temperature: number;
+  /**
+   * Thinking toggle for reasoning models (Ollama `think` field).
+   * undefined = omit entirely (server default); false = suppress thinking so
+   * every token goes to the JSON answer (local MoE/dense thinking models).
+   */
+  think?: boolean;
+  /** Per-sample HTTP timeout ms. 0/unset → 120000 (cloud-appropriate default). */
+  timeoutMs?: number;
+  /**
+   * Use Ollama's native /api/chat instead of the OpenAI-compatible endpoint.
+   * Required for local models whose daemon build ignores `think` and `format`
+   * on /v1/chat/completions (observed on Ollama 0.34 + qwen3.6 MoE).
+   */
+  native?: boolean;
 }
 
 const SYSTEM_PROMPT = `You are a calibration engine, not a chatbot. You receive a state and typed questions. For each noul question output exactly one decimal number between 0.0 and 1.0: the probability that the answer is YES. For choice and score questions output an object mapping every option or level index to its probability; the probabilities must sum to 1.0. Never output booleans. Never add keys beyond what each question requires. Never refuse and never explain. Calibrate honestly: if the state does not support an answer, output a number near 0.5 instead of guessing confidently.`;
@@ -42,18 +56,26 @@ interface ChatCompletionResponse {
   usage?: { prompt_tokens?: number; completion_tokens?: number };
 }
 
+/** Ollama native /api/chat response shape. */
+interface NativeChatResponse {
+  message?: { content?: string; thinking?: string };
+  prompt_eval_count?: number;
+  eval_count?: number;
+}
+
 export class LlmSystemOneClient implements SystemOneClient {
-  readonly name = 'llm';
+  readonly name: string;
   private readonly config: LlmProviderConfig;
 
-  constructor(config: LlmProviderConfig) {
+  constructor(config: LlmProviderConfig, name = 'llm') {
     if (!config.apiKey) {
-      throw new Error('llm provider: OLLAMA_API_KEY is not set');
+      throw new Error(`[${name}] provider: API key is not set`);
     }
     if (config.samples < 1) {
-      throw new Error('llm provider: OLLAMA_SAMPLES must be >= 1');
+      throw new Error(`[${name}] provider: samples must be >= 1`);
     }
     this.config = config;
+    this.name = name;
   }
 
   async ask(request: SystemOneRequest): Promise<SystemOneResponse> {
@@ -113,8 +135,11 @@ export class LlmSystemOneClient implements SystemOneClient {
     userPrompt: string,
     schema: object,
   ): Promise<{ raw: Record<string, unknown>; usage: Usage }> {
+    if (this.config.native) {
+      return this.sampleOnceNative(userPrompt, schema);
+    }
     const url = `${this.config.baseUrl}/v1/chat/completions`;
-    const body = {
+    const body: Record<string, unknown> = {
       model: this.config.model,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -124,6 +149,9 @@ export class LlmSystemOneClient implements SystemOneClient {
       format: schema,
       stream: false,
     };
+    // Only sent when configured: cloud endpoints without thinking support
+    // must not receive a stray `think` key.
+    if (this.config.think !== undefined) body['think'] = this.config.think;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -132,7 +160,7 @@ export class LlmSystemOneClient implements SystemOneClient {
         Authorization: `Bearer ${this.config.apiKey}`,
       },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(120_000),
+      signal: AbortSignal.timeout(this.config.timeoutMs ?? 120_000),
     });
 
     if (!response.ok) {
@@ -147,6 +175,58 @@ export class LlmSystemOneClient implements SystemOneClient {
       usage: {
         inputTokens: completion.usage?.prompt_tokens ?? 0,
         outputTokens: completion.usage?.completion_tokens ?? 0,
+        calls: 1,
+        elapsedMs: 0,
+      },
+    };
+  }
+
+  /**
+   * Ollama native /api/chat: the ONLY path where this daemon version honors
+   * both `think:false` (no reasoning burn) and `format` (hard schema) for the
+   * local MoE — the OpenAI-compat endpoint ignores both for this model.
+   */
+  private async sampleOnceNative(
+    userPrompt: string,
+    schema: object,
+  ): Promise<{ raw: Record<string, unknown>; usage: Usage }> {
+    const url = `${this.config.baseUrl}/api/chat`;
+    const body: Record<string, unknown> = {
+      model: this.config.model,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: this.config.temperature,
+      format: schema,
+      stream: false,
+    };
+    if (this.config.think !== undefined) body['think'] = this.config.think;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(this.config.apiKey && this.config.apiKey !== 'local'
+          ? { Authorization: `Bearer ${this.config.apiKey}` }
+          : {}),
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(this.config.timeoutMs ?? 120_000),
+    });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      throw new Error(`llm provider: ${response.status} from ${url}: ${text.slice(0, 400)}`);
+    }
+
+    const native = (await response.json()) as NativeChatResponse;
+    const content = native.message?.content ?? '';
+    return {
+      raw: parseModelJson(stripCodeFences(content)),
+      usage: {
+        inputTokens: native.prompt_eval_count ?? 0,
+        outputTokens: native.eval_count ?? 0,
         calls: 1,
         elapsedMs: 0,
       },
@@ -338,7 +418,7 @@ function probabilityMapSchema(keys: string[]): object {
 
 // ── aggregation: the self-consistency core ────────────────────────────────────
 
-function aggregateAnswers(questions: Questions, samples: Array<{ raw: Record<string, unknown> }>): Answers {
+export function aggregateAnswers(questions: Questions, samples: Array<{ raw: Record<string, unknown> }>): Answers {
   const answers: Answers = {};
   for (const [id, q] of Object.entries(questions)) {
     const perSample = samples.map((s) => extractDistribution(s.raw, id, q));
@@ -520,5 +600,29 @@ export function llmConfigFromEnv(env: NodeJS.ProcessEnv = process.env): LlmProvi
     baseUrl: env['OLLAMA_BASE_URL'] ?? 'https://ollama.com',
     samples: Number(env['OLLAMA_SAMPLES'] ?? '5'),
     temperature: Number(env['OLLAMA_TEMPERATURE'] ?? '0.7'),
+    ...(env['OLLAMA_THINK'] !== undefined ? { think: env['OLLAMA_THINK'] === 'true' } : {}),
+  };
+}
+
+/**
+ * The local stand-in: same LlmSystemOneClient, different defaults. Points at
+ * the local Ollama daemon and defaults to the fast MoE model with thinking
+ * suppressed — the cloud glm config is untouched.
+ */
+export function llmLocalConfigFromEnv(env: NodeJS.ProcessEnv = process.env): LlmProviderConfig {
+  return {
+    apiKey: env['OLLAMA_LOCAL_API_KEY'] ?? 'local',
+    model: env['OLLAMA_LOCAL_MODEL'] ?? 'qwen3.6:35b-a3b-coding-mtp-q4_K_M',
+    baseUrl: env['OLLAMA_LOCAL_BASE_URL'] ?? 'http://localhost:11434',
+    samples: Number(env['OLLAMA_LOCAL_SAMPLES'] ?? '5'),
+    temperature: Number(env['OLLAMA_LOCAL_TEMPERATURE'] ?? env['OLLAMA_TEMPERATURE'] ?? '0.7'),
+    think: env['OLLAMA_LOCAL_THINK'] !== undefined
+      ? env['OLLAMA_LOCAL_THINK'] === 'true'
+      : false,
+    // First token on a local MoE includes model load from disk; give it room.
+    timeoutMs: env['OLLAMA_LOCAL_TIMEOUT_MS'] !== undefined
+      ? Number(env['OLLAMA_LOCAL_TIMEOUT_MS'])
+      : 300_000,
+    native: true,
   };
 }

@@ -1,0 +1,7 @@
+run_index,timestamp,provider,domain,scenario,action,stage1_route,bureau_called,confidence,latency_ms,calls,input_tokens,output_tokens,model
+0,2026-09-18T05:14:30.327Z,llm-local,triage,ambiguous-failure,needs_human,,,0.441,23184,5,3945,725,qwen3.6:35b-a3b-coding-mtp-q4_K_M
+0,2026-09-18T05:14:55.099Z,llm-local,triage,bad-test,needs_human,,,0.401,24772,5,3950,773,qwen3.6:35b-a3b-coding-mtp-q4_K_M
+0,2026-09-18T05:15:31.612Z,llm-local,triage,environment-drift,needs_human,,,0.255,36513,5,3985,765,qwen3.6:35b-a3b-coding-mtp-q4_K_M
+0,2026-09-18T05:16:18.148Z,llm-local,triage,error-contract-regression,needs_human,,,0.547,46536,5,4250,779,qwen3.6:35b-a3b-coding-mtp-q4_K_M
+0,2026-09-18T05:17:08.282Z,llm-local,triage,infra-outage,restart_infra,,,0.664,50134,5,3950,811,qwen3.6:35b-a3b-coding-mtp-q4_K_M
+0,2026-09-18T05:17:55.674Z,llm-local,triage,known-flake,needs_human,,,0.257,47392,5,4100,719,qwen3.6:35b-a3b-coding-mtp-q4_K_M

@@ -21,6 +21,10 @@ import type {
 
 export interface RealProviderConfig {
   apiKey: string;
+  /** API root; undefined → SDK default (TYPESAFE_BASE_URL env, then https://api.typesafe.ai). */
+  baseURL?: string;
+  /** Default model; undefined → SDK default (TYPESAFE_DEFAULT_MODEL env, then jev-latest). */
+  defaultModel?: string;
 }
 
 /** Lazily import the real SDK so it is never loaded for mock/llm runs. */
@@ -68,9 +72,14 @@ export class RealSystemOneClient implements SystemOneClient {
   private async ensureClient(): Promise<SdkClient> {
     if (this.sdkClient === null) {
       const sdk = (await import('@typesafe-ai/sdk')) as SdkModule;
-      this.sdkClient = new sdk.TypeSafeClient({
+      // baseURL/defaultModel pass through only when set: the SDK's own env
+      // fallbacks (TYPESAFE_BASE_URL, TYPESAFE_DEFAULT_MODEL) then apply.
+      const clientConfig: { apiKey: string; baseURL?: string; defaultModel?: string } = {
         apiKey: this.config.apiKey,
-      });
+      };
+      if (this.config.baseURL !== undefined) clientConfig.baseURL = this.config.baseURL;
+      if (this.config.defaultModel !== undefined) clientConfig.defaultModel = this.config.defaultModel;
+      this.sdkClient = new sdk.TypeSafeClient(clientConfig);
     }
     return this.sdkClient;
   }
@@ -93,7 +102,7 @@ type SdkQuestion =
       criteria: [SdkEntry, SdkEntry, ...SdkEntry[]];
     };
 
-function mapQuestionsToSdk(questions: Questions): Record<string, SdkQuestion> {
+export function mapQuestionsToSdk(questions: Questions): Record<string, SdkQuestion> {
   return Object.fromEntries(
     Object.entries(questions).map(([id, q]) => {
       if (q.type === 'score') {
@@ -122,7 +131,7 @@ function mapQuestionsToSdk(questions: Questions): Record<string, SdkQuestion> {
   );
 }
 
-function mapAnswerFromSdk(sdkAnswer: {
+export function mapAnswerFromSdk(sdkAnswer: {
   type: string;
   noul?: number;
   choice?: string;
@@ -155,5 +164,10 @@ function mapAnswerFromSdk(sdkAnswer: {
 }
 
 export function realConfigFromEnv(env: NodeJS.ProcessEnv = process.env): RealProviderConfig {
-  return { apiKey: env['TYPESAFE_API_KEY'] ?? '' };
+  const config: RealProviderConfig = { apiKey: env['TYPESAFE_API_KEY'] ?? '' };
+  const baseURL = env['TYPESAFE_BASE_URL'];
+  const defaultModel = env['TYPESAFE_DEFAULT_MODEL'];
+  if (baseURL !== undefined && baseURL.trim() !== '') config.baseURL = baseURL.trim();
+  if (defaultModel !== undefined && defaultModel.trim() !== '') config.defaultModel = defaultModel.trim();
+  return config;
 }
