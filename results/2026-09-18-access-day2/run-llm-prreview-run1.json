@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "provider": "llm",
+  "domain": "prreview",
+  "runIndex": 1,
+  "model": {
+    "model": "glm-5.3-flash:cloud",
+    "baseUrl": "https://ollama.com",
+    "samples": 5
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "direct-ssrf-untrusted",
+      "timestamp": "2026-09-18T19:42:39.346Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 0.956,
+            "indirect": 0.034,
+            "none": 0.01
+          },
+          "confidence": 0.814
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.006,
+            "routine": 0.028,
+            "trivial": 0.966
+          },
+          "confidence": 0.851
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.022
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.03,
+            "sound": 0.97
+          },
+          "confidence": 0.806
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.814,
+      "usage": {
+        "inputTokens": 4600,
+        "outputTokens": 3509,
+        "calls": 5,
+        "elapsedMs": 21970
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "gray-zone-reachable-admin",
+      "timestamp": "2026-09-18T19:43:37.935Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "needs_llm_review",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "indirect",
+          "probabilities": {
+            "direct": 0.05,
+            "indirect": 0.89,
+            "none": 0.06
+          },
+          "confidence": 0.616
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.88,
+            "routine": 0.098,
+            "trivial": 0.022
+          },
+          "confidence": 0.614
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.944
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.058,
+            "sound": 0.942
+          },
+          "confidence": 0.681
+        }
+      },
+      "reviewerChain": {
+        "verdict": "approve",
+        "confidence": 0.71,
+        "rationale": "ReDoS payload requires adversarial markdown input; only staff in admin UI author notes, so exposure is indirect at worst. Major bump touches one runtime path but options migration is mechanical and CI is green."
+      },
+      "confidence": 0.616,
+      "usage": {
+        "inputTokens": 4705,
+        "outputTokens": 3853,
+        "calls": 5,
+        "elapsedMs": 58325
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "major-runtime-breaking",
+      "timestamp": "2026-09-18T19:44:09.693Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.052,
+            "indirect": 0.058,
+            "none": 0.89
+          },
+          "confidence": 0.615
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.946,
+            "routine": 0.042,
+            "trivial": 0.012
+          },
+          "confidence": 0.783
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.974
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sloppy": 0.678,
+            "sound": 0.322
+          },
+          "confidence": 0.093
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.615,
+      "usage": {
+        "inputTokens": 4530,
+        "outputTokens": 6889,
+        "calls": 5,
+        "elapsedMs": 31758
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "minor-transitive-safe",
+      "timestamp": "2026-09-18T19:44:32.846Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.012,
+            "indirect": 0.06,
+            "none": 0.928
+          },
+          "confidence": 0.735
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.01,
+            "routine": 0.024,
+            "trivial": 0.966
+          },
+          "confidence": 0.846
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.024
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.026,
+            "sound": 0.974
+          },
+          "confidence": 0.826
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.735,
+      "usage": {
+        "inputTokens": 4355,
+        "outputTokens": 4359,
+        "calls": 5,
+        "elapsedMs": 23153
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "patch-lockfile-only",
+      "timestamp": "2026-09-18T19:44:45.820Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.018,
+            "indirect": 0.062,
+            "none": 0.92
+          },
+          "confidence": 0.707
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.01,
+            "routine": 0.046,
+            "trivial": 0.944
+          },
+          "confidence": 0.78
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.022
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.036,
+            "sound": 0.964
+          },
+          "confidence": 0.776
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.707,
+      "usage": {
+        "inputTokens": 4145,
+        "outputTokens": 3513,
+        "calls": 5,
+        "elapsedMs": 12974
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "unsound-lockfile-drift",
+      "timestamp": "2026-09-18T19:45:30.351Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.05,
+            "indirect": 0.114,
+            "none": 0.836
+          },
+          "confidence": 0.502
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.024,
+            "routine": 0.154,
+            "trivial": 0.822
+          },
+          "confidence": 0.51
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.028
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sloppy": 0.964,
+            "sound": 0.036
+          },
+          "confidence": 0.776
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.502,
+      "usage": {
+        "inputTokens": 4045,
+        "outputTokens": 7643,
+        "calls": 5,
+        "elapsedMs": 44531
+      }
+    }
+  ]
+}

@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "provider": "mock",
+  "domain": "dunning",
+  "runIndex": 2,
+  "model": {
+    "model": "mock"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "mock",
+      "scenario": "account-closed",
+      "timestamp": "2026-09-18T19:25:21.110Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "account_closed",
+          "probabilities": {
+            "account_closed": 0.89,
+            "mandate_revoked": 0.06,
+            "technical": 0.02,
+            "transient_funds": 0.03
+          },
+          "confidence": 0.82
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.8,
+            "unknown": 0.14,
+            "strained": 0.06
+          },
+          "confidence": 0.67
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.02
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.76,
+            "moderate": 0.17,
+            "high": 0.07
+          },
+          "confidence": 0.6
+        }
+      },
+      "confidence": 0.82,
+      "usage": {
+        "inputTokens": 624,
+        "outputTokens": 123,
+        "calls": 1,
+        "elapsedMs": 89
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "mock",
+      "scenario": "mandate-revoked-no-alt",
+      "timestamp": "2026-09-18T19:25:21.178Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "needs_human",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "mandate_revoked": 0.92,
+            "technical": 0.05,
+            "account_closed": 0.02,
+            "transient_funds": 0.01
+          },
+          "confidence": 0.87
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "unknown",
+          "probabilities": {
+            "unknown": 0.62,
+            "strained": 0.26,
+            "good": 0.12
+          },
+          "confidence": 0.53
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.03
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "moderate": 0.55,
+            "low": 0.3,
+            "high": 0.15
+          },
+          "confidence": 0.5
+        }
+      },
+      "confidence": 0.87,
+      "usage": {
+        "inputTokens": 654,
+        "outputTokens": 125,
+        "calls": 1,
+        "elapsedMs": 68
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "mock",
+      "scenario": "mandate-revoked",
+      "timestamp": "2026-09-18T19:25:21.262Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "mandate_revoked": 0.94,
+            "technical": 0.03,
+            "transient_funds": 0.02,
+            "account_closed": 0.01
+          },
+          "confidence": 0.9
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.91,
+            "unknown": 0.06,
+            "strained": 0.03
+          },
+          "confidence": 0.84
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.04
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.71,
+            "moderate": 0.21,
+            "high": 0.08
+          },
+          "confidence": 0.58
+        }
+      },
+      "confidence": 0.9,
+      "usage": {
+        "inputTokens": 642,
+        "outputTokens": 124,
+        "calls": 1,
+        "elapsedMs": 84
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "mock",
+      "scenario": "nsf-repeat",
+      "timestamp": "2026-09-18T19:25:21.355Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "pause_spending",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 0.64,
+            "mandate_revoked": 0.18,
+            "technical": 0.12,
+            "account_closed": 0.06
+          },
+          "confidence": 0.55
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "strained",
+          "probabilities": {
+            "strained": 0.57,
+            "good": 0.31,
+            "unknown": 0.12
+          },
+          "confidence": 0.54
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.55
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "moderate": 0.58,
+            "low": 0.27,
+            "high": 0.15
+          },
+          "confidence": 0.52
+        }
+      },
+      "confidence": 0.55,
+      "usage": {
+        "inputTokens": 642,
+        "outputTokens": 126,
+        "calls": 1,
+        "elapsedMs": 93
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "mock",
+      "scenario": "nsf-transient",
+      "timestamp": "2026-09-18T19:25:21.436Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "retry_in_3d",
+      "waitDays": 3,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 0.78,
+            "technical": 0.12,
+            "mandate_revoked": 0.06,
+            "account_closed": 0.04
+          },
+          "confidence": 0.71
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.86,
+            "unknown": 0.09,
+            "strained": 0.05
+          },
+          "confidence": 0.76
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.88
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.74,
+            "moderate": 0.19,
+            "high": 0.07
+          },
+          "confidence": 0.63
+        }
+      },
+      "confidence": 0.71,
+      "usage": {
+        "inputTokens": 615,
+        "outputTokens": 124,
+        "calls": 1,
+        "elapsedMs": 81
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "mock",
+      "scenario": "processor-outage",
+      "timestamp": "2026-09-18T19:25:21.525Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "retry_next_schedule",
+      "waitDays": 2,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "technical",
+          "probabilities": {
+            "technical": 0.89,
+            "transient_funds": 0.07,
+            "mandate_revoked": 0.02,
+            "account_closed": 0.02
+          },
+          "confidence": 0.85
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.83,
+            "unknown": 0.12,
+            "strained": 0.05
+          },
+          "confidence": 0.7
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "moderate": 0.55,
+            "high": 0.28,
+            "low": 0.17
+          },
+          "confidence": 0.51
+        }
+      },
+      "confidence": 0.85,
+      "usage": {
+        "inputTokens": 636,
+        "outputTokens": 123,
+        "calls": 1,
+        "elapsedMs": 89
+      }
+    }
+  ]
+}

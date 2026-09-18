@@ -1,0 +1,373 @@
+{
+  "schemaVersion": 1,
+  "provider": "llm",
+  "domain": "dunning",
+  "runIndex": 1,
+  "model": {
+    "model": "glm-5.3-flash:cloud",
+    "baseUrl": "https://ollama.com",
+    "samples": 5
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "account-closed",
+      "timestamp": "2026-09-18T19:31:53.715Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "account_closed",
+          "probabilities": {
+            "account_closed": 0.959,
+            "mandate_revoked": 0.018,
+            "technical": 0.014,
+            "transient_funds": 0.009
+          },
+          "confidence": 0.845
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.876,
+            "strained": 0.07,
+            "unknown": 0.054
+          },
+          "confidence": 0.582
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.046
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "high": 0.082,
+            "low": 0.63,
+            "moderate": 0.288
+          },
+          "confidence": 0.222
+        }
+      },
+      "confidence": 0.845,
+      "usage": {
+        "inputTokens": 4385,
+        "outputTokens": 6825,
+        "calls": 5,
+        "elapsedMs": 38495
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "mandate-revoked-no-alt",
+      "timestamp": "2026-09-18T19:33:09.850Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "needs_human",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "account_closed": 0.015,
+            "mandate_revoked": 0.962,
+            "technical": 0.009,
+            "transient_funds": 0.014
+          },
+          "confidence": 0.854
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "strained",
+          "probabilities": {
+            "good": 0.3,
+            "strained": 0.57,
+            "unknown": 0.13
+          },
+          "confidence": 0.138
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.04
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "high": 0.33,
+            "low": 0.19,
+            "moderate": 0.48
+          },
+          "confidence": 0.059
+        }
+      },
+      "confidence": 0.854,
+      "usage": {
+        "inputTokens": 4585,
+        "outputTokens": 11530,
+        "calls": 5,
+        "elapsedMs": 76135
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "mandate-revoked",
+      "timestamp": "2026-09-18T19:34:04.239Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "account_closed": 0.01,
+            "mandate_revoked": 0.968,
+            "technical": 0.01,
+            "transient_funds": 0.012
+          },
+          "confidence": 0.873
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9,
+            "strained": 0.06,
+            "unknown": 0.04
+          },
+          "confidence": 0.643
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.054
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "high": 0.15,
+            "low": 0.34,
+            "moderate": 0.51
+          },
+          "confidence": 0.095
+        }
+      },
+      "confidence": 0.873,
+      "usage": {
+        "inputTokens": 4525,
+        "outputTokens": 8321,
+        "calls": 5,
+        "elapsedMs": 54389
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "nsf-repeat",
+      "timestamp": "2026-09-18T19:35:12.518Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "pause_spending",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "account_closed": 0.036,
+            "mandate_revoked": 0.046,
+            "technical": 0.034,
+            "transient_funds": 0.884
+          },
+          "confidence": 0.65
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "strained",
+          "probabilities": {
+            "good": 0.416,
+            "strained": 0.474,
+            "unknown": 0.11
+          },
+          "confidence": 0.125
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.83
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "high": 0.134,
+            "low": 0.262,
+            "moderate": 0.604
+          },
+          "confidence": 0.158
+        }
+      },
+      "confidence": 0.65,
+      "usage": {
+        "inputTokens": 4485,
+        "outputTokens": 9967,
+        "calls": 5,
+        "elapsedMs": 68279
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "nsf-transient",
+      "timestamp": "2026-09-18T19:35:37.818Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "retry_in_3d",
+      "waitDays": 3,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "account_closed": 0.036,
+            "mandate_revoked": 0.038,
+            "technical": 0.03,
+            "transient_funds": 0.896
+          },
+          "confidence": 0.677
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.878,
+            "strained": 0.07,
+            "unknown": 0.052
+          },
+          "confidence": 0.587
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.888
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "high": 0.05,
+            "low": 0.728,
+            "moderate": 0.222
+          },
+          "confidence": 0.349
+        }
+      },
+      "confidence": 0.677,
+      "usage": {
+        "inputTokens": 4360,
+        "outputTokens": 7449,
+        "calls": 5,
+        "elapsedMs": 25300
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "processor-outage",
+      "timestamp": "2026-09-18T19:36:09.061Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "responseModel": "glm-5.3-flash:cloud",
+      "action": "retry_next_schedule",
+      "waitDays": 2,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "technical",
+          "probabilities": {
+            "account_closed": 0.01,
+            "mandate_revoked": 0.014,
+            "technical": 0.922,
+            "transient_funds": 0.054
+          },
+          "confidence": 0.756
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.902,
+            "strained": 0.05,
+            "unknown": 0.048
+          },
+          "confidence": 0.646
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.924
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "high": 0.12,
+            "low": 0.392,
+            "moderate": 0.488
+          },
+          "confidence": 0.116
+        }
+      },
+      "confidence": 0.756,
+      "usage": {
+        "inputTokens": 4460,
+        "outputTokens": 7947,
+        "calls": 5,
+        "elapsedMs": 31242
+      }
+    }
+  ]
+}

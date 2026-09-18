@@ -1,0 +1,361 @@
+{
+  "schemaVersion": 1,
+  "provider": "mock",
+  "domain": "prreview",
+  "runIndex": 1,
+  "model": {
+    "model": "mock"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "mock",
+      "scenario": "direct-ssrf-untrusted",
+      "timestamp": "2026-09-18T19:25:23.050Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 0.91,
+            "indirect": 0.06,
+            "none": 0.03
+          },
+          "confidence": 0.87
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.85,
+            "routine": 0.12,
+            "breaking": 0.03
+          },
+          "confidence": 0.76
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.12
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.91,
+            "sloppy": 0.09
+          },
+          "confidence": 0.8
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.87,
+      "usage": {
+        "inputTokens": 614,
+        "outputTokens": 111,
+        "calls": 1,
+        "elapsedMs": 91
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "mock",
+      "scenario": "gray-zone-reachable-admin",
+      "timestamp": "2026-09-18T19:25:23.561Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "needs_llm_review",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "indirect",
+          "probabilities": {
+            "indirect": 0.58,
+            "none": 0.31,
+            "direct": 0.11
+          },
+          "confidence": 0.56
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.79,
+            "routine": 0.16,
+            "trivial": 0.05
+          },
+          "confidence": 0.72
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.71
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.88,
+            "sloppy": 0.12
+          },
+          "confidence": 0.74
+        }
+      },
+      "reviewerChain": {
+        "verdict": "approve",
+        "confidence": 0.71,
+        "rationale": "ReDoS payload requires adversarial markdown input; only staff in admin UI author notes, so exposure is indirect at worst. Major bump touches one runtime path but options migration is mechanical and CI is green."
+      },
+      "confidence": 0.56,
+      "usage": {
+        "inputTokens": 630,
+        "outputTokens": 112,
+        "calls": 1,
+        "elapsedMs": 67
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "mock",
+      "scenario": "major-runtime-breaking",
+      "timestamp": "2026-09-18T19:25:23.971Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "needs_llm_review",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "indirect",
+          "probabilities": {
+            "indirect": 0.62,
+            "none": 0.26,
+            "direct": 0.12
+          },
+          "confidence": 0.54
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.88,
+            "routine": 0.09,
+            "trivial": 0.03
+          },
+          "confidence": 0.81
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.88
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.64,
+            "sloppy": 0.36
+          },
+          "confidence": 0.52
+        }
+      },
+      "reviewerChain": {
+        "verdict": "reject",
+        "confidence": 0.55,
+        "rationale": "v8→v9 transport migration touches the request-log middleware on every handler; CI still pending. Leaning reject until CI proves the migration, but not confident enough to block on my own."
+      },
+      "confidence": 0.54,
+      "usage": {
+        "inputTokens": 608,
+        "outputTokens": 112,
+        "calls": 1,
+        "elapsedMs": 96
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "mock",
+      "scenario": "minor-transitive-safe",
+      "timestamp": "2026-09-18T19:25:24.061Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.83,
+            "indirect": 0.13,
+            "direct": 0.04
+          },
+          "confidence": 0.71
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.87,
+            "routine": 0.11,
+            "breaking": 0.02
+          },
+          "confidence": 0.79
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.03
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.93,
+            "sloppy": 0.07
+          },
+          "confidence": 0.82
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.71,
+      "usage": {
+        "inputTokens": 571,
+        "outputTokens": 111,
+        "calls": 1,
+        "elapsedMs": 90
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "mock",
+      "scenario": "patch-lockfile-only",
+      "timestamp": "2026-09-18T19:25:24.129Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.94,
+            "indirect": 0.04,
+            "direct": 0.02
+          },
+          "confidence": 0.86
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.92,
+            "routine": 0.06,
+            "breaking": 0.02
+          },
+          "confidence": 0.84
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.02
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.95,
+            "sloppy": 0.05
+          },
+          "confidence": 0.88
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.86,
+      "usage": {
+        "inputTokens": 548,
+        "outputTokens": 111,
+        "calls": 1,
+        "elapsedMs": 68
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "mock",
+      "scenario": "unsound-lockfile-drift",
+      "timestamp": "2026-09-18T19:25:24.213Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.86,
+            "indirect": 0.11,
+            "direct": 0.03
+          },
+          "confidence": 0.74
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.83,
+            "routine": 0.14,
+            "breaking": 0.03
+          },
+          "confidence": 0.7
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.05
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sloppy": 0.9,
+            "sound": 0.1
+          },
+          "confidence": 0.83
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.74,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 111,
+        "calls": 1,
+        "elapsedMs": 84
+      }
+    }
+  ]
+}

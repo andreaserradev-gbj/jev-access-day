@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "provider": "llm-local",
+  "domain": "prreview",
+  "runIndex": 0,
+  "model": {
+    "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+    "baseUrl": "http://localhost:11434",
+    "samples": 5
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "direct-ssrf-untrusted",
+      "timestamp": "2026-09-18T20:00:23.839Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 0.96,
+            "indirect": 0.03,
+            "none": 0.01
+          },
+          "confidence": 0.787
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0,
+            "routine": 0.01,
+            "trivial": 0.99
+          },
+          "confidence": 0.947
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.004,
+            "sound": 0.996
+          },
+          "confidence": 0.962
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.787,
+      "usage": {
+        "inputTokens": 4900,
+        "outputTokens": 732,
+        "calls": 5,
+        "elapsedMs": 25429
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "gray-zone-reachable-admin",
+      "timestamp": "2026-09-18T20:00:53.920Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "needs_llm_review",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.008,
+            "indirect": 0.092,
+            "none": 0.9
+          },
+          "confidence": 0.679
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.9,
+            "routine": 0.086,
+            "trivial": 0.014
+          },
+          "confidence": 0.667
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.948
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.028,
+            "sound": 0.972
+          },
+          "confidence": 0.816
+        }
+      },
+      "reviewerChain": {
+        "verdict": "approve",
+        "confidence": 0.71,
+        "rationale": "ReDoS payload requires adversarial markdown input; only staff in admin UI author notes, so exposure is indirect at worst. Major bump touches one runtime path but options migration is mechanical and CI is green."
+      },
+      "confidence": 0.679,
+      "usage": {
+        "inputTokens": 5080,
+        "outputTokens": 862,
+        "calls": 5,
+        "elapsedMs": 29638
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "major-runtime-breaking",
+      "timestamp": "2026-09-18T20:01:51.848Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 0.72,
+            "indirect": 0.2,
+            "none": 0.08
+          },
+          "confidence": 0.308
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.978,
+            "routine": 0.02,
+            "trivial": 0.002
+          },
+          "confidence": 0.898
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.98
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sloppy": 0.6,
+            "sound": 0.4
+          },
+          "confidence": 0.029
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.308,
+      "usage": {
+        "inputTokens": 4855,
+        "outputTokens": 846,
+        "calls": 5,
+        "elapsedMs": 57928
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "minor-transitive-safe",
+      "timestamp": "2026-09-18T20:02:40.511Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.01,
+            "indirect": 0.04,
+            "none": 0.95
+          },
+          "confidence": 0.797
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.002,
+            "routine": 0.018,
+            "trivial": 0.98
+          },
+          "confidence": 0.905
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.028,
+            "sound": 0.972
+          },
+          "confidence": 0.816
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.797,
+      "usage": {
+        "inputTokens": 4705,
+        "outputTokens": 706,
+        "calls": 5,
+        "elapsedMs": 48663
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "patch-lockfile-only",
+      "timestamp": "2026-09-18T20:03:33.334Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.018,
+            "indirect": 0.082,
+            "none": 0.9
+          },
+          "confidence": 0.661
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.004,
+            "routine": 0.02,
+            "trivial": 0.976
+          },
+          "confidence": 0.887
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.014,
+            "sound": 0.986
+          },
+          "confidence": 0.894
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.661,
+      "usage": {
+        "inputTokens": 4435,
+        "outputTokens": 817,
+        "calls": 5,
+        "elapsedMs": 52823
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "llm-local",
+      "scenario": "unsound-lockfile-drift",
+      "timestamp": "2026-09-18T20:04:23.227Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 0.72,
+            "indirect": 0.21,
+            "none": 0.07
+          },
+          "confidence": 0.317
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.05,
+            "routine": 0.3,
+            "trivial": 0.65
+          },
+          "confidence": 0.28
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sloppy": 0.92,
+            "sound": 0.08
+          },
+          "confidence": 0.598
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.317,
+      "usage": {
+        "inputTokens": 4320,
+        "outputTokens": 846,
+        "calls": 5,
+        "elapsedMs": 49893
+      }
+    }
+  ]
+}

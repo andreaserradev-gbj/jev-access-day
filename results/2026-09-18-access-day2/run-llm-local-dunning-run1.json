@@ -1,0 +1,373 @@
+{
+  "schemaVersion": 1,
+  "provider": "llm-local",
+  "domain": "dunning",
+  "runIndex": 1,
+  "model": {
+    "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+    "baseUrl": "http://localhost:11434",
+    "samples": 5
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm-local",
+      "scenario": "account-closed",
+      "timestamp": "2026-09-18T19:54:50.254Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "account_closed",
+          "probabilities": {
+            "account_closed": 0.944,
+            "mandate_revoked": 0.038,
+            "technical": 0.004,
+            "transient_funds": 0.014
+          },
+          "confidence": 0.812
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.92,
+            "strained": 0.054,
+            "unknown": 0.026
+          },
+          "confidence": 0.7
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.014
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "high": 0.094,
+            "low": 0.49,
+            "moderate": 0.416
+          },
+          "confidence": 0.082
+        }
+      },
+      "confidence": 0.812,
+      "usage": {
+        "inputTokens": 4755,
+        "outputTokens": 863,
+        "calls": 5,
+        "elapsedMs": 25748
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm-local",
+      "scenario": "mandate-revoked-no-alt",
+      "timestamp": "2026-09-18T19:55:15.897Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "needs_human",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "account_closed": 0.022,
+            "mandate_revoked": 0.94,
+            "technical": 0.014,
+            "transient_funds": 0.024
+          },
+          "confidence": 0.79
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.69,
+            "strained": 0.21,
+            "unknown": 0.1
+          },
+          "confidence": 0.259
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.034
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "high": 0.24,
+            "low": 0.4,
+            "moderate": 0.36
+          },
+          "confidence": 0.02
+        }
+      },
+      "confidence": 0.79,
+      "usage": {
+        "inputTokens": 5000,
+        "outputTokens": 863,
+        "calls": 5,
+        "elapsedMs": 25643
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm-local",
+      "scenario": "mandate-revoked",
+      "timestamp": "2026-09-18T19:55:43.425Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "account_closed": 0.008,
+            "mandate_revoked": 0.968,
+            "technical": 0.004,
+            "transient_funds": 0.02
+          },
+          "confidence": 0.877
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.986,
+            "strained": 0.01,
+            "unknown": 0.004
+          },
+          "confidence": 0.925
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.022
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "high": 0.016,
+            "low": 0.92,
+            "moderate": 0.064
+          },
+          "confidence": 0.71
+        }
+      },
+      "confidence": 0.877,
+      "usage": {
+        "inputTokens": 4940,
+        "outputTokens": 917,
+        "calls": 5,
+        "elapsedMs": 27528
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm-local",
+      "scenario": "nsf-repeat",
+      "timestamp": "2026-09-18T19:56:06.723Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "account_closed": 0.038,
+            "mandate_revoked": 0.05,
+            "technical": 0.062,
+            "transient_funds": 0.85
+          },
+          "confidence": 0.578
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.67,
+            "strained": 0.28,
+            "unknown": 0.05
+          },
+          "confidence": 0.295
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.83
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "high": 0.13,
+            "low": 0.38,
+            "moderate": 0.49
+          },
+          "confidence": 0.106
+        }
+      },
+      "confidence": 0.578,
+      "usage": {
+        "inputTokens": 4835,
+        "outputTokens": 704,
+        "calls": 5,
+        "elapsedMs": 23298
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm-local",
+      "scenario": "nsf-transient",
+      "timestamp": "2026-09-18T19:56:35.170Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "retry_in_3d",
+      "waitDays": 3,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "account_closed": 0.038,
+            "mandate_revoked": 0.06,
+            "technical": 0.072,
+            "transient_funds": 0.83
+          },
+          "confidence": 0.54
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.904,
+            "strained": 0.05,
+            "unknown": 0.046
+          },
+          "confidence": 0.652
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.86
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "high": 0.06,
+            "low": 0.72,
+            "moderate": 0.22
+          },
+          "confidence": 0.328
+        }
+      },
+      "confidence": 0.54,
+      "usage": {
+        "inputTokens": 4695,
+        "outputTokens": 929,
+        "calls": 5,
+        "elapsedMs": 28447
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 1,
+      "provider": "llm-local",
+      "scenario": "processor-outage",
+      "timestamp": "2026-09-18T19:57:05.340Z",
+      "model": {
+        "model": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+        "baseUrl": "http://localhost:11434",
+        "samples": 5
+      },
+      "responseModel": "qwen3.6:35b-a3b-coding-mtp-q4_K_M",
+      "action": "retry_next_schedule",
+      "waitDays": 2,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "technical",
+          "probabilities": {
+            "account_closed": 0.034,
+            "mandate_revoked": 0.034,
+            "technical": 0.872,
+            "transient_funds": 0.06
+          },
+          "confidence": 0.626
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.91,
+            "strained": 0.052,
+            "unknown": 0.038
+          },
+          "confidence": 0.669
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.894
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "high": 0.044,
+            "low": 0.72,
+            "moderate": 0.236
+          },
+          "confidence": 0.349
+        }
+      },
+      "confidence": 0.626,
+      "usage": {
+        "inputTokens": 4815,
+        "outputTokens": 998,
+        "calls": 5,
+        "elapsedMs": 30170
+      }
+    }
+  ]
+}
