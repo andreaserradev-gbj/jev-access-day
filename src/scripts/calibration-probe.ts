@@ -19,6 +19,9 @@ import { resultsDirFor } from '../eval/run-record.js';
  *   node dist/scripts/calibration-probe.js --provider=real
  *   node dist/scripts/calibration-probe.js --provider=llm --states=5
  *
+ * --tag=<name> writes results/<date>-<name>/ so same-day re-runs never
+ * clobber committed waves (same convention as the eval CLI).
+ *
  * Writes results/<date>/calibration-<provider>.md. The claim under test:
  * "confidence 0.8 means about 80% correct" — rendered per bin as
  * stated-mean vs empirical-accuracy.
@@ -37,6 +40,14 @@ function loadEnvInto(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
     // .env optional for mock runs
   }
   return env;
+}
+
+function normalizeTag(tag: string | undefined): string | undefined {
+  if (tag === undefined || tag === '') return undefined;
+  if (!/^[a-z0-9-]+$/.test(tag)) {
+    throw new Error(`--tag="${tag}" is invalid: use lowercase letters, digits and single dashes`);
+  }
+  return tag;
 }
 
 interface ProbeRow {
@@ -65,6 +76,7 @@ async function main(): Promise<void> {
   if (!Number.isInteger(statesPerBin) || statesPerBin < 2 || statesPerBin > 50) {
     throw new Error('--states must be an integer in [2, 50]');
   }
+  const tag = normalizeTag(args.find((a) => a.startsWith('--tag='))?.split('=')[1]);
 
   console.error(`calibration-probe: provider=${provider} statesPerBin=${statesPerBin}`);
   const client: SystemOneClient = createClient(provider, env);
@@ -112,7 +124,7 @@ async function main(): Promise<void> {
       'The claim under test for Jev (real provider): stated confidence ≈ empirical frequency.',
   );
 
-  const dir = resultsDirFor();
+  const dir = resultsDirFor(new Date(), 'results', tag);
   mkdirSync(dir, { recursive: true });
   const file = join(dir, `calibration-${provider}.md`);
   writeFileSync(file, `${lines.join('\n')}\n`, 'utf8');
