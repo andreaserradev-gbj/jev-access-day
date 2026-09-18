@@ -112,6 +112,48 @@ describe('run-record schema', () => {
   });
 });
 
+describe('responseModel persistence (alias resolution)', () => {
+  const answers = MOCK_ANSWERS['bad-test'] as Answers;
+
+  it('persists the provider-reported model id verbatim on the record', () => {
+    const record = buildTriageRunRecord(
+      { provider: 'real', scenario: 'bad-test', runIndex: 0, model: { model: 'jev-latest' }, timestamp: TIMESTAMP },
+      decideTriage(answers),
+      answers,
+      USAGE,
+      'jev-1.13.0',
+    );
+    expect(record.responseModel).toBe('jev-1.13.0');
+    expect(record.model.model).toBe('jev-latest');
+  });
+
+  it('omits the key entirely when the surface reports no model', () => {
+    const record = buildTriageRunRecord(
+      { provider: 'mock', scenario: 'bad-test', runIndex: 0, model: MODEL, timestamp: TIMESTAMP },
+      decideTriage(answers),
+      answers,
+      USAGE,
+    );
+    expect('responseModel' in record).toBe(false);
+  });
+
+  it('CSV carries both the configured alias and the resolved id', () => {
+    const record = buildTriageRunRecord(
+      { provider: 'real', scenario: 'bad-test', runIndex: 0, model: { model: 'jev-latest', resolvedModel: 'jev-1.13.0' }, timestamp: TIMESTAMP },
+      decideTriage(answers),
+      answers,
+      USAGE,
+      'jev-1.13.0',
+    );
+    const header = toCsv([record]).split('\n')[0]!;
+    const row = toCsv([record]).split('\n')[1]!;
+    expect(header.split(',')[CSV_HEADER.length - 2]).toBe('model');
+    expect(header.split(',')[CSV_HEADER.length - 1]).toBe('resolved_model');
+    expect(row.split(',')[CSV_HEADER.length - 2]).toBe('jev-latest');
+    expect(row.split(',')[CSV_HEADER.length - 1]).toBe('jev-1.13.0');
+  });
+});
+
 describe('mock registry hygiene', () => {
   it('every canned probability set sums to 1 within the ±0.02 tolerance', () => {
     for (const [scenario, answers] of Object.entries(MOCK_ANSWERS)) {

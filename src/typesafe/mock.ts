@@ -616,6 +616,7 @@ export class MockSystemOneClient implements SystemOneClient {
 
     return {
       answers,
+      model: 'mock',
       usage: {
         inputTokens: estimateTokens({ state: request.state, questions: request.questions }),
         outputTokens: estimateTokens(answers),

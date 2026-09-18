@@ -29,6 +29,8 @@ export type EvalDomain = 'triage' | 'checkout' | 'dunning' | 'prreview';
 export interface ModelMetadata {
   /** Model id: OLLAMA_MODEL for llm, 'jev-latest' for real, 'mock' for mock. */
   model: string;
+  /** The resolved versioned model id the provider reported (alias resolution). */
+  resolvedModel?: string;
   /** API base when relevant (llm provider). */
   baseUrl?: string;
   /** Self-consistency sample count (llm provider only). */
@@ -44,6 +46,12 @@ interface RunRecordCommon {
   /** ISO 8601 UTC moment the answer was produced. */
   timestamp: string;
   model: ModelMetadata;
+  /**
+   * The model id the provider surface reported for this ask, verbatim
+   * (alias-resolved for `real`: jev-latest → jev-1.13.0). Undefined when the
+   * provider surface does not report one.
+   */
+  responseModel?: string;
   /** Total usage across all stages (checkout adds stage 1 + stage 3 + bureau). */
   usage: Usage;
   /** Confidence of the answer that drove the decision. */
@@ -117,11 +125,20 @@ export function checkoutPrimaryConfidence(
   return finalAction?.confidence ?? riskBand?.confidence ?? 0;
 }
 
+/**
+ * Optional-key discipline (exactOptionalPropertyTypes): only set the key when
+ * the provider surface reported a model id — records without one omit it.
+ */
+function responseModelField(responseModel: string | undefined): { responseModel?: string } {
+  return responseModel === undefined ? {} : { responseModel };
+}
+
 export function buildTriageRunRecord(
   input: RunRecordInput,
   decision: TriageDecision,
   answers: Answers,
   usage: Usage,
+  responseModel?: string,
 ): TriageRunRecord {
   return {
     schemaVersion: RUN_RECORD_SCHEMA_VERSION,
@@ -131,6 +148,7 @@ export function buildTriageRunRecord(
     scenario: input.scenario,
     timestamp: input.timestamp ?? new Date().toISOString(),
     model: input.model,
+    ...responseModelField(responseModel),
     action: decision.action,
     answers,
     confidence: triagePrimaryConfidence(answers),
@@ -158,6 +176,7 @@ export function buildCheckoutRunRecord(
     scenario: input.scenario,
     timestamp: input.timestamp ?? new Date().toISOString(),
     model: input.model,
+    ...responseModelField(result.stage1ResponseModel),
     stage1Route: result.stage1Route,
     bureauCalled: result.bureauCalled,
     finalAction: result.finalAction,
@@ -176,6 +195,7 @@ export function buildDunningRunRecord(
   decision: DunningDecision,
   answers: Answers,
   usage: Usage,
+  responseModel?: string,
 ): DunningRunRecord {
   const cause = answers['bounce_cause'] as ChoiceAnswer | undefined;
   return {
@@ -186,6 +206,7 @@ export function buildDunningRunRecord(
     scenario: input.scenario,
     timestamp: input.timestamp ?? new Date().toISOString(),
     model: input.model,
+    ...responseModelField(responseModel),
     action: decision.action,
     waitDays: decision.waitDays,
     answers,
@@ -199,6 +220,7 @@ export function buildPrReviewRunRecord(
   decision: PrDecision,
   answers: Answers,
   usage: Usage,
+  responseModel?: string,
 ): PrReviewRunRecord {
   const exposure = answers['attack_path_exposure'] as ChoiceAnswer | undefined;
   return {
@@ -209,6 +231,7 @@ export function buildPrReviewRunRecord(
     scenario: input.scenario,
     timestamp: input.timestamp ?? new Date().toISOString(),
     model: input.model,
+    ...responseModelField(responseModel),
     action: decision.action,
     finalAction: decision.finalAction,
     answers,
@@ -293,6 +316,7 @@ export const CSV_HEADER = [
   'input_tokens',
   'output_tokens',
   'model',
+  'resolved_model',
 ] as const;
 
 function csvCell(value: string): string {
@@ -300,6 +324,8 @@ function csvCell(value: string): string {
 }
 
 function csvRow(record: RunRecord): string[] {
+  const resolvedModel = record.model.resolvedModel ?? record.responseModel ?? '';
+  const model = [record.model.model, resolvedModel];
   const common = [
     String(record.runIndex),
     record.timestamp,
@@ -318,7 +344,7 @@ function csvRow(record: RunRecord): string[] {
       String(record.usage.calls),
       String(record.usage.inputTokens),
       String(record.usage.outputTokens),
-      record.model.model,
+      ...model,
     ];
   }
   if (record.domain === 'prreview') {
@@ -332,7 +358,7 @@ function csvRow(record: RunRecord): string[] {
       String(record.usage.calls),
       String(record.usage.inputTokens),
       String(record.usage.outputTokens),
-      record.model.model,
+      ...model,
     ];
   }
   return [
@@ -345,7 +371,7 @@ function csvRow(record: RunRecord): string[] {
     String(record.usage.calls),
     String(record.usage.inputTokens),
     String(record.usage.outputTokens),
-    record.model.model,
+    ...model,
   ];
 }
 

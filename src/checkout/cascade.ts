@@ -29,6 +29,8 @@ export interface CascadeResult {
   stage1Usage: { elapsedMs: number; calls: number; inputTokens: number; outputTokens: number };
   stage3Usage: { elapsedMs: number; calls: number; inputTokens: number; outputTokens: number } | null;
   bureauLatencyMs: number | null;
+  /** Model id reported by the provider surface, verbatim (alias-resolved for real). */
+  stage1ResponseModel?: string;
 }
 
 /**
@@ -70,6 +72,9 @@ export async function runCascade(
       stage1Usage,
       stage3Usage: null,
       bureauLatencyMs: null,
+      ...(stage1Response.model === undefined
+        ? {}
+        : { stage1ResponseModel: stage1Response.model }),
     };
   }
 
@@ -104,5 +109,8 @@ export async function runCascade(
       outputTokens: stage3Response.usage.outputTokens,
     },
     bureauLatencyMs: bureauResponse.latencyMs,
+    ...(stage1Response.model === undefined
+      ? {}
+      : { stage1ResponseModel: stage1Response.model }),
   };
 }

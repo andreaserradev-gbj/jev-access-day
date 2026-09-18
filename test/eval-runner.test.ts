@@ -47,6 +47,37 @@ describe('modelMetadataFor', () => {
   });
 });
 
+describe('resolvedModelFromRecord', () => {
+  it('overlays the response model when it differs from the configured alias', async () => {
+    const { resolvedModelFromRecord } = await import('../src/eval/runner.js');
+    const { buildTriageRunRecord } = await import('../src/eval/run-record.js');
+    const { decideTriage } = await import('../src/triage/decide.js');
+    const { MOCK_ANSWERS } = await import('../src/typesafe/mock.js');
+    const answers = MOCK_ANSWERS['bad-test'] as import('../src/typesafe/client.js').Answers;
+    const record = buildTriageRunRecord(
+      { provider: 'real', scenario: 'bad-test', runIndex: 0, model: { model: 'jev-latest' } },
+      decideTriage(answers),
+      answers,
+      { inputTokens: 1, outputTokens: 1, calls: 1, elapsedMs: 1 },
+      'jev-1.13.0',
+    );
+    expect(resolvedModelFromRecord(record, { model: 'jev-latest' })).toEqual({
+      model: 'jev-latest',
+      resolvedModel: 'jev-1.13.0',
+    });
+    // Same id reported as configured → no overlay noise.
+    expect(resolvedModelFromRecord(record, { model: 'jev-1.13.0' })).toEqual({ model: 'jev-1.13.0' });
+    // No responseModel → fallback verbatim.
+    const bare = buildTriageRunRecord(
+      { provider: 'mock', scenario: 'bad-test', runIndex: 0, model: { model: 'mock' } },
+      decideTriage(answers),
+      answers,
+      { inputTokens: 1, outputTokens: 1, calls: 1, elapsedMs: 1 },
+    );
+    expect(resolvedModelFromRecord(bare, { model: 'mock' })).toEqual({ model: 'mock' });
+  });
+});
+
 describe('assertSafeTag + resultsDirFor tag', () => {
   it('accepts lowercase/digit/dash tags, rejects path tricks', () => {
     expect(() => assertSafeTag('postfix')).not.toThrow();

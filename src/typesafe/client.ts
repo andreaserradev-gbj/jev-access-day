@@ -80,6 +80,14 @@ export interface SystemOneRequest {
 export interface SystemOneResponse {
   answers: Answers;
   usage: Usage;
+  /**
+   * The model that actually answered, as reported by the provider surface.
+   * For `real` this is the SDK's resolved model id — the versioned id behind
+   * an alias (jev-latest → jev-1.13.0), which is what run records must
+   * persist for honest time-series attribution. Providers that cannot know
+   * it omit the field (undefined = "not reported").
+   */
+  model?: string;
 }
 
 export interface SystemOneClient {

@@ -128,7 +128,7 @@ export class LlmSystemOneClient implements SystemOneClient {
       { inputTokens: 0, outputTokens: 0, calls: 0, elapsedMs: Date.now() - started },
     );
 
-    return { answers, usage };
+    return { answers, model: this.config.model, usage };
   }
 
   private async sampleOnce(

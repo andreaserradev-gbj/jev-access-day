@@ -60,6 +60,7 @@ export class RealSystemOneClient implements SystemOneClient {
 
     return {
       answers,
+      model: response.model,
       usage: {
         inputTokens: response.usage?.input_tokens ?? 0,
         outputTokens: response.usage?.output_tokens ?? 0,

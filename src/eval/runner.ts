@@ -97,6 +97,21 @@ export function modelMetadataFor(provider: ProviderName, env: NodeJS.ProcessEnv)
 }
 
 /**
+ * Overlay the provider-reported model id onto the metadata: `jev-latest`
+ * resolves to its versioned id (jev-1.13.0) server-side, and run records
+ * persist the resolved id so time-series attribution is honest.
+ */
+export function resolvedModelFromRecord(
+  record: RunRecord,
+  fallback: ModelMetadata,
+): ModelMetadata {
+  const resolved = record.responseModel;
+  return resolved === undefined || resolved === fallback.model
+    ? fallback
+    : { ...fallback, resolvedModel: resolved };
+}
+
+/**
  * Spend cap: wraps any SystemOneClient and counts ask() calls across the whole
  * eval invocation. Bureau calls are mocked and never counted. When the cap is
  * reached the error propagates and the run aborts — run files already written
@@ -181,12 +196,15 @@ export async function runEval(options: RunEvalOptions): Promise<RunEvalResult> {
                 ? await runDunningDomain(client, provider, runIndex, model)
                 : await runPrReviewDomain(client, provider, runIndex, model);
         records.push(...domainRecords);
+        const resolved = domainRecords[0]
+          ? resolvedModelFromRecord(domainRecords[0], model)
+          : model;
         const payload: RunFilePayload = {
           schemaVersion: RUN_RECORD_SCHEMA_VERSION,
           provider,
           domain,
           runIndex,
-          model,
+          model: resolved,
           records: domainRecords,
         };
         runFiles.push(writeRunFile(dir, payload));
@@ -235,6 +253,7 @@ async function runTriageDomain(
         decision,
         response.answers,
         response.usage,
+        response.model,
       ),
     );
   }
@@ -284,6 +303,7 @@ async function runDunningDomain(
         decision,
         response.answers,
         response.usage,
+        response.model,
       ),
     );
   }
@@ -334,6 +354,7 @@ async function runPrReviewDomain(
         decision,
         response.answers,
         response.usage,
+        response.model,
       ),
     );
   }
