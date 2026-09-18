@@ -1,0 +1,45 @@
+{
+  "scenario": "gray-zone-reachable-admin",
+  "pr": {
+    "number": 4140,
+    "title": "chore(deps): bump marked 12.3.0 → 14.2.1 (major, fixes ReDoS)",
+    "author": "dependabot[bot]",
+    "filesChanged": [
+      { "path": "package.json", "change": "marked ^12.3.0 → ^14.2.1", "runtimeCode": false },
+      { "path": "package-lock.json", "change": "marked regenerated", "runtimeCode": false },
+      { "path": "src/render-note.ts", "change": "renderer options adapted to v14", "runtimeCode": true }
+    ],
+    "additions": 22,
+    "deletions": 9
+  },
+  "dependency": {
+    "name": "marked",
+    "fromVersion": "12.3.0",
+    "toVersion": "14.2.1",
+    "bumpClass": "major",
+    "scope": "prod",
+    "transitive": false,
+    "advisories": [
+      {
+        "id": "GHSA-4pq4-g38m-62wq",
+        "severity": "moderate",
+        "title": "ReDoS when parsing adversarial markdown",
+        "fixedIn": "14.2.1"
+      }
+    ],
+    "usageNotes": [
+      "renderer runs on support-ticket notes — staff-authored in the admin UI only",
+      "end customers never submit markdown directly; no public path reaches this renderer"
+    ]
+  },
+  "repo": {
+    "lockfileConsistent": true,
+    "ciStatus": "green",
+    "protectedBranch": true
+  },
+  "reviewerVerdict": {
+    "verdict": "approve",
+    "confidence": 0.71,
+    "rationale": "ReDoS payload requires adversarial markdown input; only staff in admin UI author notes, so exposure is indirect at worst. Major bump touches one runtime path but options migration is mechanical and CI is green."
+  }
+}

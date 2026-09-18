@@ -1,0 +1,29 @@
+{
+  "scenario": "patch-lockfile-only",
+  "pr": {
+    "number": 4101,
+    "title": "chore(deps): bump undici 6.19.0 → 6.19.2 (patch)",
+    "author": "dependabot[bot]",
+    "filesChanged": [
+      { "path": "package-lock.json", "change": "undici 6.19.0 → 6.19.2", "runtimeCode": false },
+      { "path": "package.json", "change": "version range unchanged", "runtimeCode": false }
+    ],
+    "additions": 4,
+    "deletions": 4
+  },
+  "dependency": {
+    "name": "undici",
+    "fromVersion": "6.19.0",
+    "toVersion": "6.19.2",
+    "bumpClass": "patch",
+    "scope": "prod",
+    "transitive": false,
+    "advisories": [],
+    "usageNotes": ["used by test harness fetch; advisory list empty for this bump"]
+  },
+  "repo": {
+    "lockfileConsistent": true,
+    "ciStatus": "green",
+    "protectedBranch": true
+  }
+}

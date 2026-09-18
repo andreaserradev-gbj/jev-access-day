@@ -1,0 +1,35 @@
+{
+  "scenario": "minor-transitive-safe",
+  "pr": {
+    "number": 4112,
+    "title": "chore(deps): bump transitive lodash 4.17.20 → 4.17.21",
+    "author": "dependabot[bot]",
+    "filesChanged": [
+      { "path": "package-lock.json", "change": "lodash 4.17.20 → 4.17.21 via express", "runtimeCode": false }
+    ],
+    "additions": 2,
+    "deletions": 2
+  },
+  "dependency": {
+    "name": "lodash",
+    "fromVersion": "4.17.20",
+    "toVersion": "4.17.21",
+    "bumpClass": "patch",
+    "scope": "prod",
+    "transitive": true,
+    "advisories": [
+      {
+        "id": "GHSA-x5cq-3x9f-w22h",
+        "severity": "moderate",
+        "title": "prototype pollution in _.zipObjectDeep",
+        "fixedIn": "4.17.21"
+      }
+    ],
+    "usageNotes": ["we only use _.map/_.groupBy; _.zipObjectDeep appears nowhere in the codebase (grep: 0 hits)"]
+  },
+  "repo": {
+    "lockfileConsistent": true,
+    "ciStatus": "green",
+    "protectedBranch": true
+  }
+}

@@ -13,7 +13,23 @@ import { decideTriage } from '../triage/decide.js';
 import { runCascade } from '../checkout/cascade.js';
 import type { CheckoutFixture } from '../checkout/state.js';
 import {
+  buildDunningState,
+  dunningTemporalFromFixture,
+  type DunningFixture,
+} from '../dunning/state.js';
+import { DUNNING_QUESTIONS } from '../dunning/questions.js';
+import { decideDunning } from '../dunning/decide.js';
+import {
+  buildPrState,
+  StubReviewerLlm,
+  type PrFixture,
+} from '../prreview/state.js';
+import { PR_REVIEW_QUESTIONS } from '../prreview/questions.js';
+import { decidePr, resolvePrEscalation } from '../prreview/decide.js';
+import {
   buildCheckoutRunRecord,
+  buildDunningRunRecord,
+  buildPrReviewRunRecord,
   buildTriageRunRecord,
   ensureResultsDir,
   resultsDirFor,
@@ -125,6 +141,8 @@ export interface RunEvalOptions {
   env: NodeJS.ProcessEnv;
   /** Defaults to 'results'; tests pass a temp dir. */
   baseDir?: string;
+  /** Optional tag suffix on the dated results dir, e.g. 'postfix'. */
+  tag?: string;
   /** Overrides EVAL_MAX_REQUESTS when set. */
   maxRequests?: number;
   date?: Date;
@@ -143,7 +161,7 @@ export interface RunEvalResult {
 export async function runEval(options: RunEvalOptions): Promise<RunEvalResult> {
   const date = options.date ?? new Date();
   const baseDir = options.baseDir ?? 'results';
-  const dir = ensureResultsDir(date, baseDir);
+  const dir = ensureResultsDir(date, baseDir, options.tag);
   const counter = { count: 0, max: resolveMaxRequests(options.env, options.maxRequests) };
 
   const records: RunRecord[] = [];
@@ -157,7 +175,11 @@ export async function runEval(options: RunEvalOptions): Promise<RunEvalResult> {
         const domainRecords: RunRecord[] =
           domain === 'triage'
             ? await runTriageDomain(client, provider, runIndex, model)
-            : await runCheckoutDomain(client, runIndex, model);
+            : domain === 'checkout'
+              ? await runCheckoutDomain(client, runIndex, model)
+              : domain === 'dunning'
+                ? await runDunningDomain(client, provider, runIndex, model)
+                : await runPrReviewDomain(client, provider, runIndex, model);
         records.push(...domainRecords);
         const payload: RunFilePayload = {
           schemaVersion: RUN_RECORD_SCHEMA_VERSION,
@@ -234,6 +256,84 @@ async function runCheckoutDomain(
       buildCheckoutRunRecord(
         { provider: client.name as ProviderName, scenario, runIndex, model },
         result,
+      ),
+    );
+  }
+  return records;
+}
+
+async function runDunningDomain(
+  client: SystemOneClient,
+  provider: ProviderName,
+  runIndex: number,
+  model: ModelMetadata,
+): Promise<RunRecord[]> {
+  const records: RunRecord[] = [];
+  for (const [scenario, fixture] of loadFixtures<DunningFixture>(join(FIXTURE_ROOT, 'dunning'))) {
+    if (client.name !== 'mock') {
+      console.error(`  [${client.name}/dunning] asking ${scenario}...`);
+    }
+    const response = await client.ask({
+      state: buildDunningState(fixture),
+      questions: DUNNING_QUESTIONS,
+    });
+    const decision = decideDunning(response.answers, dunningTemporalFromFixture(fixture));
+    records.push(
+      buildDunningRunRecord(
+        { provider, scenario, runIndex, model },
+        decision,
+        response.answers,
+        response.usage,
+      ),
+    );
+  }
+  return records;
+}
+
+async function runPrReviewDomain(
+  client: SystemOneClient,
+  provider: ProviderName,
+  runIndex: number,
+  model: ModelMetadata,
+): Promise<RunRecord[]> {
+  const reviewer = new StubReviewerLlm();
+  const records: RunRecord[] = [];
+  for (const [scenario, fixture] of loadFixtures<PrFixture>(join(FIXTURE_ROOT, 'security-pr'))) {
+    if (client.name !== 'mock') {
+      console.error(`  [${client.name}/prreview] reviewing ${scenario}...`);
+    }
+    const response = await client.ask({
+      state: buildPrState(fixture),
+      questions: PR_REVIEW_QUESTIONS,
+    });
+    const decision = decidePr(response.answers);
+    if (decision.action === 'needs_llm_review') {
+      if (fixture.reviewerVerdict === undefined) {
+        // No reviewer wired for this fixture: degrade loudly to a human
+        // rather than letting an escalation hang.
+        decision.reviewer = null;
+        decision.finalAction = 'needs_human';
+        decision.rationale.push('no reviewer verdict available: degrading to needs_human');
+      } else {
+        const verdict = await resolvePrEscalation(fixture, reviewer);
+        decision.reviewer = {
+          verdict: verdict.verdict,
+          confidence: verdict.confidence,
+          rationale: verdict.rationale,
+        };
+        decision.finalAction = verdict.finalAction;
+        decision.rationale.push(
+          `reviewer LLM: ${verdict.verdict} at ${verdict.confidence} ` +
+            `${verdict.confidence >= 0.6 ? '≥' : '<'} 0.6 gate → ${verdict.finalAction}`,
+        );
+      }
+    }
+    records.push(
+      buildPrReviewRunRecord(
+        { provider, scenario, runIndex, model },
+        decision,
+        response.answers,
+        response.usage,
       ),
     );
   }

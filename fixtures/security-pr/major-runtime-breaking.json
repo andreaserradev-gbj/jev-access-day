@@ -1,0 +1,36 @@
+{
+  "scenario": "major-runtime-breaking",
+  "pr": {
+    "number": 4120,
+    "title": "chore(deps): bump pino 8.21.0 → 9.3.2 (major)",
+    "author": "dependabot[bot]",
+    "filesChanged": [
+      { "path": "package.json", "change": "pino ^8.21.0 → ^9.3.2", "runtimeCode": false },
+      { "path": "package-lock.json", "change": "pino + pino-abstract-transport regenerated", "runtimeCode": false },
+      { "path": "src/logger.ts", "change": "transport options API changed", "runtimeCode": true },
+      { "path": "src/http-server.ts", "change": "request-log middleware rewritten for v9", "runtimeCode": true }
+    ],
+    "additions": 86,
+    "deletions": 41
+  },
+  "dependency": {
+    "name": "pino",
+    "fromVersion": "8.21.0",
+    "toVersion": "9.3.2",
+    "bumpClass": "major",
+    "scope": "prod",
+    "transitive": false,
+    "advisories": [],
+    "usageNotes": ["logger middleware wraps every request handler; v8→v9 changed transport + redaction option shapes"]
+  },
+  "repo": {
+    "lockfileConsistent": true,
+    "ciStatus": "pending",
+    "protectedBranch": true
+  },
+  "reviewerVerdict": {
+    "verdict": "reject",
+    "confidence": 0.55,
+    "rationale": "v8→v9 transport migration touches the request-log middleware on every handler; CI still pending. Leaning reject until CI proves the migration, but not confident enough to block on my own."
+  }
+}

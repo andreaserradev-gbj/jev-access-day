@@ -1,0 +1,29 @@
+{
+  "scenario": "nsf-transient",
+  "installment": { "installmentId": "INS-8841", "amountUsd": 85.0, "installmentIndex": 3, "totalInstallments": 6 },
+  "bounce": {
+    "occurredAt": "2026-09-18T07:12:00Z",
+    "bankReturnCode": "R01",
+    "bankReturnMessage": "insufficient funds",
+    "attemptsIncludingThis": 1
+  },
+  "customer": {
+    "name": "Lena Fischer",
+    "sinceDays": 410,
+    "priorSuccessfulPayments": 9,
+    "priorBouncesLast6m": 0,
+    "alternativeMethodOnFile": null,
+    "alternativeMethodValid": false
+  },
+  "schedule": {
+    "nextDueDate": "2026-10-18",
+    "nextDueInDays": 30,
+    "remainingInstallments": 3,
+    "nextAmountUsd": 85.0,
+    "dueWithin14d": 0
+  },
+  "history": {
+    "note": "salary deposits land on the 25th; debit hit on the 18th mid-cycle",
+    "priorBouncesResolvedOnRetry": "n/a (first bounce)"
+  }
+}

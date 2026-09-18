@@ -1,0 +1,39 @@
+{
+  "scenario": "direct-ssrf-untrusted",
+  "pr": {
+    "number": 4131,
+    "title": "chore(deps): bump axios 1.7.2 → 1.7.4 (patch, fixes SSRF)",
+    "author": "dependabot[bot]",
+    "filesChanged": [
+      { "path": "package.json", "change": "axios ^1.7.2 → ^1.7.4", "runtimeCode": false },
+      { "path": "package-lock.json", "change": "axios + follow-redirects regenerated", "runtimeCode": false }
+    ],
+    "additions": 5,
+    "deletions": 5
+  },
+  "dependency": {
+    "name": "axios",
+    "fromVersion": "1.7.2",
+    "toVersion": "1.7.4",
+    "bumpClass": "patch",
+    "scope": "prod",
+    "transitive": false,
+    "advisories": [
+      {
+        "id": "GHSA-8hc4-vj2c-mer5",
+        "severity": "high",
+        "title": "SSRF via absolute URL allowed by deny-list proxy bypass",
+        "fixedIn": "1.7.4"
+      }
+    ],
+    "usageNotes": [
+      "webhook dispatcher calls axios.post(userSuppliedUrl, ...) on every merchant webhook event",
+      "userSuppliedUrl is stored from merchant dashboard input — untrusted by construction"
+    ]
+  },
+  "repo": {
+    "lockfileConsistent": true,
+    "ciStatus": "green",
+    "protectedBranch": true
+  }
+}

@@ -6,7 +6,13 @@ import type {
 } from '../typesafe/client.js';
 import { probabilitiesSumTo1 } from '../typesafe/client.js';
 import type { ProviderName } from '../typesafe/index.js';
-import type { CheckoutRunRecord, RunRecord, TriageRunRecord } from './run-record.js';
+import type {
+  CheckoutRunRecord,
+  DunningRunRecord,
+  PrReviewRunRecord,
+  RunRecord,
+  TriageRunRecord,
+} from './run-record.js';
 import type { Expectations } from './expectations.js';
 
 /**
@@ -80,6 +86,36 @@ export function scoreRecord(record: RunRecord, expectations: Expectations): Scor
       routeMatch: null,
       actionMatch,
       mismatch: actionMatch ? null : `action ${record.action} ≠ ${exp.action}`,
+    };
+  }
+
+  if (record.domain === 'dunning') {
+    const exp = expectations.dunning[record.scenario];
+    if (!exp) return { record, ...UNSCORED };
+    const actionMatch = record.action === exp.action;
+    return {
+      record,
+      outcome: actionMatch ? 'pass' : 'fail',
+      routeMatch: null,
+      actionMatch,
+      mismatch: actionMatch ? null : `action ${record.action} ≠ ${exp.action}`,
+    };
+  }
+
+  if (record.domain === 'prreview') {
+    const exp = expectations.prreview[record.scenario];
+    if (!exp) return { record, ...UNSCORED };
+    // The chain's terminal action is what gets graded: needs_llm_review
+    // expectations count as met when the kernel escalates AND the resolved
+    // final action matches the expectation (escalate→approve, etc.).
+    const resolved = record.finalAction === 'needs_llm_review' ? record.action : record.finalAction;
+    const actionMatch = resolved === exp.action;
+    return {
+      record,
+      outcome: actionMatch ? 'pass' : 'fail',
+      routeMatch: null,
+      actionMatch,
+      mismatch: actionMatch ? null : `resolved ${resolved} ≠ ${exp.action}`,
     };
   }
 
@@ -226,13 +262,13 @@ function checkAnswerSet(
 
 export function recordSchemaViolations(record: RunRecord): SchemaViolations {
   const violations: string[] = [];
-  if (record.domain === 'triage') {
-    checkAnswerSet('', record.answers, violations);
-  } else {
+  if (record.domain === 'checkout') {
     checkAnswerSet('stage1/', record.stage1Answers, violations);
     if (record.stage3Answers !== null) {
       checkAnswerSet('stage3/', record.stage3Answers, violations);
     }
+  } else {
+    checkAnswerSet('', record.answers, violations);
   }
   return { count: violations.length, details: violations };
 }
@@ -241,7 +277,11 @@ export function recordSchemaViolations(record: RunRecord): SchemaViolations {
 
 export interface DomainSummary {
   provider: ProviderName;
-  domain: TriageRunRecord['domain'] | CheckoutRunRecord['domain'];
+  domain:
+    | TriageRunRecord['domain']
+    | CheckoutRunRecord['domain']
+    | DunningRunRecord['domain']
+    | PrReviewRunRecord['domain'];
   total: number;
   scored: number;
   passed: number;
@@ -263,7 +303,11 @@ export function summarizeRecords(
   records: readonly RunRecord[],
   expectations: Expectations,
 ): DomainSummary[] {
-  const groups = new Map<string, { provider: ProviderName; domain: 'triage' | 'checkout'; records: RunRecord[] }>();
+  const groups = new Map<string, {
+    provider: ProviderName;
+    domain: 'triage' | 'checkout' | 'dunning' | 'prreview';
+    records: RunRecord[];
+  }>();
   for (const record of records) {
     const key = `${record.provider}/${record.domain}`;
     const group = groups.get(key) ?? {

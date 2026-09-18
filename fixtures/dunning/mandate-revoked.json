@@ -1,0 +1,29 @@
+{
+  "scenario": "mandate-revoked",
+  "installment": { "installmentId": "INS-7710", "amountUsd": 210.0, "installmentIndex": 1, "totalInstallments": 4 },
+  "bounce": {
+    "occurredAt": "2026-09-18T06:05:00Z",
+    "bankReturnCode": "R07",
+    "bankReturnMessage": "mandate cancelled by payer",
+    "attemptsIncludingThis": 1,
+    "mandateEvents": ["2026-09-17: payer initiated revocation via bank", "2026-09-17: bank confirmed mandate R07 cancellation"]
+  },
+  "customer": {
+    "name": "Sofia Russo",
+    "sinceDays": 700,
+    "priorSuccessfulPayments": 15,
+    "priorBouncesLast6m": 0,
+    "alternativeMethodOnFile": "card_ending_8817",
+    "alternativeMethodValid": true
+  },
+  "schedule": {
+    "nextDueDate": "2026-10-18",
+    "nextDueInDays": 30,
+    "remainingInstallments": 3,
+    "nextAmountUsd": 210.0,
+    "dueWithin14d": 0
+  },
+  "history": {
+    "note": "clean two-year history; revocation filed at the bank the day before the debit"
+  }
+}

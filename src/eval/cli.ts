@@ -5,7 +5,7 @@ import type { ProviderName } from '../typesafe/index.js';
 import { runEval, resolveMaxRequests, SpendCapError, buildReportMarkdown } from './runner.js';
 import { summarizeRecords } from './metrics.js';
 import { EXPECTATIONS } from './expectations.js';
-import { RUN_RECORD_SCHEMA_VERSION } from './run-record.js';
+import { assertSafeTag, RUN_RECORD_SCHEMA_VERSION } from './run-record.js';
 import type { EvalDomain, RunFilePayload, RunRecord } from './run-record.js';
 
 /**
@@ -19,6 +19,9 @@ import type { EvalDomain, RunFilePayload, RunRecord } from './run-record.js';
  *
  * Spend cap: EVAL_MAX_REQUESTS env (or --max-requests=N) aborts the run when
  * the client would exceed N provider requests. Unset = no cap.
+ *
+ * --tag=<name> writes into results/<date>-<name>/ instead of results/<date>/,
+ * so a re-run on the same day never clobbers the earlier wave's run files.
  */
 
 function loadEnvInto(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
@@ -108,6 +111,13 @@ async function main(): Promise<void> {
   const runsArg = args.find((a) => a.startsWith('--runs='));
   const domainsArg = args.find((a) => a.startsWith('--domains='));
   const maxArg = args.find((a) => a.startsWith('--max-requests='));
+  const tagArg = args.find((a) => a.startsWith('--tag='));
+
+  let tag: string | undefined;
+  if (tagArg !== undefined) {
+    tag = tagArg.split('=')[1] ?? '';
+    assertSafeTag(tag);
+  }
 
   const providers = parseList<ProviderName>(
     providersArg?.split('=')[1] ?? 'mock',
@@ -119,7 +129,11 @@ async function main(): Promise<void> {
     throw new Error('--runs must be an integer in [1, 100]');
   }
   const domains = domainsArg
-    ? parseList<EvalDomain>(domainsArg.split('=')[1] ?? '', ['triage', 'checkout'], 'domains')
+    ? parseList<EvalDomain>(
+        domainsArg.split('=')[1] ?? '',
+        ['triage', 'checkout', 'dunning', 'prreview'],
+        'domains',
+      )
     : (['triage', 'checkout'] as EvalDomain[]);
   const maxRequests: number | undefined = maxArg ? Number(maxArg.split('=')[1]) : undefined;
   const options: Parameters<typeof runEval>[0] = {
@@ -129,13 +143,14 @@ async function main(): Promise<void> {
     env,
   };
   if (maxRequests !== undefined) options.maxRequests = maxRequests;
+  if (tag !== undefined) options.tag = tag;
 
   // Fail fast on a malformed cap before any provider is constructed.
   resolveMaxRequests(env, maxRequests);
 
   console.error(
     `eval: providers=${providers.join(',')} runs=${runs} domains=${domains.join(',')} ` +
-      `cap=${maxRequests ?? env['EVAL_MAX_REQUESTS'] ?? 'none'}`,
+      `tag=${tag ?? 'none'} cap=${maxRequests ?? env['EVAL_MAX_REQUESTS'] ?? 'none'}`,
   );
   const started = Date.now();
   const result = await runEval(options);

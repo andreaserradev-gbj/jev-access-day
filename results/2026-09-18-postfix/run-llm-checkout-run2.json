@@ -1,0 +1,574 @@
+{
+  "schemaVersion": 1,
+  "provider": "llm",
+  "domain": "checkout",
+  "runIndex": 2,
+  "model": {
+    "model": "glm-5.3-flash:cloud",
+    "baseUrl": "https://ollama.com",
+    "samples": 5
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "llm",
+      "scenario": "ambiguous-checkout",
+      "timestamp": "2026-09-18T10:21:37.912Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 2.048,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.03,
+            "1": 0.19,
+            "2": 0.528,
+            "3": 0.206,
+            "4": 0.046
+          },
+          "confidence": 0.239
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.83
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.886
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.632,
+            "clear": 0.146,
+            "suspicious": 0.222
+          },
+          "confidence": 0.176
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.696
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 1.972,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0.034,
+            "1": 0.19,
+            "2": 0.546,
+            "3": 0.23
+          },
+          "confidence": 0.207
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "step_up",
+          "probabilities": {
+            "approve": 0.088,
+            "decline": 0.088,
+            "review": 0.386,
+            "step_up": 0.438
+          },
+          "confidence": 0.166
+        }
+      },
+      "bureauLatencyMs": 653,
+      "pFraudEstimate": 0.45099999999999996,
+      "evApproveUsd": -296.0179999999999,
+      "confidence": 0.166,
+      "usage": {
+        "inputTokens": 8215,
+        "outputTokens": 15546,
+        "calls": 10,
+        "elapsedMs": 162385
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "llm",
+      "scenario": "bopis-edge",
+      "timestamp": "2026-09-18T10:23:24.220Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.708,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.058,
+            "1": 0.352,
+            "2": 0.44,
+            "3": 0.124,
+            "4": 0.026
+          },
+          "confidence": 0.225
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.892
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.674
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.59,
+            "clear": 0.234,
+            "suspicious": 0.176
+          },
+          "confidence": 0.129
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.744
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 1.66,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0.056,
+            "1": 0.356,
+            "2": 0.46,
+            "3": 0.128
+          },
+          "confidence": 0.171
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "step_up",
+          "probabilities": {
+            "approve": 0.16,
+            "decline": 0.074,
+            "review": 0.284,
+            "step_up": 0.482
+          },
+          "confidence": 0.138
+        }
+      },
+      "bureauLatencyMs": 360,
+      "pFraudEstimate": 0.3889999999999999,
+      "evApproveUsd": -141.05799999999994,
+      "confidence": 0.138,
+      "usage": {
+        "inputTokens": 8250,
+        "outputTokens": 21055,
+        "calls": 10,
+        "elapsedMs": 106307
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "llm",
+      "scenario": "bureau-contradiction",
+      "timestamp": "2026-09-18T10:27:27.265Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.718,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.068,
+            "1": 0.324,
+            "2": 0.454,
+            "3": 0.13,
+            "4": 0.024
+          },
+          "confidence": 0.216
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.91
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.87
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.56,
+            "clear": 0.304,
+            "suspicious": 0.136
+          },
+          "confidence": 0.128
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.8
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 2.754,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0.01,
+            "1": 0.036,
+            "2": 0.144,
+            "3": 0.81
+          },
+          "confidence": 0.556
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "review",
+          "probabilities": {
+            "approve": 0.05,
+            "decline": 0.178,
+            "review": 0.482,
+            "step_up": 0.29
+          },
+          "confidence": 0.158
+        }
+      },
+      "bureauLatencyMs": 630,
+      "pFraudEstimate": 0.5541999999999999,
+      "evApproveUsd": -591.2295999999999,
+      "confidence": 0.158,
+      "usage": {
+        "inputTokens": 8280,
+        "outputTokens": 18643,
+        "calls": 10,
+        "elapsedMs": 243045
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "llm",
+      "scenario": "clean-repeat-buyer",
+      "timestamp": "2026-09-18T10:27:48.807Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "stage1Route": "approve_fast_path",
+      "bureauCalled": false,
+      "finalAction": "approve",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 0.099,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.912,
+            "1": 0.078,
+            "2": 0.009,
+            "3": 0.001,
+            "4": 0
+          },
+          "confidence": 0.793
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.966
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.062
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "clear",
+          "probabilities": {
+            "ambiguous": 0.066,
+            "clear": 0.924,
+            "suspicious": 0.01
+          },
+          "confidence": 0.728
+        }
+      },
+      "stage3Answers": null,
+      "bureauLatencyMs": null,
+      "pFraudEstimate": null,
+      "evApproveUsd": null,
+      "confidence": 0.728,
+      "usage": {
+        "inputTokens": 3785,
+        "outputTokens": 4696,
+        "calls": 5,
+        "elapsedMs": 21540
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "llm",
+      "scenario": "stolen-card-pattern",
+      "timestamp": "2026-09-18T10:29:30.921Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 3.686,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.004,
+            "1": 0.006,
+            "2": 0.032,
+            "3": 0.216,
+            "4": 0.742
+          },
+          "confidence": 0.556
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.08
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.942
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "suspicious",
+          "probabilities": {
+            "ambiguous": 0.112,
+            "clear": 0.016,
+            "suspicious": 0.872
+          },
+          "confidence": 0.608
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.81
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 2.52,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0.018,
+            "1": 0.084,
+            "2": 0.258,
+            "3": 0.64
+          },
+          "confidence": 0.34
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "decline",
+          "probabilities": {
+            "approve": 0.024,
+            "decline": 0.638,
+            "review": 0.232,
+            "step_up": 0.106
+          },
+          "confidence": 0.312
+        }
+      },
+      "bureauLatencyMs": 500,
+      "pFraudEstimate": 0.8089999999999999,
+      "evApproveUsd": -955.7919999999999,
+      "confidence": 0.312,
+      "usage": {
+        "inputTokens": 8545,
+        "outputTokens": 16682,
+        "calls": 10,
+        "elapsedMs": 102113
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "llm",
+      "scenario": "thin-file-new-customer",
+      "timestamp": "2026-09-18T10:30:46.483Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.95,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.024,
+            "1": 0.236,
+            "2": 0.542,
+            "3": 0.162,
+            "4": 0.036
+          },
+          "confidence": 0.269
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.708
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.234
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.656,
+            "clear": 0.148,
+            "suspicious": 0.196
+          },
+          "confidence": 0.2
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.78
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 1.506,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0.066,
+            "1": 0.494,
+            "2": 0.308,
+            "3": 0.132
+          },
+          "confidence": 0.165
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "step_up",
+          "probabilities": {
+            "approve": 0.116,
+            "decline": 0.102,
+            "review": 0.302,
+            "step_up": 0.48
+          },
+          "confidence": 0.137
+        }
+      },
+      "bureauLatencyMs": 392,
+      "pFraudEstimate": 0.4272,
+      "evApproveUsd": -112.52960000000002,
+      "confidence": 0.137,
+      "usage": {
+        "inputTokens": 8250,
+        "outputTokens": 17060,
+        "calls": 10,
+        "elapsedMs": 75560
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "scenario": "unsound-lockfile-drift",
+  "pr": {
+    "number": 4145,
+    "title": "chore(deps): bump ws 8.17.0 → 8.18.0 (minor)",
+    "author": "dependabot[bot]",
+    "filesChanged": [
+      { "path": "package.json", "change": "ws ^8.17.0 → ^8.18.0", "runtimeCode": false }
+    ],
+    "additions": 1,
+    "deletions": 1
+  },
+  "dependency": {
+    "name": "ws",
+    "fromVersion": "8.17.0",
+    "toVersion": "8.18.0",
+    "bumpClass": "minor",
+    "scope": "prod",
+    "transitive": false,
+    "advisories": [],
+    "usageNotes": ["websocket gateway for live order updates; DoS advisory fixed in 8.17.1, already past it"]
+  },
+  "repo": {
+    "lockfileConsistent": false,
+    "ciStatus": "red",
+    "protectedBranch": true
+  },
+  "reviewerVerdict": {
+    "verdict": "reject",
+    "confidence": 0.83,
+    "rationale": "package-lock.json missing from the diff — install drift between package.json and lockfile, CI red. Mechanically unsound regardless of the low-risk bump."
+  }
+}

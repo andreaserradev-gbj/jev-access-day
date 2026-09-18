@@ -28,7 +28,19 @@ export type MockScenarioId =
   | 'stolen-card-pattern'
   | 'bopis-edge'
   | 'bureau-contradiction'
-  | 'ambiguous-checkout';
+  | 'ambiguous-checkout'
+  | 'nsf-transient'
+  | 'nsf-repeat'
+  | 'mandate-revoked'
+  | 'mandate-revoked-no-alt'
+  | 'account-closed'
+  | 'processor-outage'
+  | 'patch-lockfile-only'
+  | 'minor-transitive-safe'
+  | 'major-runtime-breaking'
+  | 'direct-ssrf-untrusted'
+  | 'gray-zone-reachable-admin'
+  | 'unsound-lockfile-drift';
 
 const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
   // ── Domain 1: CI test-failure triage ──────────────────────────────────────
@@ -298,6 +310,262 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
       choice: 'step_up',
       probabilities: { step_up: 0.42, approve: 0.31, review: 0.19, decline: 0.08 },
       confidence: 0.18,
+    },
+  },
+
+  // ── Domain 3: installment direct-debit dunning ────────────────────────────
+  'nsf-transient': {
+    bounce_cause: {
+      type: 'choice',
+      choice: 'transient_funds',
+      probabilities: { transient_funds: 0.78, technical: 0.12, mandate_revoked: 0.06, account_closed: 0.04 },
+      confidence: 0.71,
+    },
+    customer_standing: {
+      type: 'choice',
+      choice: 'good',
+      probabilities: { good: 0.86, unknown: 0.09, strained: 0.05 },
+      confidence: 0.76,
+    },
+    retry_worthwhile: { type: 'noul', noul: 0.88 },
+    schedule_cascade_risk: {
+      type: 'choice',
+      choice: 'low',
+      probabilities: { low: 0.74, moderate: 0.19, high: 0.07 },
+      confidence: 0.63,
+    },
+  },
+  'nsf-repeat': {
+    bounce_cause: {
+      type: 'choice',
+      choice: 'transient_funds',
+      probabilities: { transient_funds: 0.64, mandate_revoked: 0.18, technical: 0.12, account_closed: 0.06 },
+      confidence: 0.55,
+    },
+    customer_standing: {
+      type: 'choice',
+      choice: 'strained',
+      probabilities: { strained: 0.57, good: 0.31, unknown: 0.12 },
+      confidence: 0.54,
+    },
+    retry_worthwhile: { type: 'noul', noul: 0.55 },
+    schedule_cascade_risk: {
+      type: 'choice',
+      choice: 'moderate',
+      probabilities: { moderate: 0.58, low: 0.27, high: 0.15 },
+      confidence: 0.52,
+    },
+  },
+  'mandate-revoked': {
+    bounce_cause: {
+      type: 'choice',
+      choice: 'mandate_revoked',
+      probabilities: { mandate_revoked: 0.94, technical: 0.03, transient_funds: 0.02, account_closed: 0.01 },
+      confidence: 0.9,
+    },
+    customer_standing: {
+      type: 'choice',
+      choice: 'good',
+      probabilities: { good: 0.91, unknown: 0.06, strained: 0.03 },
+      confidence: 0.84,
+    },
+    retry_worthwhile: { type: 'noul', noul: 0.04 },
+    schedule_cascade_risk: {
+      type: 'choice',
+      choice: 'low',
+      probabilities: { low: 0.71, moderate: 0.21, high: 0.08 },
+      confidence: 0.58,
+    },
+  },
+  'mandate-revoked-no-alt': {
+    bounce_cause: {
+      type: 'choice',
+      choice: 'mandate_revoked',
+      probabilities: { mandate_revoked: 0.92, technical: 0.05, account_closed: 0.02, transient_funds: 0.01 },
+      confidence: 0.87,
+    },
+    customer_standing: {
+      type: 'choice',
+      choice: 'unknown',
+      probabilities: { unknown: 0.62, strained: 0.26, good: 0.12 },
+      confidence: 0.53,
+    },
+    retry_worthwhile: { type: 'noul', noul: 0.03 },
+    schedule_cascade_risk: {
+      type: 'choice',
+      choice: 'moderate',
+      probabilities: { moderate: 0.55, low: 0.3, high: 0.15 },
+      confidence: 0.5,
+    },
+  },
+  'account-closed': {
+    bounce_cause: {
+      type: 'choice',
+      choice: 'account_closed',
+      probabilities: { account_closed: 0.89, mandate_revoked: 0.06, technical: 0.02, transient_funds: 0.03 },
+      confidence: 0.82,
+    },
+    customer_standing: {
+      type: 'choice',
+      choice: 'good',
+      probabilities: { good: 0.8, unknown: 0.14, strained: 0.06 },
+      confidence: 0.67,
+    },
+    retry_worthwhile: { type: 'noul', noul: 0.02 },
+    schedule_cascade_risk: {
+      type: 'choice',
+      choice: 'low',
+      probabilities: { low: 0.76, moderate: 0.17, high: 0.07 },
+      confidence: 0.6,
+    },
+  },
+  'processor-outage': {
+    bounce_cause: {
+      type: 'choice',
+      choice: 'technical',
+      probabilities: { technical: 0.89, transient_funds: 0.07, mandate_revoked: 0.02, account_closed: 0.02 },
+      confidence: 0.85,
+    },
+    customer_standing: {
+      type: 'choice',
+      choice: 'good',
+      probabilities: { good: 0.83, unknown: 0.12, strained: 0.05 },
+      confidence: 0.7,
+    },
+    retry_worthwhile: { type: 'noul', noul: 0.9 },
+    schedule_cascade_risk: {
+      type: 'choice',
+      choice: 'moderate',
+      probabilities: { moderate: 0.55, high: 0.28, low: 0.17 },
+      confidence: 0.51,
+    },
+  },
+
+  // ── Domain 4: security PR review ──────────────────────────────────────────
+  'patch-lockfile-only': {
+    attack_path_exposure: {
+      type: 'choice',
+      choice: 'none',
+      probabilities: { none: 0.94, indirect: 0.04, direct: 0.02 },
+      confidence: 0.86,
+    },
+    semver_triviality: {
+      type: 'choice',
+      choice: 'trivial',
+      probabilities: { trivial: 0.92, routine: 0.06, breaking: 0.02 },
+      confidence: 0.84,
+    },
+    runtime_code_touched: { type: 'noul', noul: 0.02 },
+    change_soundness: {
+      type: 'choice',
+      choice: 'sound',
+      probabilities: { sound: 0.95, sloppy: 0.05 },
+      confidence: 0.88,
+    },
+  },
+  'minor-transitive-safe': {
+    attack_path_exposure: {
+      type: 'choice',
+      choice: 'none',
+      probabilities: { none: 0.83, indirect: 0.13, direct: 0.04 },
+      confidence: 0.71,
+    },
+    semver_triviality: {
+      type: 'choice',
+      choice: 'trivial',
+      probabilities: { trivial: 0.87, routine: 0.11, breaking: 0.02 },
+      confidence: 0.79,
+    },
+    runtime_code_touched: { type: 'noul', noul: 0.03 },
+    change_soundness: {
+      type: 'choice',
+      choice: 'sound',
+      probabilities: { sound: 0.93, sloppy: 0.07 },
+      confidence: 0.82,
+    },
+  },
+  'major-runtime-breaking': {
+    attack_path_exposure: {
+      type: 'choice',
+      choice: 'indirect',
+      probabilities: { indirect: 0.62, none: 0.26, direct: 0.12 },
+      confidence: 0.54,
+    },
+    semver_triviality: {
+      type: 'choice',
+      choice: 'breaking',
+      probabilities: { breaking: 0.88, routine: 0.09, trivial: 0.03 },
+      confidence: 0.81,
+    },
+    runtime_code_touched: { type: 'noul', noul: 0.88 },
+    change_soundness: {
+      type: 'choice',
+      choice: 'sound',
+      probabilities: { sound: 0.64, sloppy: 0.36 },
+      confidence: 0.52,
+    },
+  },
+  'direct-ssrf-untrusted': {
+    attack_path_exposure: {
+      type: 'choice',
+      choice: 'direct',
+      probabilities: { direct: 0.91, indirect: 0.06, none: 0.03 },
+      confidence: 0.87,
+    },
+    semver_triviality: {
+      type: 'choice',
+      choice: 'trivial',
+      probabilities: { trivial: 0.85, routine: 0.12, breaking: 0.03 },
+      confidence: 0.76,
+    },
+    runtime_code_touched: { type: 'noul', noul: 0.12 },
+    change_soundness: {
+      type: 'choice',
+      choice: 'sound',
+      probabilities: { sound: 0.91, sloppy: 0.09 },
+      confidence: 0.8,
+    },
+  },
+  'gray-zone-reachable-admin': {
+    attack_path_exposure: {
+      type: 'choice',
+      choice: 'indirect',
+      probabilities: { indirect: 0.58, none: 0.31, direct: 0.11 },
+      confidence: 0.56,
+    },
+    semver_triviality: {
+      type: 'choice',
+      choice: 'breaking',
+      probabilities: { breaking: 0.79, routine: 0.16, trivial: 0.05 },
+      confidence: 0.72,
+    },
+    runtime_code_touched: { type: 'noul', noul: 0.71 },
+    change_soundness: {
+      type: 'choice',
+      choice: 'sound',
+      probabilities: { sound: 0.88, sloppy: 0.12 },
+      confidence: 0.74,
+    },
+  },
+  'unsound-lockfile-drift': {
+    attack_path_exposure: {
+      type: 'choice',
+      choice: 'none',
+      probabilities: { none: 0.86, indirect: 0.11, direct: 0.03 },
+      confidence: 0.74,
+    },
+    semver_triviality: {
+      type: 'choice',
+      choice: 'trivial',
+      probabilities: { trivial: 0.83, routine: 0.14, breaking: 0.03 },
+      confidence: 0.7,
+    },
+    runtime_code_touched: { type: 'noul', noul: 0.05 },
+    change_soundness: {
+      type: 'choice',
+      choice: 'sloppy',
+      probabilities: { sloppy: 0.9, sound: 0.1 },
+      confidence: 0.83,
     },
   },
 };

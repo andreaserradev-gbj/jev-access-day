@@ -1,0 +1,29 @@
+{
+  "scenario": "processor-outage",
+  "installment": { "installmentId": "INS-4455", "amountUsd": 45.0, "installmentIndex": 2, "totalInstallments": 6 },
+  "bounce": {
+    "occurredAt": "2026-09-18T03:10:00Z",
+    "bankReturnCode": "R99",
+    "bankReturnMessage": "processor gateway timeout during batch submission",
+    "attemptsIncludingThis": 1
+  },
+  "customer": {
+    "name": "Ahmed Karim",
+    "sinceDays": 240,
+    "priorSuccessfulPayments": 5,
+    "priorBouncesLast6m": 0,
+    "alternativeMethodOnFile": "card_ending_6630",
+    "alternativeMethodValid": true
+  },
+  "schedule": {
+    "nextDueDate": "2026-09-20",
+    "nextDueInDays": 2,
+    "remainingInstallments": 3,
+    "nextAmountUsd": 45.0,
+    "dueWithin14d": 2
+  },
+  "history": {
+    "note": "provider status page: gateway incident 02:50-03:30Z affected 1,412 debits; batch re-queued automatically",
+    "priorBouncesResolvedOnRetry": "n/a (first bounce)"
+  }
+}

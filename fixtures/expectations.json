@@ -56,5 +56,57 @@
       "finalAction": "review",
       "because": "synthesis step_up at confidence 0.18 below the 0.5 floor"
     }
+  },
+  "dunning": {
+    "nsf-transient": {
+      "action": "retry_in_3d",
+      "because": "transient_funds conf 0.71 above floor; first bounce (attempts=1); retry_worthwhile 0.88 >= 0.7 — salary-lands-on-25th timing slip is in-fixture history"
+    },
+    "nsf-repeat": {
+      "action": "pause_spending",
+      "because": "attempts=2 hits the maxAutoRetries cap; standing strained (1 prior bounce in 6m, 2 successful payments in 95d) so the alternative-method branch is closed"
+    },
+    "mandate-revoked": {
+      "action": "switch_method_then_retry",
+      "because": "R07 revocation receipts in-fixture (structural cause); good standing (15 successful payments) + valid card_ending_8817 on file"
+    },
+    "mandate-revoked-no-alt": {
+      "action": "needs_human",
+      "because": "R07 revocation in-fixture; alternativeMethodOnFile null and no reply to 2 dunning emails — nothing to switch to, human owns the mandate conversation"
+    },
+    "account-closed": {
+      "action": "switch_method_then_retry",
+      "because": "R02 account-closed in-fixture (support ticket #44120); valid card_ending_2093 verified at last login; standing good"
+    },
+    "processor-outage": {
+      "action": "retry_next_schedule",
+      "because": "R99 gateway timeout with provider status-page note in-fixture (technical cause); retry date = next schedule 2d out"
+    }
+  },
+  "prreview": {
+    "patch-lockfile-only": {
+      "action": "approve",
+      "because": "no advisories in-fixture, patch bump, diff is lockfile+metadata only (runtimeCode false on both files) — the auto-approve triple"
+    },
+    "minor-transitive-safe": {
+      "action": "approve",
+      "because": "advisory's vulnerable API _.zipObjectDeep has 0 grep hits in-fixture usageNotes; patch-level transitive bump, lockfile-only diff"
+    },
+    "major-runtime-breaking": {
+      "action": "needs_human",
+      "because": "exposure indirect at conf 0.54 (no advisory, but logger middleware wraps every request); breaking major with 2 runtime files → needs_llm_review; stub reviewer rejects at only 0.55 < 0.6 reviewer gate, so the chain degrades to needs_human rather than auto-blocking"
+    },
+    "direct-ssrf-untrusted": {
+      "action": "reject",
+      "because": "high-severity SSRF with axios.post(userSuppliedUrl) webhook dispatcher cited in-fixture usageNotes — direct untrusted-input exposure at conf 0.87 >= 0.75 reject gate"
+    },
+    "gray-zone-reachable-admin": {
+      "action": "approve",
+      "because": "indirect exposure (staff-only admin UI in-fixture) + breaking major → needs_llm_review; stub reviewer approves at 0.71 >= 0.6 reviewer gate"
+    },
+    "unsound-lockfile-drift": {
+      "action": "reject",
+      "because": "package-lock.json missing from diff + CI red in-fixture (lockfileConsistent false) — sloppy change sets reject before exposure is even weighed"
+    }
   }
 }

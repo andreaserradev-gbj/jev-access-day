@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "provider": "llm",
+  "domain": "triage",
+  "runIndex": 1,
+  "model": {
+    "model": "glm-5.3-flash:cloud",
+    "baseUrl": "https://ollama.com",
+    "samples": 5
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "ambiguous-failure",
+      "timestamp": "2026-09-18T09:44:48.487Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.062
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.934
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.938
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "bad_test": 0.094,
+            "environment": 0.072,
+            "infra": 0.044,
+            "real_regression": 0.79
+          },
+          "confidence": 0.47
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.126,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.05,
+            "1": 0.774,
+            "2": 0.176
+          },
+          "confidence": 0.405
+        }
+      },
+      "confidence": 0.47,
+      "usage": {
+        "inputTokens": 3710,
+        "outputTokens": 13760,
+        "calls": 5,
+        "elapsedMs": 67764
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "bad-test",
+      "timestamp": "2026-09-18T09:46:09.704Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.054
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.026
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.87
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "bad_test": 0.47,
+            "environment": 0.382,
+            "infra": 0.032,
+            "real_regression": 0.116
+          },
+          "confidence": 0.219
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.028,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.106,
+            "1": 0.76,
+            "2": 0.134
+          },
+          "confidence": 0.348
+        }
+      },
+      "confidence": 0.219,
+      "usage": {
+        "inputTokens": 4095,
+        "outputTokens": 14470,
+        "calls": 5,
+        "elapsedMs": 81217
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "environment-drift",
+      "timestamp": "2026-09-18T09:47:45.453Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.036
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.4
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.026
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "environment",
+          "probabilities": {
+            "bad_test": 0.154,
+            "environment": 0.678,
+            "infra": 0.05,
+            "real_regression": 0.118
+          },
+          "confidence": 0.312
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.49,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.08,
+            "1": 0.35,
+            "2": 0.57
+          },
+          "confidence": 0.19
+        }
+      },
+      "confidence": 0.312,
+      "usage": {
+        "inputTokens": 3705,
+        "outputTokens": 14918,
+        "calls": 5,
+        "elapsedMs": 95748
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "error-contract-regression",
+      "timestamp": "2026-09-18T09:49:11.452Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.032
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.974
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.886
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "bad_test": 0.16,
+            "environment": 0.098,
+            "infra": 0.052,
+            "real_regression": 0.69
+          },
+          "confidence": 0.329
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.044,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.11,
+            "1": 0.736,
+            "2": 0.154
+          },
+          "confidence": 0.311
+        }
+      },
+      "confidence": 0.329,
+      "usage": {
+        "inputTokens": 3945,
+        "outputTokens": 9199,
+        "calls": 5,
+        "elapsedMs": 85998
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "infra-outage",
+      "timestamp": "2026-09-18T09:49:59.448Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.634
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.05
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.65
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "infra",
+          "probabilities": {
+            "bad_test": 0.052,
+            "environment": 0.104,
+            "infra": 0.78,
+            "real_regression": 0.064
+          },
+          "confidence": 0.453
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.552,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.078,
+            "1": 0.292,
+            "2": 0.63
+          },
+          "confidence": 0.227
+        }
+      },
+      "confidence": 0.453,
+      "usage": {
+        "inputTokens": 3710,
+        "outputTokens": 11321,
+        "calls": 5,
+        "elapsedMs": 47996
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "llm",
+      "scenario": "known-flake",
+      "timestamp": "2026-09-18T09:52:09.604Z",
+      "model": {
+        "model": "glm-5.3-flash:cloud",
+        "baseUrl": "https://ollama.com",
+        "samples": 5
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.886
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.886
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.19
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "bad_test": 0.59,
+            "environment": 0.116,
+            "infra": 0.098,
+            "real_regression": 0.196
+          },
+          "confidence": 0.201
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.686,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.064,
+            "1": 0.186,
+            "2": 0.75
+          },
+          "confidence": 0.359
+        }
+      },
+      "confidence": 0.201,
+      "usage": {
+        "inputTokens": 4325,
+        "outputTokens": 25749,
+        "calls": 5,
+        "elapsedMs": 130155
+      }
+    }
+  ]
+}

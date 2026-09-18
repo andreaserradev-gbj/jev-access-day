@@ -1,0 +1,30 @@
+{
+  "scenario": "nsf-repeat",
+  "installment": { "installmentId": "INS-9022", "amountUsd": 120.0, "installmentIndex": 2, "totalInstallments": 8 },
+  "bounce": {
+    "occurredAt": "2026-09-18T09:40:00Z",
+    "bankReturnCode": "R01",
+    "bankReturnMessage": "insufficient funds",
+    "attemptsIncludingThis": 2
+  },
+  "customer": {
+    "name": "Marco Bianchi",
+    "sinceDays": 95,
+    "priorSuccessfulPayments": 2,
+    "priorBouncesLast6m": 1,
+    "alternativeMethodOnFile": "card_ending_4421",
+    "alternativeMethodValid": true,
+    "contactNote": "customer replied to the last dunning email asking to try again end of month"
+  },
+  "schedule": {
+    "nextDueDate": "2026-10-01",
+    "nextDueInDays": 13,
+    "remainingInstallments": 4,
+    "nextAmountUsd": 120.0,
+    "dueWithin14d": 1
+  },
+  "history": {
+    "note": "second bounce on the same installment; prior bounce 2 months ago cleared 6 days later",
+    "priorBouncesResolvedOnRetry": "1/1"
+  }
+}

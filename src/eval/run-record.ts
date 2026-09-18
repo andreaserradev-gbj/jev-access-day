@@ -5,6 +5,8 @@ import type { ProviderName } from '../typesafe/index.js';
 import type { CascadeResult } from '../checkout/cascade.js';
 import type { FinalAction, Stage1Route } from '../checkout/decide.js';
 import type { TriageAction, TriageDecision } from '../triage/decide.js';
+import type { DunningAction, DunningDecision } from '../dunning/decide.js';
+import type { PrAction, PrDecision } from '../prreview/decide.js';
 
 /**
  * The run record: the atomic unit of every eval and claim test on access day.
@@ -21,7 +23,7 @@ import type { TriageAction, TriageDecision } from '../triage/decide.js';
 
 export const RUN_RECORD_SCHEMA_VERSION = 1 as const;
 
-export type EvalDomain = 'triage' | 'checkout';
+export type EvalDomain = 'triage' | 'checkout' | 'dunning' | 'prreview';
 
 /** Which model produced the record, for time-series comparison across versions. */
 export interface ModelMetadata {
@@ -66,7 +68,29 @@ export interface CheckoutRunRecord extends RunRecordCommon {
   evApproveUsd: number | null;
 }
 
-export type RunRecord = TriageRunRecord | CheckoutRunRecord;
+export interface DunningRunRecord extends RunRecordCommon {
+  domain: 'dunning';
+  action: DunningAction;
+  /** Days the kernel will wait before firing; the temporal-kernel output. */
+  waitDays: number;
+  answers: Answers;
+}
+
+export interface PrReviewRunRecord extends RunRecordCommon {
+  domain: 'prreview';
+  action: PrAction;
+  /** Final action after any needs_llm_review chain resolved. */
+  finalAction: PrDecision['finalAction'];
+  answers: Answers;
+  /** The model-to-model chain, persisted verbatim; null when no escalation. */
+  reviewerChain: PrDecision['reviewer'];
+}
+
+export type RunRecord =
+  | TriageRunRecord
+  | CheckoutRunRecord
+  | DunningRunRecord
+  | PrReviewRunRecord;
 
 export interface RunRecordInput {
   provider: ProviderName;
@@ -147,14 +171,70 @@ export function buildCheckoutRunRecord(
   };
 }
 
-// ── persistence ───────────────────────────────────────────────────────────────
-
-export function resultsDirFor(date: Date = new Date(), baseDir = 'results'): string {
-  return join(baseDir, date.toISOString().slice(0, 10));
+export function buildDunningRunRecord(
+  input: RunRecordInput,
+  decision: DunningDecision,
+  answers: Answers,
+  usage: Usage,
+): DunningRunRecord {
+  const cause = answers['bounce_cause'] as ChoiceAnswer | undefined;
+  return {
+    schemaVersion: RUN_RECORD_SCHEMA_VERSION,
+    domain: 'dunning',
+    runIndex: input.runIndex,
+    provider: input.provider,
+    scenario: input.scenario,
+    timestamp: input.timestamp ?? new Date().toISOString(),
+    model: input.model,
+    action: decision.action,
+    waitDays: decision.waitDays,
+    answers,
+    confidence: cause?.confidence ?? 0,
+    usage,
+  };
 }
 
-export function ensureResultsDir(date: Date = new Date(), baseDir = 'results'): string {
-  const dir = resultsDirFor(date, baseDir);
+export function buildPrReviewRunRecord(
+  input: RunRecordInput,
+  decision: PrDecision,
+  answers: Answers,
+  usage: Usage,
+): PrReviewRunRecord {
+  const exposure = answers['attack_path_exposure'] as ChoiceAnswer | undefined;
+  return {
+    schemaVersion: RUN_RECORD_SCHEMA_VERSION,
+    domain: 'prreview',
+    runIndex: input.runIndex,
+    provider: input.provider,
+    scenario: input.scenario,
+    timestamp: input.timestamp ?? new Date().toISOString(),
+    model: input.model,
+    action: decision.action,
+    finalAction: decision.finalAction,
+    answers,
+    reviewerChain: decision.reviewer,
+    confidence: exposure?.confidence ?? 0,
+    usage,
+  };
+}
+
+// ── persistence ───────────────────────────────────────────────────────────────
+
+export function resultsDirFor(
+  date: Date = new Date(),
+  baseDir = 'results',
+  tag?: string,
+): string {
+  const day = date.toISOString().slice(0, 10);
+  return tag === undefined ? join(baseDir, day) : join(baseDir, `${day}-${tag}`);
+}
+
+export function ensureResultsDir(
+  date: Date = new Date(),
+  baseDir = 'results',
+  tag?: string,
+): string {
+  const dir = resultsDirFor(date, baseDir, tag);
   mkdirSync(dir, { recursive: true });
   return dir;
 }
@@ -183,6 +263,19 @@ export function writeRunFile(dir: string, payload: RunFilePayload): string {
   );
   writeFileSync(file, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
   return file;
+}
+
+/**
+ * Post-fix re-run must not clobber the committed pre-fix run files when both
+ * happen on the same date. A tag suffix keeps each wave in its own directory:
+ *   --tag=postfix  →  results/<YYYY-MM-DD>-postfix/
+ */
+export function assertSafeTag(tag: string): void {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(tag)) {
+    throw new Error(
+      `--tag="${tag}" is invalid: use lowercase letters, digits and single dashes`,
+    );
+  }
 }
 
 export const CSV_HEADER = [
@@ -214,10 +307,24 @@ function csvRow(record: RunRecord): string[] {
     record.domain,
     record.scenario,
   ];
-  if (record.domain === 'triage') {
+  if (record.domain === 'triage' || record.domain === 'dunning') {
     return [
       ...common,
       record.action,
+      '',
+      '',
+      record.confidence.toFixed(3),
+      String(record.usage.elapsedMs),
+      String(record.usage.calls),
+      String(record.usage.inputTokens),
+      String(record.usage.outputTokens),
+      record.model.model,
+    ];
+  }
+  if (record.domain === 'prreview') {
+    return [
+      ...common,
+      record.finalAction,
       '',
       '',
       record.confidence.toFixed(3),

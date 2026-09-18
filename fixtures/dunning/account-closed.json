@@ -1,0 +1,28 @@
+{
+  "scenario": "account-closed",
+  "installment": { "installmentId": "INS-5540", "amountUsd": 60.0, "installmentIndex": 5, "totalInstallments": 12 },
+  "bounce": {
+    "occurredAt": "2026-09-18T07:55:00Z",
+    "bankReturnCode": "R02",
+    "bankReturnMessage": "account closed / no such account",
+    "attemptsIncludingThis": 1
+  },
+  "customer": {
+    "name": "Priya Nair",
+    "sinceDays": 320,
+    "priorSuccessfulPayments": 7,
+    "priorBouncesLast6m": 0,
+    "alternativeMethodOnFile": "card_ending_2093",
+    "alternativeMethodValid": true
+  },
+  "schedule": {
+    "nextDueDate": "2026-10-18",
+    "nextDueInDays": 30,
+    "remainingInstallments": 2,
+    "nextAmountUsd": 60.0,
+    "dueWithin14d": 0
+  },
+  "history": {
+    "note": "customer closed the checking account at the branch on 2026-09-15 per support ticket #44120; card on file verified at last login"
+  }
+}

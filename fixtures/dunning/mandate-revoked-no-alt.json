@@ -1,0 +1,30 @@
+{
+  "scenario": "mandate-revoked-no-alt",
+  "installment": { "installmentId": "INS-6630", "amountUsd": 95.0, "installmentIndex": 4, "totalInstallments": 10 },
+  "bounce": {
+    "occurredAt": "2026-09-18T08:22:00Z",
+    "bankReturnCode": "R07",
+    "bankReturnMessage": "mandate cancelled by payer",
+    "attemptsIncludingThis": 1,
+    "mandateEvents": ["2026-09-16: revocation receipt received from bank", "2026-09-18: second R07 after re-presentation attempt"]
+  },
+  "customer": {
+    "name": "Jonas Weber",
+    "sinceDays": 130,
+    "priorSuccessfulPayments": 3,
+    "priorBouncesLast6m": 0,
+    "alternativeMethodOnFile": null,
+    "alternativeMethodValid": false,
+    "contactNote": "no reply to 2 dunning emails in 10 days"
+  },
+  "schedule": {
+    "nextDueDate": "2026-10-03",
+    "nextDueInDays": 15,
+    "remainingInstallments": 5,
+    "nextAmountUsd": 95.0,
+    "dueWithin14d": 0
+  },
+  "history": {
+    "note": "only instrument on file was the revoked mandate; unresponsive to contact"
+  }
+}

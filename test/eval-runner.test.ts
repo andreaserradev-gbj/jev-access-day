@@ -6,10 +6,11 @@ import {
   buildReportMarkdown,
   modelMetadataFor,
   resolveMaxRequests,
+  resultsDirFor,
   runEval,
   SpendCapError,
 } from '../src/eval/runner.js';
-import { CSV_HEADER } from '../src/eval/run-record.js';
+import { assertSafeTag, CSV_HEADER } from '../src/eval/run-record.js';
 import type { ProviderName } from '../src/typesafe/index.js';
 
 const MOCK_ENV: NodeJS.ProcessEnv = { TYPESAFE_PROVIDER: 'mock' };
@@ -43,6 +44,22 @@ describe('modelMetadataFor', () => {
     expect(llm.samples).toBe(2);
     expect(modelMetadataFor('real', {}).model).toBe('jev-latest');
     expect(modelMetadataFor('real', { TYPESAFE_DEFAULT_MODEL: 'jev-beta' }).model).toBe('jev-beta');
+  });
+});
+
+describe('assertSafeTag + resultsDirFor tag', () => {
+  it('accepts lowercase/digit/dash tags, rejects path tricks', () => {
+    expect(() => assertSafeTag('postfix')).not.toThrow();
+    expect(() => assertSafeTag('wave-2')).not.toThrow();
+    expect(() => assertSafeTag('')).toThrow(/invalid/);
+    expect(() => assertSafeTag('../escape')).toThrow(/invalid/);
+    expect(() => assertSafeTag('Post Fix')).toThrow(/invalid/);
+  });
+
+  it('tag suffix lands in a separate dated directory', () => {
+    const date = new Date('2026-09-18T10:00:00Z');
+    expect(resultsDirFor(date, 'results')).toBe(join('results', '2026-09-18'));
+    expect(resultsDirFor(date, 'results', 'postfix')).toBe(join('results', '2026-09-18-postfix'));
   });
 });
 
@@ -91,6 +108,25 @@ describe('runEval (mock provider, temp dir)', () => {
 
       // 6 triage + 4 bureau-path checkouts × 2 stage asks = 6 + 10 = 16 provider asks.
       expect(result.requestsMade).toBe(16);
+    } finally {
+      cleanup(base);
+    }
+  });
+
+  it('writes into the tagged results dir when a tag is set', async () => {
+    const base = tempBase();
+    try {
+      const result = await runEval({
+        providers: ['mock' as ProviderName],
+        runs: 1,
+        domains: ['triage'],
+        env: MOCK_ENV,
+        baseDir: base,
+        tag: 'postfix',
+        date: new Date('2026-09-18T10:00:00Z'),
+      });
+      expect(result.dir).toBe(join(base, '2026-09-18-postfix'));
+      expect(result.runFiles).toHaveLength(1);
     } finally {
       cleanup(base);
     }

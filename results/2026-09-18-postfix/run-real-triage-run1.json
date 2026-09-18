@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 1,
+  "provider": "real",
+  "domain": "triage",
+  "runIndex": 1,
+  "model": {
+    "model": "jev-latest"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "real",
+      "scenario": "ambiguous-failure",
+      "timestamp": "2026-09-18T09:35:07.781Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.12
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.82
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.79
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "environment": 0.04,
+            "bad_test": 0.04,
+            "real_regression": 0.91,
+            "infra": 0.01
+          },
+          "confidence": 0.87
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.42,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0.58,
+            "2": 0.42
+          },
+          "confidence": 0.36
+        }
+      },
+      "confidence": 0.87,
+      "usage": {
+        "inputTokens": 856,
+        "outputTokens": 131,
+        "calls": 1,
+        "elapsedMs": 295
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "real",
+      "scenario": "bad-test",
+      "timestamp": "2026-09-18T09:35:08.068Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "action": "requeue_environment",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.05
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.02
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "environment",
+          "probabilities": {
+            "real_regression": 0.02,
+            "infra": 0,
+            "environment": 0.9,
+            "bad_test": 0.08
+          },
+          "confidence": 0.86
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.41,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.63,
+            "1": 0.33,
+            "2": 0.04
+          },
+          "confidence": 0.39
+        }
+      },
+      "confidence": 0.86,
+      "usage": {
+        "inputTokens": 932,
+        "outputTokens": 128,
+        "calls": 1,
+        "elapsedMs": 287
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "real",
+      "scenario": "environment-drift",
+      "timestamp": "2026-09-18T09:35:08.345Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "action": "requeue_environment",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.06
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.39
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.06
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "environment",
+          "probabilities": {
+            "bad_test": 0.03,
+            "infra": 0,
+            "environment": 0.93,
+            "real_regression": 0.04
+          },
+          "confidence": 0.91
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.59,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.01,
+            "1": 0.39,
+            "2": 0.6
+          },
+          "confidence": 0.39
+        }
+      },
+      "confidence": 0.91,
+      "usage": {
+        "inputTokens": 860,
+        "outputTokens": 128,
+        "calls": 1,
+        "elapsedMs": 277
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "real",
+      "scenario": "error-contract-regression",
+      "timestamp": "2026-09-18T09:35:08.662Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "action": "file_regression_p2",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.04
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.97
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.64
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "infra": 0,
+            "environment": 0,
+            "real_regression": 0.8,
+            "bad_test": 0.2
+          },
+          "confidence": 0.73
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.04,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0.95,
+            "2": 0.05
+          },
+          "confidence": 0.92
+        }
+      },
+      "confidence": 0.73,
+      "usage": {
+        "inputTokens": 914,
+        "outputTokens": 131,
+        "calls": 1,
+        "elapsedMs": 317
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "real",
+      "scenario": "infra-outage",
+      "timestamp": "2026-09-18T09:35:08.976Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "action": "restart_infra",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.52
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.06
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.39
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "infra",
+          "probabilities": {
+            "bad_test": 0,
+            "environment": 0.01,
+            "real_regression": 0,
+            "infra": 0.99
+          },
+          "confidence": 0.98
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.84,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.04,
+            "1": 0.08,
+            "2": 0.88
+          },
+          "confidence": 0.76
+        }
+      },
+      "confidence": 0.98,
+      "usage": {
+        "inputTokens": 861,
+        "outputTokens": 128,
+        "calls": 1,
+        "elapsedMs": 314
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 1,
+      "provider": "real",
+      "scenario": "known-flake",
+      "timestamp": "2026-09-18T09:35:09.305Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "action": "fix_test",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.83
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.14
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "environment": 0.08,
+            "infra": 0.01,
+            "bad_test": 0.91,
+            "real_regression": 0
+          },
+          "confidence": 0.87
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.67,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.1,
+            "1": 0.13,
+            "2": 0.77
+          },
+          "confidence": 0.5
+        }
+      },
+      "confidence": 0.87,
+      "usage": {
+        "inputTokens": 992,
+        "outputTokens": 129,
+        "calls": 1,
+        "elapsedMs": 329
+      }
+    }
+  ]
+}
