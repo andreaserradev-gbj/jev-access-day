@@ -1,15 +1,21 @@
 #!/usr/bin/env node
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ProviderName } from '../typesafe/index.js';
-import { runEval, resolveMaxRequests, SpendCapError } from './runner.js';
-import type { EvalDomain } from './run-record.js';
+import { runEval, resolveMaxRequests, SpendCapError, buildReportMarkdown } from './runner.js';
+import { summarizeRecords } from './metrics.js';
+import { EXPECTATIONS } from './expectations.js';
+import { RUN_RECORD_SCHEMA_VERSION } from './run-record.js';
+import type { EvalDomain, RunFilePayload, RunRecord } from './run-record.js';
 
 /**
  * Eval CLI. Examples:
  *   npm run eval -- --providers=mock --runs=1
  *   npm run eval -- --providers=mock,llm --runs=5 --domains=triage
  *   npm run eval -- --providers=real --runs=3
+ *
+ * Offline report regeneration from persisted run files (no provider calls):
+ *   npm run eval -- --report-from=results/2026-09-18
  *
  * Spend cap: EVAL_MAX_REQUESTS env (or --max-requests=N) aborts the run when
  * the client would exceed N provider requests. Unset = no cap.
@@ -39,9 +45,64 @@ function parseList<T extends string>(arg: string, valid: readonly T[], flag: str
   return raw as T[];
 }
 
+/**
+ * Regenerate report.md + results.csv from persisted run files only — zero
+ * provider requests. Reads run-*.json in the given dir, re-scores against
+ * expectations.json, rewrites report.md in place. Fixes the last-writer-wins
+ * artifact when providers are evaluated in separate invocations.
+ */
+async function reportFrom(dir: string): Promise<void> {
+  const files = readdirSync(dir).filter((f) => /^run-.+-run\d+\.json$/.test(f));
+  if (files.length === 0) {
+    throw new Error(`report-from: no run-*.json files found in ${dir}`);
+  }
+  const payloads: RunFilePayload[] = files
+    .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')) as RunFilePayload)
+    .filter((p) => p.schemaVersion === RUN_RECORD_SCHEMA_VERSION);
+  const records: RunRecord[] = payloads.flatMap((p) => p.records);
+  if (records.length === 0) {
+    throw new Error(`report-from: zero records parsed from ${files.length} file(s) in ${dir}`);
+  }
+  const providers = [...new Set(records.map((r) => r.provider))];
+  const domains = [...new Set(records.map((r) => r.domain))] as EvalDomain[];
+  const runs = Math.max(...records.map((r) => r.runIndex)) + 1;
+  const date = new Date(records[0]!.timestamp);
+
+  const summaries = summarizeRecords(records, EXPECTATIONS);
+  const { writeFileSync } = await import('node:fs');
+  const reportFile = join(dir, 'report.md');
+  writeFileSync(
+    reportFile,
+    buildReportMarkdown(summaries, {
+      providers,
+      runs,
+      domains,
+      date,
+      totalRecords: records.length,
+    }),
+    'utf8',
+  );
+
+  console.log(`report-from: ${records.length} records from ${payloads.length} run file(s) in ${dir}`);
+  console.log(`  providers: ${providers.join(', ')}`);
+  console.log(`  report    : ${reportFile}`);
+  for (const s of summaries) {
+    const pass = s.passRate === null ? 'n/a' : `${(s.passRate * 100).toFixed(0)}%`;
+    console.log(
+      `  ${s.provider}/${s.domain}: ${s.passed}/${s.scored} pass (${pass}) ` +
+        `p50=${s.latency.p50}ms p95=${s.latency.p95}ms violations=${s.schemaViolations.count}`,
+    );
+  }
+}
+
 async function main(): Promise<void> {
   const env = loadEnvInto({ ...process.env });
   const args = process.argv.slice(2);
+  const reportFromArg = args.find((a) => a.startsWith('--report-from='));
+  if (reportFromArg) {
+    await reportFrom(reportFromArg.split('=')[1]!);
+    return;
+  }
 
   const providersArg = args.find((a) => a.startsWith('--providers='));
   const runsArg = args.find((a) => a.startsWith('--runs='));

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "provider": "mock",
   "domain": "checkout",
-  "runIndex": 0,
+  "runIndex": 1,
   "model": {
     "model": "mock"
   },
@@ -10,10 +10,10 @@
     {
       "schemaVersion": 1,
       "domain": "checkout",
-      "runIndex": 0,
+      "runIndex": 1,
       "provider": "mock",
       "scenario": "ambiguous-checkout",
-      "timestamp": "2026-09-18T07:32:17.945Z",
+      "timestamp": "2026-09-18T07:32:21.415Z",
       "model": {
         "model": "mock"
       },
@@ -93,7 +93,7 @@
           "confidence": 0.18
         }
       },
-      "bureauLatencyMs": 770,
+      "bureauLatencyMs": 772,
       "pFraudEstimate": 0.32,
       "evApproveUsd": -175.76,
       "confidence": 0.18,
@@ -101,16 +101,16 @@
         "inputTokens": 999,
         "outputTokens": 220,
         "calls": 2,
-        "elapsedMs": 959
+        "elapsedMs": 948
       }
     },
     {
       "schemaVersion": 1,
       "domain": "checkout",
-      "runIndex": 0,
+      "runIndex": 1,
       "provider": "mock",
       "scenario": "bopis-edge",
-      "timestamp": "2026-09-18T07:32:18.526Z",
+      "timestamp": "2026-09-18T07:32:22.060Z",
       "model": {
         "model": "mock"
       },
@@ -190,7 +190,7 @@
           "confidence": 0.72
         }
       },
-      "bureauLatencyMs": 404,
+      "bureauLatencyMs": 494,
       "pFraudEstimate": 0.079,
       "evApproveUsd": 20.762,
       "confidence": 0.72,
@@ -198,16 +198,16 @@
         "inputTokens": 993,
         "outputTokens": 218,
         "calls": 2,
-        "elapsedMs": 580
+        "elapsedMs": 644
       }
     },
     {
       "schemaVersion": 1,
       "domain": "checkout",
-      "runIndex": 0,
+      "runIndex": 1,
       "provider": "mock",
       "scenario": "bureau-contradiction",
-      "timestamp": "2026-09-18T07:32:19.445Z",
+      "timestamp": "2026-09-18T07:32:22.802Z",
       "model": {
         "model": "mock"
       },
@@ -287,7 +287,7 @@
           "confidence": 0.35
         }
       },
-      "bureauLatencyMs": 787,
+      "bureauLatencyMs": 573,
       "pFraudEstimate": 0.513,
       "evApproveUsd": -534.044,
       "confidence": 0.35,
@@ -295,16 +295,16 @@
         "inputTokens": 1004,
         "outputTokens": 220,
         "calls": 2,
-        "elapsedMs": 918
+        "elapsedMs": 741
       }
     },
     {
       "schemaVersion": 1,
       "domain": "checkout",
-      "runIndex": 0,
+      "runIndex": 1,
       "provider": "mock",
       "scenario": "clean-repeat-buyer",
-      "timestamp": "2026-09-18T07:32:19.536Z",
+      "timestamp": "2026-09-18T07:32:22.887Z",
       "model": {
         "model": "mock"
       },
@@ -359,16 +359,16 @@
         "inputTokens": 525,
         "outputTokens": 113,
         "calls": 1,
-        "elapsedMs": 90
+        "elapsedMs": 84
       }
     },
     {
       "schemaVersion": 1,
       "domain": "checkout",
-      "runIndex": 0,
+      "runIndex": 1,
       "provider": "mock",
       "scenario": "stolen-card-pattern",
-      "timestamp": "2026-09-18T07:32:19.621Z",
+      "timestamp": "2026-09-18T07:32:22.953Z",
       "model": {
         "model": "mock"
       },
@@ -423,16 +423,16 @@
         "inputTokens": 520,
         "outputTokens": 115,
         "calls": 1,
-        "elapsedMs": 85
+        "elapsedMs": 66
       }
     },
     {
       "schemaVersion": 1,
       "domain": "checkout",
-      "runIndex": 0,
+      "runIndex": 1,
       "provider": "mock",
       "scenario": "thin-file-new-customer",
-      "timestamp": "2026-09-18T07:32:20.465Z",
+      "timestamp": "2026-09-18T07:32:23.437Z",
       "model": {
         "model": "mock"
       },
@@ -512,7 +512,7 @@
           "confidence": 0.55
         }
       },
-      "bureauLatencyMs": 677,
+      "bureauLatencyMs": 306,
       "pFraudEstimate": 0.29600000000000004,
       "evApproveUsd": -67.52800000000002,
       "confidence": 0.55,
@@ -520,7 +520,7 @@
         "inputTokens": 1004,
         "outputTokens": 220,
         "calls": 2,
-        "elapsedMs": 843
+        "elapsedMs": 483
       }
     }
   ]

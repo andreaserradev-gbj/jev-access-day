@@ -28,6 +28,10 @@ export interface JestFailure {
   lastCommits: string[];
   /** CI environment notes: node version, db healthy, broker healthy... */
   environment?: Record<string, string | boolean>;
+  /** Test-source snippet the CI record can attach, if the runner captures it. */
+  testSourceExcerpt?: string;
+  /** CI history: flake counts, rerun outcomes — evidence for flake judgments. */
+  history?: Record<string, string | number>;
 }
 
 export function buildTriageState(failure: JestFailure): Record<string, unknown> {
@@ -43,6 +47,8 @@ export function buildTriageState(failure: JestFailure): Record<string, unknown> 
       retry_count: failure.ciRetryCount,
     },
     recent_commits: failure.lastCommits,
+    ...(failure.testSourceExcerpt ? { test_source: failure.testSourceExcerpt } : {}),
+    ...(failure.history ? { history: failure.history } : {}),
     ...(failure.environment ? { environment: failure.environment } : {}),
   };
 }

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "provider": "mock",
   "domain": "triage",
-  "runIndex": 0,
+  "runIndex": 2,
   "model": {
     "model": "mock"
   },
@@ -10,10 +10,10 @@
     {
       "schemaVersion": 1,
       "domain": "triage",
-      "runIndex": 0,
+      "runIndex": 2,
       "provider": "mock",
       "scenario": "ambiguous-failure",
-      "timestamp": "2026-09-18T07:32:15.541Z",
+      "timestamp": "2026-09-18T07:32:16.562Z",
       "model": {
         "model": "mock"
       },
@@ -63,16 +63,16 @@
         "inputTokens": 554,
         "outputTokens": 135,
         "calls": 1,
-        "elapsedMs": 83
+        "elapsedMs": 88
       }
     },
     {
       "schemaVersion": 1,
       "domain": "triage",
-      "runIndex": 0,
+      "runIndex": 2,
       "provider": "mock",
       "scenario": "bad-test",
-      "timestamp": "2026-09-18T07:32:15.614Z",
+      "timestamp": "2026-09-18T07:32:16.643Z",
       "model": {
         "model": "mock"
       },
@@ -122,16 +122,16 @@
         "inputTokens": 536,
         "outputTokens": 133,
         "calls": 1,
-        "elapsedMs": 73
+        "elapsedMs": 81
       }
     },
     {
       "schemaVersion": 1,
       "domain": "triage",
-      "runIndex": 0,
+      "runIndex": 2,
       "provider": "mock",
       "scenario": "environment-drift",
-      "timestamp": "2026-09-18T07:32:15.675Z",
+      "timestamp": "2026-09-18T07:32:16.706Z",
       "model": {
         "model": "mock"
       },
@@ -181,16 +181,16 @@
         "inputTokens": 530,
         "outputTokens": 134,
         "calls": 1,
-        "elapsedMs": 61
+        "elapsedMs": 62
       }
     },
     {
       "schemaVersion": 1,
       "domain": "triage",
-      "runIndex": 0,
+      "runIndex": 2,
       "provider": "mock",
       "scenario": "error-contract-regression",
-      "timestamp": "2026-09-18T07:32:15.774Z",
+      "timestamp": "2026-09-18T07:32:16.795Z",
       "model": {
         "model": "mock"
       },
@@ -240,16 +240,16 @@
         "inputTokens": 579,
         "outputTokens": 135,
         "calls": 1,
-        "elapsedMs": 99
+        "elapsedMs": 89
       }
     },
     {
       "schemaVersion": 1,
       "domain": "triage",
-      "runIndex": 0,
+      "runIndex": 2,
       "provider": "mock",
       "scenario": "infra-outage",
-      "timestamp": "2026-09-18T07:32:15.859Z",
+      "timestamp": "2026-09-18T07:32:16.887Z",
       "model": {
         "model": "mock"
       },
@@ -299,16 +299,16 @@
         "inputTokens": 546,
         "outputTokens": 133,
         "calls": 1,
-        "elapsedMs": 84
+        "elapsedMs": 92
       }
     },
     {
       "schemaVersion": 1,
       "domain": "triage",
-      "runIndex": 0,
+      "runIndex": 2,
       "provider": "mock",
       "scenario": "known-flake",
-      "timestamp": "2026-09-18T07:32:15.923Z",
+      "timestamp": "2026-09-18T07:32:16.983Z",
       "model": {
         "model": "mock"
       },
@@ -358,7 +358,7 @@
         "inputTokens": 551,
         "outputTokens": 133,
         "calls": 1,
-        "elapsedMs": 64
+        "elapsedMs": 96
       }
     }
   ]

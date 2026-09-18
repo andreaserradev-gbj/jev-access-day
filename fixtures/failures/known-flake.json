@@ -11,5 +11,12 @@
   },
   "ciRetryCount": 2,
   "lastCommits": ["test: extract concurrency suite", "chore: bump kafkajs to 2.2.4"],
-  "environment": { "mysql_healthy": true, "kafka_healthy": true, "node": "24.19.0" }
+  "environment": { "mysql_healthy": true, "kafka_healthy": true, "node": "24.19.0" },
+  "history": {
+    "flakedRunsLast7d": 5,
+    "passedOnRetryLast7d": 5,
+    "sameTestIdRerunPassRate": "5/5",
+    "lastGreenRun": "2026-09-17T08:14:00Z",
+    "note": "identical 409-vs-200 race assertion has flaked and passed on retry 5 times this week with no related commits"
+  }
 }
