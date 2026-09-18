@@ -6,6 +6,7 @@ import { runEval, resolveMaxRequests, SpendCapError, buildReportMarkdown } from 
 import { summarizeRecords } from './metrics.js';
 import { EXPECTATIONS } from './expectations.js';
 import { assertSafeTag, RUN_RECORD_SCHEMA_VERSION } from './run-record.js';
+import { buildComparison } from './compare.js';
 import type { EvalDomain, RunFilePayload, RunRecord } from './run-record.js';
 
 /**
@@ -16,6 +17,10 @@ import type { EvalDomain, RunFilePayload, RunRecord } from './run-record.js';
  *
  * Offline report regeneration from persisted run files (no provider calls):
  *   npm run eval -- --report-from=results/2026-09-18
+ *
+ * Offline adjudication view: per-scenario × per-question provider comparison
+ * against the mock anchor (also no provider calls):
+ *   npm run eval -- --compare-from=results/2026-09-18-postfix
  *
  * Spend cap: EVAL_MAX_REQUESTS env (or --max-requests=N) aborts the run when
  * the client would exceed N provider requests. Unset = no cap.
@@ -104,6 +109,16 @@ async function main(): Promise<void> {
   const reportFromArg = args.find((a) => a.startsWith('--report-from='));
   if (reportFromArg) {
     await reportFrom(reportFromArg.split('=')[1]!);
+    return;
+  }
+  const compareFromArg = args.find((a) => a.startsWith('--compare-from='));
+  if (compareFromArg) {
+    const dir = compareFromArg.split('=')[1]!;
+    const { markdown, domains } = buildComparison(dir);
+    const { writeFileSync } = await import('node:fs');
+    const file = join(dir, 'comparison.md');
+    writeFileSync(file, markdown, 'utf8');
+    console.log(`compare-from: wrote ${file} (domains: ${domains.join(', ')})`);
     return;
   }
 
