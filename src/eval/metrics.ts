@@ -30,7 +30,9 @@ import type { Expectations } from './expectations.js';
  * loudly zero rather than silently wrong.
  */
 export const PRICING_USD_PER_MTOK: Record<string, { input: number; output: number }> = {
-  'jev-latest': { input: 0, output: 0 },
+  // docs.typesafe.ai/models (verified 2026-09-18): $42 per Btok input,
+  // output tokens free. Per Mtok: 42 / 1e6 * 1e6 = $0.042.
+  'jev-latest': { input: 0.042, output: 0 },
   mock: { input: 0, output: 0 },
 };
 

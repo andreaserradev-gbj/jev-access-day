@@ -289,7 +289,7 @@ export function buildReportMarkdown(summaries: readonly DomainSummary[], meta: R
         String(s.tokens.input),
         String(s.tokens.output),
         String(s.tokens.calls),
-        s.costUsd === null ? 'n/a' : `$${s.costUsd.toFixed(4)}`,
+        s.costUsd === null ? 'n/a' : `$${s.costUsd.toFixed(6)}`,
         String(s.schemaViolations.count),
       ].join(' | '),
     );
@@ -312,7 +312,7 @@ export function buildReportMarkdown(summaries: readonly DomainSummary[], meta: R
   lines.push('## Notes');
   lines.push('');
   lines.push(
-    '- Cost for `jev-latest` uses placeholder pricing (0/0) until verified from docs.typesafe.ai (Phase 3).',
+    '- Cost for `jev-latest` priced at $0.042/Mtok input, output free (docs.typesafe.ai/models, verified 2026-09-18).',
   );
   lines.push(
     '- Calibration columns (Brier/ECE) score stated confidence against fixture outcomes; interpret per the plan: fixture scoring is agreement, the synthetic probe battery carries the calibration claim.',

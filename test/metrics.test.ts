@@ -252,7 +252,8 @@ describe('schema violations', () => {
 describe('cost', () => {
   it('priced models compute USD; unknown models render null', () => {
     expect(costUsd('mock', 1_000_000, 0)).toBe(0);
-    expect(costUsd('jev-latest', 1_000_000, 1_000_000)).toBe(0);
+    // Verified pricing: $0.042/Mtok input, output free (docs 2026-09-18).
+    expect(costUsd('jev-latest', 1_000_000, 1_000_000)).toBeCloseTo(0.042, 6);
     expect(costUsd('never-heard-of-it', 10, 10)).toBeNull();
   });
 

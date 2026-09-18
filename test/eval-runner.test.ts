@@ -189,6 +189,6 @@ describe('buildReportMarkdown', () => {
     expect(md).toContain('### llm/triage');
     expect(md).toContain('- bad-test (action needs_human ≠ fix_test)');
     expect(md).not.toContain('None. Every scored record');
-    expect(md).toContain('placeholder pricing');
+    expect(md).toContain('$0.042/Mtok input');
   });
 });
