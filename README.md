@@ -1,5 +1,7 @@
 # typesafe-lab
 
+![Measured comparison: Jev vs LLM stand-in on 24 operational decisions](demo/assets/og-card.png)
+
 A learning scaffold for [TypeSafe AI](https://typesafe.ai/)'s **System One
 models** — a new class of AI model that returns typed, calibrated decisions
 instead of generated text. The first System One model is **Jev** (early access
