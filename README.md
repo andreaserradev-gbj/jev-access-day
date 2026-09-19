@@ -2,6 +2,14 @@
 
 ![Measured comparison: Jev vs LLM stand-in on 24 operational decisions](demo/assets/og-card.png)
 
+> **Learning project, not a benchmark.** This repo exists for learning and
+> informative purposes only. Everything here was produced by one person on a
+> hobby scaffold with small sample sizes (24 decisions, 12-case flows, N=5
+> probes) — treat every number as anecdote, not evidence. Nothing here is
+> endorsed, reviewed, or affiliated with TypeSafe AI in any way. Validate all
+> information yourself against primary sources and your own experiments before
+> relying on it.
+
 A learning scaffold for [TypeSafe AI](https://typesafe.ai/)'s **System One
 models** — a new class of AI model that returns typed, calibrated decisions
 instead of generated text. The first System One model is **Jev** (early access
@@ -291,3 +299,12 @@ scripts carry the same convention. Committed tags mark measurement days:
   Primitives → Confidence → How to build → Patterns)
 - Evals: https://evals.typesafe.ai/
 - SDK: `@typesafe-ai/sdk` (npm), https://github.com/typesafe-ai/typesafe-sdk-js
+## License & disclaimer
+
+MIT — see [LICENSE](LICENSE).
+
+This repository is a personal learning project: informal, non-commercial, and
+unaffiliated with TypeSafe AI. Measured numbers reflect one harness, small
+samples, and specific fixtures on specific days; they are not a benchmark of
+any product. Do not treat any content here as advice — verify everything
+independently.
