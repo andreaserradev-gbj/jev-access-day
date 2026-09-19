@@ -15,6 +15,9 @@ models** — a new class of AI model that returns typed, calibrated decisions
 instead of generated text. The first System One model is **Jev** (early access
 via waitlist).
 
+**Live demo**: the full measured comparison as an interactive page —
+**[jev-access-day.vercel.app](https://jev-access-day.vercel.app/)**
+
 This project is the instrument, not the experiment: it taught the paradigm
 against a mock and an LLM stand-in, then became the eval harness that measured
 the real Jev in a live comparison day (2026-09-18). All measured numbers below
