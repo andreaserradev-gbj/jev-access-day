@@ -1,0 +1,551 @@
+{
+  "schemaVersion": 1,
+  "provider": "mock",
+  "domain": "triage",
+  "runIndex": 0,
+  "model": {
+    "model": "mock"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "ambiguous-failure",
+      "timestamp": "2026-09-19T04:43:46.981Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.52
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.61
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.44
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "real_regression": 0.42,
+            "bad_test": 0.31,
+            "environment": 0.19,
+            "infra": 0.08
+          },
+          "confidence": 0.24
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.98,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.36,
+            "1": 0.34,
+            "2": 0.3
+          },
+          "confidence": 0.11
+        }
+      },
+      "confidence": 0.24,
+      "usage": {
+        "inputTokens": 554,
+        "outputTokens": 135,
+        "calls": 1,
+        "elapsedMs": 89
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "bad-test-v2",
+      "timestamp": "2026-09-19T04:43:47.065Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "fix_test",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.18
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.31
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.05
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "bad_test": 0.74,
+            "real_regression": 0.14,
+            "environment": 0.09,
+            "infra": 0.03
+          },
+          "confidence": 0.66
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.44,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.58,
+            "1": 0.35,
+            "2": 0.07
+          },
+          "confidence": 0.58
+        }
+      },
+      "confidence": 0.66,
+      "usage": {
+        "inputTokens": 793,
+        "outputTokens": 133,
+        "calls": 1,
+        "elapsedMs": 84
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "bad-test",
+      "timestamp": "2026-09-19T04:43:47.131Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "fix_test",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.18
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.31
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.05
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "bad_test": 0.74,
+            "real_regression": 0.14,
+            "environment": 0.09,
+            "infra": 0.03
+          },
+          "confidence": 0.66
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.44,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.58,
+            "1": 0.35,
+            "2": 0.07
+          },
+          "confidence": 0.58
+        }
+      },
+      "confidence": 0.66,
+      "usage": {
+        "inputTokens": 613,
+        "outputTokens": 133,
+        "calls": 1,
+        "elapsedMs": 66
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "environment-drift",
+      "timestamp": "2026-09-19T04:43:47.213Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "requeue_environment",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.41
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.22
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.11
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "environment",
+          "probabilities": {
+            "environment": 0.79,
+            "infra": 0.13,
+            "bad_test": 0.06,
+            "real_regression": 0.02
+          },
+          "confidence": 0.73
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.28,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.74,
+            "1": 0.23,
+            "2": 0.03
+          },
+          "confidence": 0.7
+        }
+      },
+      "confidence": 0.73,
+      "usage": {
+        "inputTokens": 530,
+        "outputTokens": 134,
+        "calls": 1,
+        "elapsedMs": 82
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "error-contract-regression-v2",
+      "timestamp": "2026-09-19T04:43:47.280Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "file_regression_p1",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.06
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.94
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.87
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "real_regression": 0.82,
+            "bad_test": 0.11,
+            "environment": 0.06,
+            "infra": 0.01
+          },
+          "confidence": 0.78
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.62,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.05,
+            "1": 0.33,
+            "2": 0.62
+          },
+          "confidence": 0.71
+        }
+      },
+      "confidence": 0.78,
+      "usage": {
+        "inputTokens": 743,
+        "outputTokens": 135,
+        "calls": 1,
+        "elapsedMs": 67
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "error-contract-regression",
+      "timestamp": "2026-09-19T04:43:47.377Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "file_regression_p1",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.06
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.94
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.87
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "real_regression": 0.82,
+            "bad_test": 0.11,
+            "environment": 0.06,
+            "infra": 0.01
+          },
+          "confidence": 0.78
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.62,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.05,
+            "1": 0.33,
+            "2": 0.62
+          },
+          "confidence": 0.71
+        }
+      },
+      "confidence": 0.78,
+      "usage": {
+        "inputTokens": 579,
+        "outputTokens": 135,
+        "calls": 1,
+        "elapsedMs": 97
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "infra-outage",
+      "timestamp": "2026-09-19T04:43:47.447Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "restart_infra",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.55
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.09
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.04
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "infra",
+          "probabilities": {
+            "infra": 0.88,
+            "environment": 0.09,
+            "bad_test": 0.02,
+            "real_regression": 0.01
+          },
+          "confidence": 0.81
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.35,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.66,
+            "1": 0.31,
+            "2": 0.03
+          },
+          "confidence": 0.69
+        }
+      },
+      "confidence": 0.81,
+      "usage": {
+        "inputTokens": 546,
+        "outputTokens": 133,
+        "calls": 1,
+        "elapsedMs": 70
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "known-flake-v2",
+      "timestamp": "2026-09-19T04:43:47.523Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "auto_retry",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.93
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.12
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.08
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "infra",
+          "probabilities": {
+            "infra": 0.71,
+            "environment": 0.19,
+            "bad_test": 0.08,
+            "real_regression": 0.02
+          },
+          "confidence": 0.62
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.21,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.79,
+            "1": 0.19,
+            "2": 0.02
+          },
+          "confidence": 0.77
+        }
+      },
+      "confidence": 0.62,
+      "usage": {
+        "inputTokens": 734,
+        "outputTokens": 133,
+        "calls": 1,
+        "elapsedMs": 76
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "known-flake",
+      "timestamp": "2026-09-19T04:43:47.589Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "action": "auto_retry",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.93
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.12
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.08
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "infra",
+          "probabilities": {
+            "infra": 0.71,
+            "environment": 0.19,
+            "bad_test": 0.08,
+            "real_regression": 0.02
+          },
+          "confidence": 0.62
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.21,
+          "legend": {
+            "0": "patch-level annoyance",
+            "1": "degraded feature",
+            "2": "data-loss or payment risk"
+          },
+          "probabilities": {
+            "0": 0.79,
+            "1": 0.19,
+            "2": 0.02
+          },
+          "confidence": 0.77
+        }
+      },
+      "confidence": 0.62,
+      "usage": {
+        "inputTokens": 613,
+        "outputTokens": 133,
+        "calls": 1,
+        "elapsedMs": 66
+      }
+    }
+  ]
+}

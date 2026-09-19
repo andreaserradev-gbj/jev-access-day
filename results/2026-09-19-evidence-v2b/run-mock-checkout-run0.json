@@ -1,0 +1,631 @@
+{
+  "schemaVersion": 1,
+  "provider": "mock",
+  "domain": "checkout",
+  "runIndex": 0,
+  "model": {
+    "model": "mock"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "ambiguous-checkout",
+      "timestamp": "2026-09-19T04:43:49.962Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.36,
+          "legend": {
+            "0": "no signals",
+            "1": "mild signals",
+            "2": "elevated",
+            "3": "strong",
+            "4": "overwhelming"
+          },
+          "probabilities": {
+            "0": 0.15,
+            "1": 0.56,
+            "2": 0.23,
+            "3": 0.05,
+            "4": 0.01
+          },
+          "confidence": 0.58
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.64
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.51
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.61,
+            "clear": 0.24,
+            "suspicious": 0.15
+          },
+          "confidence": 0.44
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.57
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 1.48,
+          "legend": {
+            "0": "strong affordability",
+            "1": "adequate",
+            "2": "stretched",
+            "3": "distressed"
+          },
+          "probabilities": {
+            "0": 0.13,
+            "1": 0.52,
+            "2": 0.29,
+            "3": 0.06
+          },
+          "confidence": 0.42
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "step_up",
+          "probabilities": {
+            "step_up": 0.42,
+            "approve": 0.31,
+            "review": 0.19,
+            "decline": 0.08
+          },
+          "confidence": 0.18
+        }
+      },
+      "bureauLatencyMs": 792,
+      "pFraudEstimate": 0.32,
+      "evApproveUsd": -175.76,
+      "confidence": 0.18,
+      "usage": {
+        "inputTokens": 999,
+        "outputTokens": 220,
+        "calls": 2,
+        "elapsedMs": 929
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "bopis-edge-v2",
+      "timestamp": "2026-09-19T04:43:50.424Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "approve",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.05,
+          "legend": {
+            "0": "no signals",
+            "1": "mild signals",
+            "2": "elevated",
+            "3": "strong",
+            "4": "overwhelming"
+          },
+          "probabilities": {
+            "0": 0.19,
+            "1": 0.63,
+            "2": 0.16,
+            "3": 0.02,
+            "4": 0
+          },
+          "confidence": 0.6
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.79
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.27
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "clear",
+          "probabilities": {
+            "clear": 0.52,
+            "ambiguous": 0.39,
+            "suspicious": 0.09
+          },
+          "confidence": 0.32
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.77
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 1.18,
+          "legend": {
+            "0": "strong affordability",
+            "1": "adequate",
+            "2": "stretched",
+            "3": "distressed"
+          },
+          "probabilities": {
+            "0": 0.21,
+            "1": 0.6,
+            "2": 0.17,
+            "3": 0.02
+          },
+          "confidence": 0.66
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "approve",
+          "probabilities": {
+            "approve": 0.8,
+            "step_up": 0.15,
+            "review": 0.04,
+            "decline": 0.01
+          },
+          "confidence": 0.72
+        }
+      },
+      "bureauLatencyMs": 302,
+      "pFraudEstimate": 0.079,
+      "evApproveUsd": 20.762,
+      "confidence": 0.72,
+      "usage": {
+        "inputTokens": 1208,
+        "outputTokens": 218,
+        "calls": 2,
+        "elapsedMs": 460
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "bopis-edge",
+      "timestamp": "2026-09-19T04:43:51.323Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "approve",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.05,
+          "legend": {
+            "0": "no signals",
+            "1": "mild signals",
+            "2": "elevated",
+            "3": "strong",
+            "4": "overwhelming"
+          },
+          "probabilities": {
+            "0": 0.19,
+            "1": 0.63,
+            "2": 0.16,
+            "3": 0.02,
+            "4": 0
+          },
+          "confidence": 0.6
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.79
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.27
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "clear",
+          "probabilities": {
+            "clear": 0.52,
+            "ambiguous": 0.39,
+            "suspicious": 0.09
+          },
+          "confidence": 0.32
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.77
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 1.18,
+          "legend": {
+            "0": "strong affordability",
+            "1": "adequate",
+            "2": "stretched",
+            "3": "distressed"
+          },
+          "probabilities": {
+            "0": 0.21,
+            "1": 0.6,
+            "2": 0.17,
+            "3": 0.02
+          },
+          "confidence": 0.66
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "approve",
+          "probabilities": {
+            "approve": 0.8,
+            "step_up": 0.15,
+            "review": 0.04,
+            "decline": 0.01
+          },
+          "confidence": 0.72
+        }
+      },
+      "bureauLatencyMs": 734,
+      "pFraudEstimate": 0.079,
+      "evApproveUsd": 20.762,
+      "confidence": 0.72,
+      "usage": {
+        "inputTokens": 993,
+        "outputTokens": 218,
+        "calls": 2,
+        "elapsedMs": 898
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "bureau-contradiction",
+      "timestamp": "2026-09-19T04:43:52.211Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 0.44,
+          "legend": {
+            "0": "no signals",
+            "1": "mild signals",
+            "2": "elevated",
+            "3": "strong",
+            "4": "overwhelming"
+          },
+          "probabilities": {
+            "0": 0.57,
+            "1": 0.35,
+            "2": 0.07,
+            "3": 0.01,
+            "4": 0
+          },
+          "confidence": 0.74
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.88
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.62
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.54,
+            "clear": 0.35,
+            "suspicious": 0.11
+          },
+          "confidence": 0.38
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.14
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 2.52,
+          "legend": {
+            "0": "strong affordability",
+            "1": "adequate",
+            "2": "stretched",
+            "3": "distressed"
+          },
+          "probabilities": {
+            "0": 0.08,
+            "1": 0.16,
+            "2": 0.52,
+            "3": 0.24
+          },
+          "confidence": 0.56
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "review",
+          "probabilities": {
+            "approve": 0.08,
+            "step_up": 0.29,
+            "review": 0.51,
+            "decline": 0.12
+          },
+          "confidence": 0.35
+        }
+      },
+      "bureauLatencyMs": 733,
+      "pFraudEstimate": 0.513,
+      "evApproveUsd": -534.044,
+      "confidence": 0.35,
+      "usage": {
+        "inputTokens": 1047,
+        "outputTokens": 220,
+        "calls": 2,
+        "elapsedMs": 887
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "clean-repeat-buyer",
+      "timestamp": "2026-09-19T04:43:52.279Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "stage1Route": "approve_fast_path",
+      "bureauCalled": false,
+      "finalAction": "approve",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 0.18,
+          "legend": {
+            "0": "no signals",
+            "1": "mild signals",
+            "2": "elevated",
+            "3": "strong",
+            "4": "overwhelming"
+          },
+          "probabilities": {
+            "0": 0.83,
+            "1": 0.15,
+            "2": 0.02,
+            "3": 0,
+            "4": 0
+          },
+          "confidence": 0.84
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.97
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.09
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "clear",
+          "probabilities": {
+            "clear": 0.88,
+            "ambiguous": 0.08,
+            "suspicious": 0.04
+          },
+          "confidence": 0.87
+        }
+      },
+      "stage3Answers": null,
+      "bureauLatencyMs": null,
+      "pFraudEstimate": null,
+      "evApproveUsd": null,
+      "confidence": 0.87,
+      "usage": {
+        "inputTokens": 525,
+        "outputTokens": 113,
+        "calls": 1,
+        "elapsedMs": 68
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "stolen-card-pattern",
+      "timestamp": "2026-09-19T04:43:52.344Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "stage1Route": "decline_fast_path",
+      "bureauCalled": false,
+      "finalAction": "decline",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 3.31,
+          "legend": {
+            "0": "no signals",
+            "1": "mild signals",
+            "2": "elevated",
+            "3": "strong",
+            "4": "overwhelming"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0.02,
+            "2": 0.13,
+            "3": 0.61,
+            "4": 0.24
+          },
+          "confidence": 0.72
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.11
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.92
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "suspicious",
+          "probabilities": {
+            "suspicious": 0.89,
+            "ambiguous": 0.09,
+            "clear": 0.02
+          },
+          "confidence": 0.79
+        }
+      },
+      "stage3Answers": null,
+      "bureauLatencyMs": null,
+      "pFraudEstimate": null,
+      "evApproveUsd": null,
+      "confidence": 0.79,
+      "usage": {
+        "inputTokens": 520,
+        "outputTokens": 115,
+        "calls": 1,
+        "elapsedMs": 65
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 0,
+      "provider": "mock",
+      "scenario": "thin-file-new-customer",
+      "timestamp": "2026-09-19T04:43:52.995Z",
+      "model": {
+        "model": "mock"
+      },
+      "responseModel": "mock",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "step_up",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.24,
+          "legend": {
+            "0": "no signals",
+            "1": "mild signals",
+            "2": "elevated",
+            "3": "strong",
+            "4": "overwhelming"
+          },
+          "probabilities": {
+            "0": 0.14,
+            "1": 0.58,
+            "2": 0.24,
+            "3": 0.04,
+            "4": 0
+          },
+          "confidence": 0.55
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.71
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.38
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.56,
+            "clear": 0.33,
+            "suspicious": 0.11
+          },
+          "confidence": 0.41
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.68
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 1.61,
+          "legend": {
+            "0": "strong affordability",
+            "1": "adequate",
+            "2": "stretched",
+            "3": "distressed"
+          },
+          "probabilities": {
+            "0": 0.08,
+            "1": 0.3,
+            "2": 0.54,
+            "3": 0.08
+          },
+          "confidence": 0.52
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "step_up",
+          "probabilities": {
+            "step_up": 0.52,
+            "approve": 0.28,
+            "review": 0.15,
+            "decline": 0.05
+          },
+          "confidence": 0.55
+        }
+      },
+      "bureauLatencyMs": 480,
+      "pFraudEstimate": 0.29600000000000004,
+      "evApproveUsd": -67.52800000000002,
+      "confidence": 0.55,
+      "usage": {
+        "inputTokens": 1004,
+        "outputTokens": 220,
+        "calls": 2,
+        "elapsedMs": 650
+      }
+    }
+  ]
+}

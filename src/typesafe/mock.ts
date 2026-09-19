@@ -23,10 +23,14 @@ export type MockScenarioId =
   | 'bad-test'
   | 'environment-drift'
   | 'ambiguous-failure'
+  | 'known-flake-v2'
+  | 'error-contract-regression-v2'
+  | 'bad-test-v2'
   | 'clean-repeat-buyer'
   | 'thin-file-new-customer'
   | 'stolen-card-pattern'
   | 'bopis-edge'
+  | 'bopis-edge-v2'
   | 'bureau-contradiction'
   | 'ambiguous-checkout'
   | 'nsf-transient'
@@ -38,6 +42,7 @@ export type MockScenarioId =
   | 'patch-lockfile-only'
   | 'minor-transitive-safe'
   | 'major-runtime-breaking'
+  | 'major-runtime-breaking-v2'
   | 'direct-ssrf-untrusted'
   | 'gray-zone-reachable-admin'
   | 'unsound-lockfile-drift';
@@ -62,7 +67,43 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
       confidence: 0.77,
     },
   },
+  'known-flake-v2': {
+    is_known_flake_pattern: { type: 'noul', noul: 0.93 },
+    asserts_error_contract: { type: 'noul', noul: 0.12 },
+    plausibly_from_commit: { type: 'noul', noul: 0.08 },
+    failure_category: {
+      type: 'choice',
+      choice: 'infra',
+      probabilities: { infra: 0.71, environment: 0.19, bad_test: 0.08, real_regression: 0.02 },
+      confidence: 0.62,
+    },
+    regression_severity: {
+      type: 'score',
+      score: 0.21,
+      legend: { '0': 'patch-level annoyance', '1': 'degraded feature', '2': 'data-loss or payment risk' },
+      probabilities: { '0': 0.79, '1': 0.19, '2': 0.02 },
+      confidence: 0.77,
+    },
+  },
   'error-contract-regression': {
+    is_known_flake_pattern: { type: 'noul', noul: 0.06 },
+    asserts_error_contract: { type: 'noul', noul: 0.94 },
+    plausibly_from_commit: { type: 'noul', noul: 0.87 },
+    failure_category: {
+      type: 'choice',
+      choice: 'real_regression',
+      probabilities: { real_regression: 0.82, bad_test: 0.11, environment: 0.06, infra: 0.01 },
+      confidence: 0.78,
+    },
+    regression_severity: {
+      type: 'score',
+      score: 1.62,
+      legend: { '0': 'patch-level annoyance', '1': 'degraded feature', '2': 'data-loss or payment risk' },
+      probabilities: { '0': 0.05, '1': 0.33, '2': 0.62 },
+      confidence: 0.71,
+    },
+  },
+  'error-contract-regression-v2': {
     is_known_flake_pattern: { type: 'noul', noul: 0.06 },
     asserts_error_contract: { type: 'noul', noul: 0.94 },
     plausibly_from_commit: { type: 'noul', noul: 0.87 },
@@ -99,6 +140,24 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
     },
   },
   'bad-test': {
+    is_known_flake_pattern: { type: 'noul', noul: 0.18 },
+    asserts_error_contract: { type: 'noul', noul: 0.31 },
+    plausibly_from_commit: { type: 'noul', noul: 0.05 },
+    failure_category: {
+      type: 'choice',
+      choice: 'bad_test',
+      probabilities: { bad_test: 0.74, real_regression: 0.14, environment: 0.09, infra: 0.03 },
+      confidence: 0.66,
+    },
+    regression_severity: {
+      type: 'score',
+      score: 0.44,
+      legend: { '0': 'patch-level annoyance', '1': 'degraded feature', '2': 'data-loss or payment risk' },
+      probabilities: { '0': 0.58, '1': 0.35, '2': 0.07 },
+      confidence: 0.58,
+    },
+  },
+  'bad-test-v2': {
     is_known_flake_pattern: { type: 'noul', noul: 0.18 },
     asserts_error_contract: { type: 'noul', noul: 0.31 },
     plausibly_from_commit: { type: 'noul', noul: 0.05 },
@@ -220,6 +279,37 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
     },
   },
   'bopis-edge': {
+    fraud_signal_strength: {
+      type: 'score',
+      score: 1.05,
+      legend: { '0': 'no signals', '1': 'mild signals', '2': 'elevated', '3': 'strong', '4': 'overwhelming' },
+      probabilities: { '0': 0.19, '1': 0.63, '2': 0.16, '3': 0.02, '4': 0.0 },
+      confidence: 0.6,
+    },
+    profile_consistency: { type: 'noul', noul: 0.79 },
+    basket_anomaly: { type: 'noul', noul: 0.27 },
+    risk_band: {
+      type: 'choice',
+      choice: 'clear',
+      probabilities: { clear: 0.52, ambiguous: 0.39, suspicious: 0.09 },
+      confidence: 0.32,
+    },
+    bureau_consistent_with_history: { type: 'noul', noul: 0.77 },
+    affordability_signal: {
+      type: 'score',
+      score: 1.18,
+      legend: { '0': 'strong affordability', '1': 'adequate', '2': 'stretched', '3': 'distressed' },
+      probabilities: { '0': 0.21, '1': 0.6, '2': 0.17, '3': 0.02 },
+      confidence: 0.66,
+    },
+    final_action: {
+      type: 'choice',
+      choice: 'approve',
+      probabilities: { approve: 0.8, step_up: 0.15, review: 0.04, decline: 0.01 },
+      confidence: 0.72,
+    },
+  },
+  'bopis-edge-v2': {
     fraud_signal_strength: {
       type: 'score',
       score: 1.05,
@@ -485,6 +575,27 @@ const MOCK_ANSWERS: Record<MockScenarioId, Answers> = {
     },
   },
   'major-runtime-breaking': {
+    attack_path_exposure: {
+      type: 'choice',
+      choice: 'indirect',
+      probabilities: { indirect: 0.62, none: 0.26, direct: 0.12 },
+      confidence: 0.54,
+    },
+    semver_triviality: {
+      type: 'choice',
+      choice: 'breaking',
+      probabilities: { breaking: 0.88, routine: 0.09, trivial: 0.03 },
+      confidence: 0.81,
+    },
+    runtime_code_touched: { type: 'noul', noul: 0.88 },
+    change_soundness: {
+      type: 'choice',
+      choice: 'sound',
+      probabilities: { sound: 0.64, sloppy: 0.36 },
+      confidence: 0.52,
+    },
+  },
+  'major-runtime-breaking-v2': {
     attack_path_exposure: {
       type: 'choice',
       choice: 'indirect',

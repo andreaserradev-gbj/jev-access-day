@@ -1,0 +1,26 @@
+{
+  "scenario": "error-contract-regression-v2",
+  "suite": "create.suite.ts",
+  "testName": "answers 409 for a duplicate productToken",
+  "expected": {
+    "status": 409,
+    "errorName": "Conflict",
+    "body": { "message": "Product with token TKN-A already exists", "error": "Conflict", "statusCode": 409 }
+  },
+  "received": {
+    "status": 400,
+    "errorName": "Bad Request",
+    "body": { "message": "productToken must be a string", "error": "Bad Request", "statusCode": 400 },
+    "stackExcerpt": "expected 400 to equal 409"
+  },
+  "ciRetryCount": 0,
+  "lastCommits": ["refactor: move DTO validation into service layer", "docs: expand README errors section"],
+  "environment": { "db": "ecommerce_test", "node": "24.19.0" },
+  "impact": {
+    "endpointVisibility": "public API — product create is consumed by 3 external partner integrations pinned to documented status codes",
+    "contractDocumentation": "409 is a documented, versioned API contract in the public OpenAPI spec; consumers branch on it",
+    "workaround": "none on the consumer side — a 400 body cannot be distinguished from a malformed request",
+    "releaseGating": "error-contract suite is release-gating; the wrong status silently corrupts partner idempotency handling",
+    "blastRadiusNote": "every duplicate-create from all partners fails wrongly until patched; severity anchors to data-corruption-of-integration-state, not test annoyance"
+  }
+}

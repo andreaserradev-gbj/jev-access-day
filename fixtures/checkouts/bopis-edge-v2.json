@@ -1,0 +1,39 @@
+{
+  "checkout": {
+    "scenario": "bopis-edge-v2",
+    "order": {
+      "totalUsd": 310.0,
+      "itemCount": 2,
+      "items": ["stand mixer", "pasta extruder"],
+      "fulfilment": "bopis"
+    },
+    "profile": {
+      "accountAgeDays": 58,
+      "lifetimeOrders": 2,
+      "lifetimeSpendUsd": 96.0,
+      "name": "Elena Ferrari",
+      "addressCity": "Bologna",
+      "phoneVerified": true,
+      "emailDomain": "libero.it"
+    },
+    "session": {
+      "device": "known laptop, saved wifi",
+      "ipCountry": "IT",
+      "shippedCountry": "IT",
+      "enteredCardManually": true,
+      "minutesOnSite": 22
+    },
+    "context": {
+      "scheduledDeliveriesToday": [],
+      "promoAbuseFlagsLast90d": 1
+    }
+  },
+  "fulfilmentRisk": {
+    "channel": "bopis",
+    "note": "buy-online-pickup-in-store: goods are handed over at the Bologna counter against government-issued photo ID matched to the order name; card-present liability shift applies at handover, so stolen-card online fraud cannot be completed through this channel"
+  },
+  "contextNotes": {
+    "promoAbuseFlagsLast90d": "single flag is a 90-day-old coupon-stacking warning, expired, no chargebacks ever"
+  },
+  "economics": { "marginUsd": 62.0, "fraudLossUsd": 310.0, "ltvAtRiskUsd": 150.0 }
+}

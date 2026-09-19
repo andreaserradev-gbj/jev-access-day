@@ -50,5 +50,26 @@ export function buildTriageState(failure: JestFailure): Record<string, unknown> 
     ...(failure.testSourceExcerpt ? { test_source: failure.testSourceExcerpt } : {}),
     ...(failure.history ? { history: failure.history } : {}),
     ...(failure.environment ? { environment: failure.environment } : {}),
+    // Open forwarding: any extra evidence block on the fixture (impact,
+    // testPractice, flakeRegistry, ...) rides along verbatim. Evidence the
+    // fixture carries must reach the model — a dropped block silently
+    // invalidates every conclusion drawn from the run.
+    ...Object.fromEntries(
+      Object.entries(failure).filter(
+        ([key]) =>
+          ![
+            'scenario',
+            'suite',
+            'testName',
+            'expected',
+            'received',
+            'ciRetryCount',
+            'lastCommits',
+            'testSourceExcerpt',
+            'history',
+            'environment',
+          ].includes(key),
+      ),
+    ),
   };
 }

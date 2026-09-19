@@ -53,6 +53,8 @@ export interface PrFixture {
     lockfileConsistent: boolean;
     ciStatus: 'green' | 'red' | 'pending';
     protectedBranch: boolean;
+    /** Optional procedural context for a pending CI (branch age, suite duration). */
+    ciNote?: string;
   };
   /** Reviewer-LLM stub table: verdicts keyed by scenario (no network). */
   reviewerVerdict?: {
@@ -60,6 +62,8 @@ export interface PrFixture {
     confidence: number;
     rationale: string;
   };
+  /** Open evidence extension: migration guides, provenance notes, etc. */
+  [key: string]: unknown;
 }
 
 /** Deterministic stub reviewer: typed verdict, no network, latency simulated. */
@@ -82,5 +86,13 @@ export function buildPrState(fixture: PrFixture): Record<string, unknown> {
     pr: fixture.pr,
     dependency: fixture.dependency,
     repo: fixture.repo,
+    ...(fixture.reviewerVerdict === undefined
+      ? {}
+      : {}),
+    ...Object.fromEntries(
+      Object.entries(fixture).filter(
+        ([key]) => !['scenario', 'pr', 'dependency', 'repo', 'reviewerVerdict'].includes(key),
+      ),
+    ),
   };
 }

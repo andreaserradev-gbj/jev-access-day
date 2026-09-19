@@ -1,0 +1,599 @@
+{
+  "schemaVersion": 1,
+  "provider": "real",
+  "domain": "checkout",
+  "runIndex": 2,
+  "model": {
+    "model": "jev-latest",
+    "resolvedModel": "jev-1.13.0"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "ambiguous-checkout",
+      "timestamp": "2026-09-19T04:44:44.139Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 2.39,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0.04,
+            "2": 0.52,
+            "3": 0.43,
+            "4": 0.01
+          },
+          "confidence": 0.59
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.73
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.76
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "ambiguous",
+          "probabilities": {
+            "ambiguous": 0.59,
+            "clear": 0.01,
+            "suspicious": 0.4
+          },
+          "confidence": 0.38
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.59
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 2.89,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0,
+            "2": 0.11,
+            "3": 0.89
+          },
+          "confidence": 0.89
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "review",
+          "probabilities": {
+            "step_up": 0.26,
+            "approve": 0,
+            "review": 0.74,
+            "decline": 0
+          },
+          "confidence": 0.65
+        }
+      },
+      "bureauLatencyMs": 641,
+      "pFraudEstimate": 0.522,
+      "evApproveUsd": -361.196,
+      "confidence": 0.65,
+      "usage": {
+        "inputTokens": 1935,
+        "outputTokens": 185,
+        "calls": 2,
+        "elapsedMs": 1474
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "bopis-edge-v2",
+      "timestamp": "2026-09-19T04:44:44.408Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "stage1Route": "approve_fast_path",
+      "bureauCalled": false,
+      "finalAction": "approve",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.17,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.16,
+            "1": 0.52,
+            "2": 0.31,
+            "3": 0.01,
+            "4": 0
+          },
+          "confidence": 0.58
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.87
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.68
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "clear",
+          "probabilities": {
+            "ambiguous": 0.13,
+            "suspicious": 0.11,
+            "clear": 0.76
+          },
+          "confidence": 0.65
+        }
+      },
+      "stage3Answers": null,
+      "bureauLatencyMs": null,
+      "pFraudEstimate": null,
+      "evApproveUsd": null,
+      "confidence": 0.65,
+      "usage": {
+        "inputTokens": 988,
+        "outputTokens": 96,
+        "calls": 1,
+        "elapsedMs": 269
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "bopis-edge",
+      "timestamp": "2026-09-19T04:44:45.539Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 2.08,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.02,
+            "1": 0.14,
+            "2": 0.59,
+            "3": 0.24,
+            "4": 0.01
+          },
+          "confidence": 0.62
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.81
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.82
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "suspicious",
+          "probabilities": {
+            "ambiguous": 0.41,
+            "suspicious": 0.47,
+            "clear": 0.12
+          },
+          "confidence": 0.21
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.54
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 2.8,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0.01,
+            "2": 0.18,
+            "3": 0.81
+          },
+          "confidence": 0.8
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "step_up",
+          "probabilities": {
+            "review": 0.46,
+            "step_up": 0.52,
+            "approve": 0.02,
+            "decline": 0
+          },
+          "confidence": 0.36
+        }
+      },
+      "bureauLatencyMs": 590,
+      "pFraudEstimate": 0.43200000000000005,
+      "evApproveUsd": -163.50400000000002,
+      "confidence": 0.36,
+      "usage": {
+        "inputTokens": 1936,
+        "outputTokens": 186,
+        "calls": 2,
+        "elapsedMs": 1131
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "bureau-contradiction",
+      "timestamp": "2026-09-19T04:44:46.500Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "review",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.57,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.13,
+            "1": 0.29,
+            "2": 0.46,
+            "3": 0.12,
+            "4": 0
+          },
+          "confidence": 0.43
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.84
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.65
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "suspicious",
+          "probabilities": {
+            "ambiguous": 0.26,
+            "suspicious": 0.62,
+            "clear": 0.12
+          },
+          "confidence": 0.44
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.55
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 2.98,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0,
+            "2": 0.02,
+            "3": 0.98
+          },
+          "confidence": 0.98
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "review",
+          "probabilities": {
+            "approve": 0,
+            "step_up": 0.36,
+            "decline": 0.02,
+            "review": 0.62
+          },
+          "confidence": 0.49
+        }
+      },
+      "bureauLatencyMs": 374,
+      "pFraudEstimate": 0.5,
+      "evApproveUsd": -516,
+      "confidence": 0.49,
+      "usage": {
+        "inputTokens": 2052,
+        "outputTokens": 185,
+        "calls": 2,
+        "elapsedMs": 960
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "clean-repeat-buyer",
+      "timestamp": "2026-09-19T04:44:46.839Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "stage1Route": "approve_fast_path",
+      "bureauCalled": false,
+      "finalAction": "approve",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 0.02,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.98,
+            "1": 0.01,
+            "2": 0.01,
+            "3": 0,
+            "4": 0
+          },
+          "confidence": 0.98
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.07
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "clear",
+          "probabilities": {
+            "suspicious": 0,
+            "clear": 1,
+            "ambiguous": 0
+          },
+          "confidence": 1
+        }
+      },
+      "stage3Answers": null,
+      "bureauLatencyMs": null,
+      "pFraudEstimate": null,
+      "evApproveUsd": null,
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 904,
+        "outputTokens": 96,
+        "calls": 1,
+        "elapsedMs": 338
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "stolen-card-pattern",
+      "timestamp": "2026-09-19T04:44:47.125Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "stage1Route": "decline_fast_path",
+      "bureauCalled": false,
+      "finalAction": "decline",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 3.93,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0.07,
+            "4": 0.93
+          },
+          "confidence": 0.94
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.15
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "suspicious",
+          "probabilities": {
+            "suspicious": 1,
+            "ambiguous": 0,
+            "clear": 0
+          },
+          "confidence": 1
+        }
+      },
+      "stage3Answers": null,
+      "bureauLatencyMs": null,
+      "pFraudEstimate": null,
+      "evApproveUsd": null,
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 893,
+        "outputTokens": 98,
+        "calls": 1,
+        "elapsedMs": 286
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "checkout",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "thin-file-new-customer",
+      "timestamp": "2026-09-19T04:44:48.472Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "stage1Route": "bureau_call",
+      "bureauCalled": true,
+      "finalAction": "step_up",
+      "stage1Answers": {
+        "fraud_signal_strength": {
+          "type": "score",
+          "score": 1.95,
+          "legend": {
+            "0": "no signals: coherent profile, normal basket, expected geography",
+            "1": "mild signals: one soft inconsistency (new account, first order, minor mismatch)",
+            "2": "elevated: several soft signals or a notable mismatch",
+            "3": "strong: multiple hard signals (geo mismatch, card entry pattern, velocity)",
+            "4": "overwhelming: classic stolen-card fingerprint, act on it"
+          },
+          "probabilities": {
+            "0": 0.01,
+            "1": 0.14,
+            "2": 0.74,
+            "3": 0.11,
+            "4": 0
+          },
+          "confidence": 0.77
+        },
+        "profile_consistency": {
+          "type": "noul",
+          "noul": 0.65
+        },
+        "basket_anomaly": {
+          "type": "noul",
+          "noul": 0.42
+        },
+        "risk_band": {
+          "type": "choice",
+          "choice": "suspicious",
+          "probabilities": {
+            "ambiguous": 0.38,
+            "suspicious": 0.61,
+            "clear": 0.01
+          },
+          "confidence": 0.42
+        }
+      },
+      "stage3Answers": {
+        "bureau_consistent_with_history": {
+          "type": "noul",
+          "noul": 0.86
+        },
+        "affordability_signal": {
+          "type": "score",
+          "score": 2.15,
+          "legend": {
+            "0": "strong affordability: routine spend for this customer",
+            "1": "adequate: affordable, nothing unusual",
+            "2": "stretched: near the top of what this profile supports",
+            "3": "distressed: beyond it, or bureau shows distress signals"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0.14,
+            "2": 0.56,
+            "3": 0.3
+          },
+          "confidence": 0.55
+        },
+        "final_action": {
+          "type": "choice",
+          "choice": "step_up",
+          "probabilities": {
+            "step_up": 0.69,
+            "decline": 0.01,
+            "review": 0.3,
+            "approve": 0
+          },
+          "confidence": 0.58
+        }
+      },
+      "bureauLatencyMs": 754,
+      "pFraudEstimate": 0.397,
+      "evApproveUsd": -102.171,
+      "confidence": 0.58,
+      "usage": {
+        "inputTokens": 1932,
+        "outputTokens": 186,
+        "calls": 2,
+        "elapsedMs": 1346
+      }
+    }
+  ]
+}

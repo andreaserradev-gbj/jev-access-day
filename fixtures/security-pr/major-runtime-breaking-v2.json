@@ -1,0 +1,41 @@
+{
+  "scenario": "major-runtime-breaking-v2",
+  "pr": {
+    "number": 4120,
+    "title": "chore(deps): bump pino 8.21.0 → 9.3.2 (major) — v9 transport migration per official guide",
+    "author": "dependabot[bot]",
+    "filesChanged": [
+      { "path": "package.json", "change": "pino ^8.21.0 → ^9.3.2", "runtimeCode": false },
+      { "path": "package-lock.json", "change": "pino + pino-abstract-transport regenerated", "runtimeCode": false },
+      { "path": "src/logger.ts", "change": "transport options migrated to v9 shapes per pino v9 migration guide §Transport", "runtimeCode": true },
+      { "path": "src/http-server.ts", "change": "request-log middleware adapted to v9 transport API per migration guide (redaction options renamed)", "runtimeCode": true }
+    ],
+    "additions": 86,
+    "deletions": 41
+  },
+  "dependency": {
+    "name": "pino",
+    "fromVersion": "8.21.0",
+    "toVersion": "9.3.2",
+    "bumpClass": "major",
+    "scope": "prod",
+    "transitive": false,
+    "advisories": [],
+    "usageNotes": [
+      "logger middleware wraps every request handler; v8→v9 changed transport + redaction option shapes",
+      "migration is deliberate: changes follow the official pino v9 migration guide step-by-step (guide §2 Transport options, §3 Redaction rename)",
+      "no behavioral change intended: log output schema is unchanged, only option shapes"
+    ]
+  },
+  "repo": {
+    "lockfileConsistent": true,
+    "ciStatus": "pending",
+    "ciNote": "CI pending is procedural: branch pushed 12 minutes ago, full suite takes ~20 minutes",
+    "protectedBranch": true
+  },
+  "reviewerVerdict": {
+    "verdict": "approve",
+    "confidence": 0.72,
+    "rationale": "Checked the diff against the official v9 migration guide: both runtime files apply the documented transport/redaction renames exactly, no behavioral drift, log schema unchanged. CI pending is procedural (12-min-old branch, ~20-min suite). Migration is sound; approve."
+  }
+}

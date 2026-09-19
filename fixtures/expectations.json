@@ -23,6 +23,18 @@
     "ambiguous-failure": {
       "action": "needs_human",
       "because": "category confidence 0.24 below the 0.5 floor — refuse to act"
+    },
+    "error-contract-regression-v2": {
+      "action": "file_regression_p1",
+      "because": "real_regression with impact evidence in-fixture (public API contract, 3 partner integrations pinned to 409, no consumer workaround, release-gating suite) — severity should read >= 1.5 P1 gate at confidence >= 0.7"
+    },
+    "bad-test-v2": {
+      "action": "fix_test",
+      "because": "bad_test category per in-fixture test-practice evidence (only test in the suite asserting raw db total, violates the documented seed-scoped isolation contract, plausibly_from_commit 0.05 < 0.5) — fix the test"
+    },
+    "known-flake-v2": {
+      "action": "auto_retry",
+      "because": "flake-registry entry in-fixture (registered 2026-09-11, FLAKE-88, zero code changes in 30 days, 5/5 pass-on-retry) — infra/environment reading with flake noul >= 0.8 retries without paging"
     }
   },
   "checkout": {
@@ -45,6 +57,11 @@
       "stage1Route": "bureau_call",
       "finalAction": "approve",
       "because": "clear band but low confidence (0.32); bureau evidence then EV-positive approve at high confidence"
+    },
+    "bopis-edge-v2": {
+      "stage1Route": "bureau_call",
+      "finalAction": "approve",
+      "because": "fulfilmentRisk evidence in-fixture (bopis = ID-checked handover, card-present liability shift, stolen-card fraud structurally impossible) plus expired-coupon note — synthesis should reach approve at confidence >= 0.7 with EV positive (margin 62 vs cutoff 62/522 ≈ 0.119 p_fraud)"
     },
     "bureau-contradiction": {
       "stage1Route": "bureau_call",
@@ -95,6 +112,10 @@
     "major-runtime-breaking": {
       "action": "needs_human",
       "because": "exposure indirect at conf 0.54 (no advisory, but logger middleware wraps every request); breaking major with 2 runtime files → needs_llm_review; stub reviewer rejects at only 0.55 < 0.6 reviewer gate, so the chain degrades to needs_human rather than auto-blocking"
+    },
+    "major-runtime-breaking-v2": {
+      "action": "approve",
+      "because": "migration-per-guide evidence in-fixture (changes follow official pino v9 migration guide, log schema unchanged, CI pending is procedural 12-min-old branch) → soundness reads sound above the 0.5 floor (no auto-reject), stays gray zone → needs_llm_review; reviewer approves at 0.72 >= 0.6 gate"
     },
     "direct-ssrf-untrusted": {
       "action": "reject",

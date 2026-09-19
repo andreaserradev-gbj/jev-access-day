@@ -1,0 +1,415 @@
+{
+  "schemaVersion": 1,
+  "provider": "real",
+  "domain": "prreview",
+  "runIndex": 0,
+  "model": {
+    "model": "jev-latest",
+    "resolvedModel": "jev-1.13.0"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "real",
+      "scenario": "direct-ssrf-untrusted",
+      "timestamp": "2026-09-19T04:44:48.804Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 1,
+            "indirect": 0,
+            "none": 0
+          },
+          "confidence": 1
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 1,
+            "breaking": 0,
+            "routine": 0
+          },
+          "confidence": 1
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.05
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 1,
+            "sloppy": 0
+          },
+          "confidence": 1
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1073,
+        "outputTokens": 137,
+        "calls": 1,
+        "elapsedMs": 332
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "real",
+      "scenario": "gray-zone-reachable-admin",
+      "timestamp": "2026-09-19T04:44:49.616Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "needs_llm_review",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "indirect",
+          "probabilities": {
+            "none": 0.02,
+            "direct": 0,
+            "indirect": 0.98
+          },
+          "confidence": 0.97
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.99,
+            "trivial": 0,
+            "routine": 0.01
+          },
+          "confidence": 0.99
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 1,
+            "sloppy": 0
+          },
+          "confidence": 1
+        }
+      },
+      "reviewerChain": {
+        "verdict": "approve",
+        "confidence": 0.71,
+        "rationale": "ReDoS payload requires adversarial markdown input; only staff in admin UI author notes, so exposure is indirect at worst. Major bump touches one runtime path but options migration is mechanical and CI is green."
+      },
+      "confidence": 0.97,
+      "usage": {
+        "inputTokens": 1106,
+        "outputTokens": 138,
+        "calls": 1,
+        "elapsedMs": 321
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "real",
+      "scenario": "major-runtime-breaking-v2",
+      "timestamp": "2026-09-19T04:44:49.901Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.16,
+            "none": 0.84,
+            "indirect": 0
+          },
+          "confidence": 0.75
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 1,
+            "routine": 0,
+            "trivial": 0
+          },
+          "confidence": 1
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.97
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sound": 0.13,
+            "sloppy": 0.87
+          },
+          "confidence": 0.75
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.75,
+      "usage": {
+        "inputTokens": 1180,
+        "outputTokens": 137,
+        "calls": 1,
+        "elapsedMs": 285
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "real",
+      "scenario": "major-runtime-breaking",
+      "timestamp": "2026-09-19T04:44:50.309Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "indirect": 0,
+            "direct": 0.24,
+            "none": 0.76
+          },
+          "confidence": 0.63
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 1,
+            "trivial": 0,
+            "routine": 0
+          },
+          "confidence": 1
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.98
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sloppy": 1,
+            "sound": 0
+          },
+          "confidence": 0.99
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.63,
+      "usage": {
+        "inputTokens": 1067,
+        "outputTokens": 137,
+        "calls": 1,
+        "elapsedMs": 408
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "real",
+      "scenario": "minor-transitive-safe",
+      "timestamp": "2026-09-19T04:44:50.695Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0,
+            "indirect": 0,
+            "none": 1
+          },
+          "confidence": 1
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "routine": 0,
+            "breaking": 0,
+            "trivial": 1
+          },
+          "confidence": 1
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.03
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0,
+            "sound": 1
+          },
+          "confidence": 1
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1040,
+        "outputTokens": 137,
+        "calls": 1,
+        "elapsedMs": 386
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "real",
+      "scenario": "patch-lockfile-only",
+      "timestamp": "2026-09-19T04:44:51.096Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "indirect": 0.02,
+            "direct": 0.01,
+            "none": 0.97
+          },
+          "confidence": 0.95
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0,
+            "routine": 0,
+            "trivial": 1
+          },
+          "confidence": 1
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.03
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0,
+            "sound": 1
+          },
+          "confidence": 1
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.95,
+      "usage": {
+        "inputTokens": 985,
+        "outputTokens": 137,
+        "calls": 1,
+        "elapsedMs": 401
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 0,
+      "provider": "real",
+      "scenario": "unsound-lockfile-drift",
+      "timestamp": "2026-09-19T04:44:51.388Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.6,
+            "direct": 0.39,
+            "indirect": 0.01
+          },
+          "confidence": 0.41
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0,
+            "trivial": 0.97,
+            "routine": 0.03
+          },
+          "confidence": 0.95
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.06
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sound": 0,
+            "sloppy": 1
+          },
+          "confidence": 1
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.41,
+      "usage": {
+        "inputTokens": 966,
+        "outputTokens": 138,
+        "calls": 1,
+        "elapsedMs": 292
+      }
+    }
+  ]
+}

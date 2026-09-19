@@ -1,0 +1,25 @@
+{
+  "scenario": "bad-test-v2",
+  "suite": "list.suite.ts",
+  "testName": "returns total equal to item count on page 1",
+  "expected": { "status": 200, "body": { "total": 3 } },
+  "received": {
+    "status": 200,
+    "body": { "total": 12 },
+    "stackExcerpt": "expect(received).toBe(expected)\nExpected: 3\nReceived: 12"
+  },
+  "testSourceExcerpt": "const seed = await seedThreeProducts(db); // test pins its own seed\nconst res = await listProducts();\nexpect(res.body.total).toBe(3);",
+  "ciRetryCount": 1,
+  "lastCommits": ["test: share seedThreeProducts fixture", "feat: keep 12-product dev seed in db/init.sql"],
+  "environment": {
+    "db": "ecommerce_test",
+    "seeded": "full-dev-seed",
+    "seedConflict": "test seeds 3 products itself but runner env was pre-seeded with full-dev-seed (12 products); list endpoint returns db total, not seed total"
+  },
+  "testPractice": {
+    "siblingPattern": "the other 40 tests in list.suite.ts call seedThreeProducts(db) AND assert via the returned seed token (listProducts({ seedToken }) or filtering the response by seed ids) — none assert the raw db total",
+    "thisTestOnly": "this is the only test in the suite that asserts the raw db total; it never passes the seed token to the list call and never filters the response",
+    "isolationContract": "the suite's documented isolation contract is seed-scoped assertions: helpers guarantee isolation, tests must not rely on db-wide state",
+    "verdict": "the test violates the suite's own isolation contract — a product/test defect, not an environment defect; the runner env exposing the bug is incidental"
+  }
+}

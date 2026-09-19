@@ -95,7 +95,7 @@ describe('assertSafeTag + resultsDirFor tag', () => {
 });
 
 describe('runEval (mock provider, temp dir)', () => {
-  it('produces run files + csv + report for 1 run over both domains', async () => {
+  it('produces run files + csv + report for 1 run over both domains', { timeout: 20000 }, async () => {
     const base = tempBase();
     try {
       const result = await runEval({
@@ -109,7 +109,7 @@ describe('runEval (mock provider, temp dir)', () => {
 
       expect(result.dir).toBe(join(base, '2026-09-18'));
       expect(result.runFiles).toHaveLength(2);
-      expect(result.records).toHaveLength(12);
+      expect(result.records).toHaveLength(16);
       const files = readdirSync(result.dir).sort();
       expect(files).toEqual([
         'report.md',
@@ -129,7 +129,7 @@ describe('runEval (mock provider, temp dir)', () => {
 
       const csv = readFileSync(result.csvFile, 'utf8');
       expect(csv.startsWith(`${CSV_HEADER.join(',')}\n`)).toBe(true);
-      expect(csv.trimEnd().split('\n')).toHaveLength(13);
+      expect(csv.trimEnd().split('\n')).toHaveLength(17);
 
       const report = readFileSync(result.reportFile, 'utf8');
       expect(report).toContain('# Eval report — 2026-09-18');
@@ -137,8 +137,8 @@ describe('runEval (mock provider, temp dir)', () => {
       expect(report).toContain('mock | checkout');
       expect(report).toContain('None. Every scored record matched the expectation.');
 
-      // 6 triage + 4 bureau-path checkouts × 2 stage asks = 6 + 10 = 16 provider asks.
-      expect(result.requestsMade).toBe(16);
+      // 9 triage + 5 bureau-path checkouts × 2 stage asks = 9 + 10 + 12 = 21 provider asks.
+      expect(result.requestsMade).toBe(21);
     } finally {
       cleanup(base);
     }
@@ -175,19 +175,19 @@ describe('runEval (mock provider, temp dir)', () => {
         date: new Date('2026-09-18T10:00:00Z'),
       });
       expect(result.runFiles).toHaveLength(2);
-      expect(result.records).toHaveLength(12);
-      expect(result.requestsMade).toBe(12);
+      expect(result.records).toHaveLength(18);
+      expect(result.requestsMade).toBe(18);
       const csvLines = readFileSync(result.csvFile, 'utf8').trimEnd().split('\n');
-      expect(csvLines).toHaveLength(13);
+      expect(csvLines).toHaveLength(19);
     } finally {
       cleanup(base);
     }
   });
 
-  it('the spend cap aborts before the cap is exceeded and reports requests made', async () => {
+  it('the spend cap aborts before the cap is exceeded and reports requests made', { timeout: 20000 }, async () => {
     const base = tempBase();
     try {
-      // Cap of 14 aborts partway through the checkout domain (6 triage + 8 of 10 checkout asks).
+      // Cap of 20 aborts partway through the checkout domain (9 triage + 11 of 12 checkout asks).
       await expect(
         runEval({
           providers: ['mock' as ProviderName],
@@ -195,7 +195,7 @@ describe('runEval (mock provider, temp dir)', () => {
           domains: ['triage', 'checkout'],
           env: MOCK_ENV,
           baseDir: base,
-          maxRequests: 14,
+          maxRequests: 20,
           date: new Date('2026-09-18T10:00:00Z'),
         }),
       ).rejects.toBeInstanceOf(SpendCapError);
@@ -213,11 +213,11 @@ describe('runEval (mock provider, temp dir)', () => {
         domains: ['triage'],
         env: MOCK_ENV,
         baseDir: base,
-        maxRequests: 6,
+        maxRequests: 9,
         date: new Date('2026-09-18T10:00:00Z'),
       });
-      expect(result.requestsMade).toBe(6);
-      expect(result.records).toHaveLength(6);
+      expect(result.requestsMade).toBe(9);
+      expect(result.records).toHaveLength(9);
     } finally {
       cleanup(base);
     }

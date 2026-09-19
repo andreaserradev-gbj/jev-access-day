@@ -9,6 +9,9 @@
  * Stage 3: Jev post-bureau synthesis -> final action via EV + confidence gates.
  */
 
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
 export interface CheckoutRequest {
   scenario: string;
   order: {
@@ -74,7 +77,21 @@ export function buildCheckoutState(checkout: CheckoutRequest): Record<string, un
     },
     session: checkout.session,
     context: checkout.context,
+    ...buildEvidenceBlocks(checkout.scenario),
   };
+}
+
+/**
+ * Extra evidence blocks from checkout fixtures (fulfilmentRisk, contextNotes,
+ * ...) live on the fixture envelope, not inside `checkout` — forward them
+ * verbatim. Evidence the fixture carries must reach the model.
+ */
+function buildEvidenceBlocks(scenario: string): Record<string, unknown> {
+  const path = fileURLToPath(new URL(`../../fixtures/checkouts/${scenario}.json`, import.meta.url));
+  const fixture = JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
+  return Object.fromEntries(
+    Object.entries(fixture).filter(([key]) => !['checkout', 'economics'].includes(key)),
+  );
 }
 
 export function buildSynthesisState(
@@ -101,6 +118,7 @@ export function buildSynthesisState(
       inquiries_last_30d: bureau.inquiriesLast30d,
     },
     stage1_judgments: stage1,
+    ...buildEvidenceBlocks(checkout.scenario),
   };
 }
 
@@ -133,6 +151,13 @@ export class MockBureau {
         inquiriesLast30d: 7,
       },
       'bopis-edge': {
+        bureau: 'mock-bureau',
+        scoreBand: 'good',
+        bureauScore: 724,
+        delinquenciesLast24m: 1,
+        inquiriesLast30d: 1,
+      },
+      'bopis-edge-v2': {
         bureau: 'mock-bureau',
         scoreBand: 'good',
         bureauScore: 724,
