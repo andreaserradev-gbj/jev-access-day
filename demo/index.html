@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>24 decisions, 4 engines — a decision model vs a frontier LLM</title>
+<meta name="description" content="A decision model and a frontier LLM, the same 24 business decisions: CI triage, checkout fraud, payment retries, dependency-PR review. Every number traces to a committed run file.">
+<!-- Social cards. Fill SITE_URL after the first deploy (e.g. https://jev-demo.vercel.app), then uncomment.
+<link rel="canonical" href="SITE_URL/">
+<meta property="og:url" content="SITE_URL">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TypeSafe — decision-engine comparison">
+<meta property="og:title" content="24 decisions, 4 engines: a decision model vs a frontier LLM">
+<meta property="og:description" content="Jev matched the human-decided right call 19/24; the frontier LLM 15/24. Four business flows, three runs per engine, every number traced to a committed run file.">
+<meta property="og:image" content="SITE_URL/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Scoreboard: Jev 19/24, Frontier LLM 15/24, local model 15/24, mock anchor 24/24 — across CI triage, checkout fraud, payment retries, dependency-PR review.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="24 decisions, 4 engines: a decision model vs a frontier LLM">
+<meta name="twitter:description" content="Jev 19/24 · frontier LLM 15/24 · local 15/24 · mock anchor 24/24 — every number traced to a committed run file.">
+<meta name="twitter:image" content="SITE_URL/assets/og-card.png">
+-->
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --ink:#0B0E14; --panel:#11151E; --hairline:#1E2530; --grid:#2A3342;
+  --warm:#E6E1D8; --slate:#8892B0; --slate-dim:#5A6478;
+  --accent:#E935C1; --accent-dim:rgba(233,53,193,.13); --accent-line:rgba(233,53,193,.42);
+  --right:#3B9033; --right-bright:#6FBF62; --miss:#FF433D;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:"Archivo",Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--slate);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--ink)}
+h1,h2,h3,h4{color:var(--warm);font-weight:600;letter-spacing:-0.015em}
+a{color:var(--accent);text-decoration:none}
+.mono{font-family:var(--mono)}
+.num{font-family:var(--mono);color:var(--accent);font-size:.78rem;font-weight:500;letter-spacing:.08em}
+
+/* mobile-first: single column, no rail, no top chrome duplication */
+.rail{display:none}
+.content{min-width:0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+
+header.top{position:sticky;top:0;z-index:50;background:rgba(11,14,20,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline)}
+.top-inner{display:flex;align-items:center;gap:10px;height:54px;min-width:0}
+.top-inner .brand{display:flex;align-items:center;gap:10px;min-width:0;color:inherit;text-decoration:none}
+.top-inner img{width:22px;height:22px;flex-shrink:0}
+.top-inner .t{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;color:var(--warm);text-transform:uppercase;white-space:nowrap}
+.top-inner .sep{color:var(--grid)}
+.top-inner .tag{font-family:var(--mono);font-size:.62rem;color:var(--slate-dim);letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-inner .date{display:none}
+.burger{display:inline-flex;flex-direction:column;justify-content:center;gap:4px;width:38px;height:38px;padding:8px;margin-left:auto;background:none;border:1px solid var(--hairline);cursor:pointer;flex-shrink:0}
+.burger span{display:block;height:2px;width:100%;background:var(--warm);transition:transform .25s,opacity .2s}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mnav{display:none;flex-direction:column;border-top:1px solid var(--hairline);padding:6px 0 10px}
+.mnav.open{display:flex}
+.mnav a{display:flex;align-items:baseline;gap:10px;padding:10px 4px;font-family:var(--mono);font-size:.78rem;color:var(--slate);border-bottom:1px dashed var(--grid);text-decoration:none}
+.mnav a:last-child{border-bottom:none}
+.mnav a .n{color:var(--accent);font-size:.7rem}
+.mnav a:hover,.mnav a.active{color:var(--warm)}
+
+section{padding:64px 0 24px;scroll-margin-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--hairline);padding-bottom:14px;margin-bottom:22px}
+.sec-head h2{font-size:clamp(22px,4.5vw,34px);line-height:1.15}
+.lede{font-size:1rem;color:var(--slate);max-width:62ch}
+.lede b,.lede strong{color:var(--warm);font-weight:600}
+
+.hero{padding:56px 0 40px}
+.hero .num{margin-bottom:14px;display:block}
+.hero h1{font-size:clamp(30px,7vw,58px);line-height:1.08;letter-spacing:-0.02em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{margin-top:18px;font-size:1.04rem}
+.hero .flows{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;font-family:var(--mono);font-size:.7rem;color:var(--slate-dim)}
+.hero .flows span::before{content:"— ";color:var(--accent)}
+
+.scoreboard{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--hairline);margin-top:34px;background:var(--panel)}
+.score{padding:18px 16px 16px;border-right:1px solid var(--hairline);border-bottom:1px solid var(--hairline);position:relative}
+.score:nth-child(2n){border-right:none}
+.score:nth-child(n+3){border-bottom:none}
+.score .eng{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--slate-dim);text-transform:uppercase;padding-right:44px}
+.score .big{font-family:var(--mono);font-size:clamp(28px,6vw,44px);font-weight:700;color:var(--warm);line-height:1.1;margin:8px 0 4px}
+.score .big small{font-size:.5em;color:var(--slate-dim);font-weight:400}
+.score .bar{height:3px;background:var(--grid);margin:12px 0 8px;position:relative;overflow:hidden}
+.score .bar i{position:absolute;inset:0;right:auto;background:var(--slate-dim);width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.score.lead .bar i{background:var(--accent)}
+.score.lead::after{content:"BEST";position:absolute;top:14px;right:14px;font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;color:var(--accent);border:1px solid var(--accent-line);padding:2px 6px}
+.score p{font-size:.78rem;color:var(--slate-dim);line-height:1.45}
+.score .note{margin-top:6px;font-size:.7rem;color:var(--slate-dim)}
+.score .note b{color:var(--slate);font-weight:500}
+
+.split{display:grid;grid-template-columns:1fr;gap:24px;margin-top:24px}
+.split>.casecol{min-width:0;overflow-wrap:break-word}
+.casecol h3{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--hairline);overflow-wrap:anywhere}
+.casecol h3 b{color:var(--accent);font-weight:500}
+
+.caselist{display:flex;flex-direction:column}
+.case{border:1px solid var(--hairline);border-top:none;background:var(--ink)}
+.case:first-child{border-top:1px solid var(--hairline)}
+.case-head{display:flex;align-items:center;gap:10px;padding:12px 12px;cursor:pointer;transition:background .15s;user-select:none}
+.case-head:hover{background:#141926}
+.case-head .idx{font-family:var(--mono);font-size:.64rem;color:var(--slate-dim);width:26px;flex-shrink:0}
+.case-head .nm{font-size:.86rem;color:var(--warm);font-weight:500;flex:1;min-width:0;overflow-wrap:anywhere}
+
+.case-head .nm small{display:none;font-size:.68rem;color:var(--slate-dim);font-weight:400}
+.case-head .verdict{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;padding:3px 7px;border:1px solid var(--hairline);color:var(--slate-dim);flex-shrink:0}
+.case-head .verdict.hit{color:var(--right-bright);border-color:rgba(59,144,51,.55)}
+.case-head .verdict.miss{color:var(--miss);border-color:rgba(255,67,61,.5)}
+.case-head .chev{flex-shrink:0;color:var(--slate-dim);transition:transform .28s}
+.case.open .chev{transform:rotate(180deg);color:var(--accent)}
+.case-body{max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1)}
+.case-inner{padding:16px 14px 20px;border-top:1px solid var(--hairline)}
+.story{font-size:.88rem;color:var(--warm);line-height:1.55;padding-left:12px;border-left:2px solid var(--accent);margin-bottom:14px}
+.ansgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hairline);border:1px solid var(--hairline);margin-bottom:14px}
+.ans{background:var(--panel);padding:9px 11px}
+.ans .who{font-family:var(--mono);font-size:.58rem;letter-spacing:.07em;text-transform:uppercase;color:var(--slate-dim);margin-bottom:4px}
+.ans .what{font-family:var(--mono);font-size:.72rem;color:var(--warm);line-height:1.4;overflow-wrap:anywhere}
+.ans.ok .what{color:var(--right-bright)}
+.ans.no .what{color:var(--miss)}
+.ans .sub{font-size:.64rem;color:var(--slate-dim);margin-top:3px;line-height:1.35}
+.rc{display:flex;gap:8px;align-items:baseline;font-size:.82rem;margin-bottom:8px;flex-wrap:wrap}
+.rc .k{font-family:var(--mono);font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;color:var(--slate-dim);white-space:nowrap}
+.rc .v{color:var(--warm)}
+.rc .v code{font-family:var(--mono);font-size:.76rem;color:var(--accent)}
+.why{font-size:.8rem;color:var(--slate);border-top:1px dashed var(--grid);padding-top:10px;line-height:1.6}
+.why b{color:var(--warm);font-weight:500}
+
+.chartcard{background:var(--panel);border:1px solid var(--hairline);padding:18px;margin-top:28px}
+.chartcard h3{font-size:.98rem;margin-bottom:4px}
+.chartcard .sub{font-size:.78rem;color:var(--slate-dim);margin-bottom:16px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-family:var(--mono);font-size:.62rem;color:var(--slate-dim);margin-bottom:10px}
+.legend i{display:inline-block;width:13px;height:3px;vertical-align:middle;margin-right:6px;background:var(--slate)}
+.legend i.acc{background:var(--accent)}
+.legend i.gr{background:var(--right-bright)}
+.lat-svg{width:100%;height:auto;display:block}
+.lat-svg text{font-family:var(--mono)}
+.lrow{transition:opacity .15s}
+.lrow:hover{opacity:1 !important}
+
+.official{display:grid;grid-template-columns:1fr;gap:18px;margin-top:22px}
+.official .fig{background:#0D1119;border:1px solid var(--hairline);padding:14px;display:flex;align-items:center;justify-content:center}
+.official .fig img,.official .fig svg{width:100%;height:auto;max-height:260px;object-fit:contain}
+.official .figcap{font-family:var(--mono);font-size:.62rem;color:var(--slate-dim);margin-top:8px;line-height:1.55}
+
+.evgrid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:8px}
+.ev{background:var(--panel);border:1px solid var(--hairline);padding:0;cursor:pointer;transition:border-color .2s}
+.ev:hover{border-color:var(--accent-line)}
+.ev-top{padding:16px 16px 14px}
+.ev-top .id{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.ev-top h3{font-size:.94rem;margin:7px 0 5px}
+.ev-top p{font-size:.8rem;color:var(--slate);line-height:1.5}
+.badge{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;padding:3px 8px;margin-top:10px}
+.badge.flip{color:var(--right-bright);border:1px solid rgba(59,144,51,.55)}
+.badge.hold{color:#E0A83C;border:1px solid rgba(224,168,60,.45)}
+.badge.invalid{color:var(--miss);border:1px solid rgba(255,67,61,.5)}
+.ev-body{max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1)}
+.ev-inner{padding:0 16px 16px;border-top:1px solid var(--hairline)}
+.ba{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}
+.ba .side{padding:12px}
+.ba .side .lab{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-dim);margin-bottom:5px}
+.ba .side .val{font-family:var(--mono);font-size:.78rem;color:var(--warm);line-height:1.45}
+.ba .side.before{background:#141018;border:1px solid rgba(255,67,61,.3)}
+.ba .side.after{background:#101710;border:1px solid rgba(59,144,51,.4)}
+.ba .arrow{display:flex;align-items:center;justify-content:center;color:var(--accent);font-family:var(--mono);font-size:.9rem}
+.banote{font-size:.76rem;color:var(--slate);margin-top:10px;line-height:1.6}
+.banote b{color:var(--warm);font-weight:500}
+.ev.wide{grid-column:1/-1}
+
+.claims{display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline)}
+.claim{background:var(--panel)}
+.claim-head{display:flex;align-items:baseline;gap:10px;padding:14px 14px;cursor:pointer;transition:background .15s}
+.claim-head:hover{background:#141926}
+.claim-head .idx{font-family:var(--mono);font-size:.62rem;color:var(--accent);width:28px;flex-shrink:0}
+.claim-head .hwrap{flex:1;min-width:0}
+.claim-head h3{font-size:.92rem;line-height:1.35}
+.claim-head .stamp{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--slate-dim);margin-top:3px}
+.claim-head .stamp.ok{color:var(--right-bright)}
+.claim-head .stamp.part{color:#E0A83C}
+.claim-head .chev{color:var(--slate-dim);transition:transform .28s;font-size:.8rem;flex-shrink:0}
+.claim.open .chev{transform:rotate(180deg);color:var(--accent)}
+.claim-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.claim-inner{padding:4px 14px 20px;border-top:1px solid var(--hairline)}
+.claim-inner p{font-size:.84rem;margin:10px 0;line-height:1.65}
+.gloss{display:inline-block;font-size:.7rem;color:var(--slate-dim);background:#0D1119;border:1px solid var(--hairline);border-left:2px solid var(--accent);padding:2px 8px;margin:2px 0;font-family:var(--mono)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--hairline);border:1px solid var(--hairline);margin:12px 0}
+.kv div{background:var(--ink);padding:10px 12px}
+.kv .k{font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-dim);margin-bottom:3px}
+.kv .v{font-family:var(--mono);font-size:.82rem;color:var(--warm)}
+.kv .v small{color:var(--slate-dim);font-size:.68rem}
+.cal-svg{width:100%;height:auto;display:block;margin:12px 0}
+.cal-svg text{font-family:var(--mono)}
+
+footer.method{border-top:1px solid var(--hairline);margin-top:64px;background:#0D1017}
+.method-head{display:flex;align-items:center;gap:12px;padding:22px 0;cursor:pointer;background:none;border:none;width:100%;font:inherit;color:inherit;text-align:left}
+.method-head .num{white-space:nowrap}
+.method-title{font-family:var(--sans);font-size:1.05rem;font-weight:600;letter-spacing:-0.015em;color:var(--warm)}
+.method-head .chev{margin-left:auto;color:var(--slate-dim);transition:transform .28s}
+.method-foot.open .chev{transform:rotate(180deg);color:var(--accent)}
+.method-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1)}
+.method-inner{padding:4px 0 32px;display:grid;grid-template-columns:1fr;gap:22px}
+.method-inner h4{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.method-inner ul{list-style:none}
+.method-inner li{font-size:.8rem;padding:6px 0;border-bottom:1px dashed var(--grid);line-height:1.55}
+.method-inner li b{color:var(--warm);font-weight:500}
+.method-inner li:last-child{border-bottom:none}
+.lesson{grid-column:1/-1;background:var(--panel);border:1px solid rgba(255,67,61,.35);padding:16px 18px;font-size:.84rem}
+.lesson b{color:var(--miss);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;display:block;margin-bottom:6px}
+.lesson em{color:var(--warm);font-style:normal}
+.endnote{padding:26px 0 34px;border-top:1px solid var(--hairline);display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:.64rem;color:var(--slate-dim);letter-spacing:.03em}
+.endnote .mint{color:var(--accent)}
+
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel);border:1px solid var(--accent-line);color:var(--warm);font-family:var(--mono);font-size:.7rem;padding:10px 18px;opacity:0;transition:all .3s;z-index:100;pointer-events:none;max-width:88vw;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media (min-width:600px){
+  .ansgrid{grid-template-columns:repeat(4,1fr)}
+  .ba{grid-template-columns:1fr 40px 1fr}
+  .ba .arrow{transform:none}
+  .evgrid{grid-template-columns:repeat(2,1fr)}
+  .scoreboard{grid-template-columns:repeat(4,1fr)}
+  .score{border-right:1px solid var(--hairline);border-bottom:none}
+  .score:last-child{border-right:none}
+  .wrap{padding:0 32px}
+  .split{grid-template-columns:1fr 1fr;gap:26px}
+  .case-head .nm small{display:inline;margin-left:8px;overflow-wrap:anywhere}
+}
+@media (min-width:960px){
+  .rail{position:fixed;top:0;left:0;bottom:0;width:216px;padding:28px 0 28px 30px;border-right:1px solid var(--hairline);display:flex;flex-direction:column;z-index:40;background:rgba(11,14,20,.88);backdrop-filter:blur(8px)}
+  .rail-brand{display:flex;align-items:center;gap:10px;margin-bottom:44px;padding-right:24px}
+  .rail-brand img{width:30px;height:30px;display:block}
+  .rail-brand span{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--warm);text-transform:uppercase}
+  .rail nav{display:flex;flex-direction:column;gap:2px}
+  .rail nav a{display:flex;align-items:baseline;gap:10px;padding:7px 14px 7px 0;font-family:var(--mono);font-size:.74rem;color:var(--slate-dim);border-left:2px solid transparent;padding-left:12px;margin-left:-14px;transition:color .18s,border-color .18s}
+  .rail nav a .n{font-size:.68rem;color:var(--slate-dim);opacity:.7}
+  .rail nav a:hover{color:var(--warm)}
+  .rail nav a.active{color:var(--warm);border-left-color:var(--accent)}
+  .rail nav a.active .n{color:var(--accent);opacity:1}
+  .rail-foot{margin-top:auto;padding-right:26px;font-family:var(--mono);font-size:.66rem;color:var(--slate-dim);line-height:1.9}
+  .rail-foot b{color:var(--slate);font-weight:500}
+  .content{margin-left:216px}
+  .burger{display:none}
+  .mnav{display:none !important}
+  .wrap{padding:0 48px}
+  .official{grid-template-columns:1.7fr 1fr}
+  .top-inner .date{display:block;margin-left:auto;font-family:var(--mono);font-size:.68rem;color:var(--slate-dim)}
+  section{padding:88px 0 30px}
+  .hero{padding:104px 0 56px}
+  .method-inner{grid-template-columns:1fr 1fr}
+  .endnote{flex-direction:row;justify-content:space-between;flex-wrap:wrap;gap:20px}
+}
+</style>
+</head>
+<body>
+
+<aside class="rail" aria-label="Section navigation">
+  <div class="rail-brand">
+    <img src="assets/ts-mark.png" alt="TypeSafe mark">
+    <span>typesafe</span>
+  </div>
+  <nav aria-label="Desktop section navigation">
+    <a href="#top" class="active"><span class="n">00/</span> scoreboard</a>
+    <a href="#cases"><span class="n">01/</span> the 12 cases</a>
+    <a href="#flows"><span class="n">02/</span> flows 3 + 4</a>
+    <a href="#evidence"><span class="n">03/</span> the evidence test</a>
+    <a href="#claims"><span class="n">04/</span> measured claims</a>
+    <a href="#method"><span class="n">05/</span> method</a>
+  </nav>
+  <div class="rail-foot">
+    lab notebook — wave log<br>
+    <b>24</b> decisions · <b>4</b> engines<br>
+    run 2026-09-18/19
+  </div>
+</aside>
+
+<main class="content" id="top">
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="#top" aria-label="Back to top">
+      <img src="assets/ts-mark.png" alt="TypeSafe mark">
+      <span class="t">TypeSafe</span>
+      <span class="sep mono">/</span>
+      <span class="tag">decision-engine comparison</span>
+    </a>
+    <span class="date">2026-09-18 → 19</span>
+    <button type="button" class="burger" id="burger" aria-expanded="false" aria-controls="mnav" aria-label="Open section menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Section navigation">
+    <a href="#top"><span class="n">00/</span> scoreboard</a>
+    <a href="#cases"><span class="n">01/</span> the 12 cases</a>
+    <a href="#flows"><span class="n">02/</span> flows 3 + 4</a>
+    <a href="#evidence"><span class="n">03/</span> the evidence test</a>
+    <a href="#claims"><span class="n">04/</span> measured claims</a>
+    <a href="#method"><span class="n">05/</span> method</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+<section class="hero" id="hero">
+  <span class="num">00/ · the result</span>
+  <h1>A decision model and a frontier LLM. Same <em>24 decisions</em>.</h1>
+  <p class="lede">Four engines. Four pipelines. Same inputs, same scoring. <b>Jev (TypeSafe)</b> matched the
+  human-decided right call on <b>19 of 24</b>. The frontier LLM <b>15</b>. A local model <b>15</b>. And a scripted
+  rule-mock scores <b>24</b> — by construction: it replays the expected answers, so it is the scoring anchor,
+  not a competitor. Everything below is expandable, every number traces to a committed run file.</p>
+  <div class="flows mono">
+    <span>CI failure triage</span><span>checkout fraud decisions</span><span>payment-retry timing</span><span>dependency-PR review</span>
+  </div>
+
+  <div class="scoreboard" id="scoreboard">
+    <div class="score lead">
+      <div class="eng">Jev (TypeSafe)</div>
+      <div class="big" data-n="19"><small>19</small>/24</div>
+      <div class="bar"><i data-w="79"></i></div>
+      <p>decision model with typed outputs and calibrated confidence</p>
+      <div class="note">8/12 head-to-head · 11/12 on the other flows</div>
+    </div>
+    <div class="score">
+      <div class="eng">Frontier LLM (cloud GLM)</div>
+      <div class="big" data-n="15"><small>15</small>/24</div>
+      <div class="bar"><i data-w="62"></i></div>
+      <p>5-sample self-consistency, cloud, with thinking</p>
+      <div class="note">4/12 head-to-head · 11/12 on the other flows</div>
+    </div>
+    <div class="score">
+      <div class="eng">Local model (Ollama qwen)</div>
+      <div class="big" data-n="15"><small>15</small>/24</div>
+      <div class="bar"><i data-w="62"></i></div>
+      <p>same prompts, run locally</p>
+      <div class="note">5/12 head-to-head · 10/12 on the other flows</div>
+    </div>
+    <div class="score">
+      <div class="eng">Mock (rule replay)</div>
+      <div class="big" data-n="24"><small>24</small>/24</div>
+      <div class="bar"><i data-w="100"></i></div>
+      <p>scoring anchor — replays expected answers</p>
+      <div class="note">24/24 by construction, all flows</div>
+    </div>
+  </div>
+</section>
+
+<section id="cases">
+  <div class="sec-head">
+    <span class="num">01/</span>
+    <h2>The 12 cases, head-to-head</h2>
+  </div>
+  <p class="lede">Two pipelines went head to head: <b>6 broken CI runs</b> (decide why it failed, then route) and
+  <b>6 buy-now-pay-later applications</b> (lend or not). Open any row for the story, each engine's answer,
+  the right call, and <b>why the misses happened</b> — typed data, not hand-waving.
+  <span class="gloss">needs_human = send to a person</span></p>
+
+  <div class="split">
+    <div class="casecol">
+      <h3>CI TRIAGE · 6 runs · <b data-agg="triage-jev">Jev 3/6</b> · <span data-agg="triage-glm">GLM 1/6</span> · <span data-agg="triage-qwen">qwen 2/6</span></h3>
+      <div class="caselist" id="triage"></div>
+    </div>
+    <div class="casecol">
+      <h3>CHECKOUT · 6 BNPL apps · <b data-agg="checkout-jev">Jev 5/6</b> · <span data-agg="checkout-glm">GLM 3/6</span> · <span data-agg="checkout-qwen">qwen 3/6</span></h3>
+      <div class="caselist" id="checkout"></div>
+    </div>
+  </div>
+
+  <div class="chartcard">
+    <h3>Latency per decision — log scale</h3>
+    <p class="sub">Median (p50) and tail (p95) per ask. One tick = 10×. Jev's 501ms checkout p50 sits at the top of the claimed 70–500ms band; the 824–1030ms p95 tail exceeds it. GLM's triage median is 53× slower than Jev's.</p>
+    <div class="legend">
+      <span><i class="acc"></i>Jev (TypeSafe)</span>
+      <span><i></i>Frontier LLM (GLM)</span>
+      <span><i></i>Local model (qwen)</span>
+      <span><i></i>Mock (rule replay)</span>
+      <span><i class="gr"></i>claimed band 70–500ms</span>
+    </div>
+    <svg class="lat-svg" id="latsvg" viewBox="0 0 980 420" role="img" aria-label="Latency chart, log scale, four engines across triage and checkout"></svg>
+  </div>
+</section>
+
+<section id="flows">
+  <div class="sec-head">
+    <span class="num">02/</span>
+    <h2>The other two flows</h2>
+  </div>
+  <p class="lede">A second wave added <b>6 bounced installment payments</b> (what now? the WHEN comes from data,
+  not the model) and <b>6 dependency-upgrade PRs</b> (merge or not?). Here the engines agreed a lot:
+  Jev <b>11/12</b>, GLM <b>11/12</b>, qwen <b>10/12</b>. The shared miss: a borderline security PR that both
+  read as "sloppy" and rejected directly — instead of escalating to a second reviewer.</p>
+
+  <div class="split">
+    <div class="casecol">
+      <h3>PAYMENT RETRIES · 6 bounced payments · <b data-agg="dunning-jev">Jev 6/6</b> · <span data-agg="dunning-glm">GLM 6/6</span> · <span data-agg="dunning-qwen">qwen 5/6</span></h3>
+      <div class="caselist" id="dunning"></div>
+    </div>
+    <div class="casecol">
+      <h3>PR REVIEW · 6 upgrade PRs · <b data-agg="prreview-jev">Jev 5/6</b> · <span data-agg="prreview-glm">GLM 5/6</span> · <span data-agg="prreview-qwen">qwen 5/6</span></h3>
+      <div class="caselist" id="prreview"></div>
+    </div>
+  </div>
+</section>
+
+<section id="evidence">
+  <div class="sec-head">
+    <span class="num">03/</span>
+    <h2>The evidence test: better information, not a better model</h2>
+  </div>
+  <p class="lede"><b>Were the misses missing information?</b> This test takes 5 misses,
+  writes targeted evidence into each case, and registers the predictions <b>before</b> running. The first wave
+  measured 0/5 flips — <b>INVALID</b>: the harness silently dropped the new evidence before the model saw it
+  (proved by token count 700→1087 and a live debug run). After the fix: <b>3/5 flipped</b> to the right call,
+  2 held. Open a card for predicted vs measured.</p>
+
+  <div class="evgrid" id="evgrid"></div>
+</section>
+
+<section id="claims">
+  <div class="sec-head">
+    <span class="num">04/</span>
+    <h2>The published claims, measured</h2>
+  </div>
+  <p class="lede">TypeSafe's docs make five testable claims about Jev. Each one was pointed at a real probe battery
+  — same batteries for the LLM stand-ins. Expand each row for the numbers and a plain-language reading.
+  No rounding up.</p>
+
+  <div class="claims" id="claimsList"></div>
+
+  <div class="chartcard">
+    <h3>Published pricing &amp; positioning charts</h3>
+    <p class="sub">From typesafe.ai. The pricing chart matches the rates used in the cost math (claim 03 below) — $0.042 per million input tokens, output free.</p>
+    <div class="official">
+      <div>
+        <div class="fig"><img src="assets/chart-pricing.svg" alt="TypeSafe published pricing chart: price per million tokens by model, Jev at the low end with free output" loading="lazy"></div>
+        <div class="figcap">chart-pricing.svg — published pricing (per-token model rates), as shipped on the homepage.</div>
+      </div>
+      <div>
+        <div class="fig"><img src="assets/chart-pareto.svg" alt="TypeSafe published cost/quality pareto chart" loading="lazy"></div>
+        <div class="figcap">chart-pareto.svg — published cost/quality pareto.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+<footer class="method-foot" id="method">
+  <div class="wrap">
+    <button type="button" class="method-head" id="methodHead" aria-expanded="false">
+      <span class="num">05/</span>
+      <span class="method-title">Method — how the numbers were made</span>
+      <span class="chev mono">▾</span>
+    </button>
+    <div class="method-body" id="methodBody">
+      <div class="method-inner">
+        <div>
+          <h4>The setup</h4>
+          <ul>
+            <li><b>Four engines behind one interface</b> — a decision model (Jev), a frontier LLM run in the cloud (GLM, 5 samples per ask), the same-class model run locally (qwen via Ollama), and a scripted rule-mock. Every engine answered the exact same questions from the exact same case data.</li>
+            <li><b>24 cases, 4 business flows</b> — 6 broken CI runs, 6 buy-now-pay-later applications, 6 bounced installment payments, 6 dependency-upgrade PRs. Each case ships as a fixture: the full situation a real system would hand the engine.</li>
+            <li><b>The "right call" was decided by a person</b> — before any engine ran, with the deciding evidence written into the case itself. If an expectation isn't backed by evidence in the fixture, it doesn't count.</li>
+            <li><b>3 runs per engine per case</b> — 216 asks total across the two comparison waves, plus dedicated probe batteries for calibration, consistency, latency, cost, and type-safety.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>How runs are kept</h4>
+          <ul>
+            <li><b>Append-only committed waves</b> — every run lands in <span class="mono">results/</span> as JSON records and is never rewritten. Everything on this page is computed from those files.</li>
+            <li><b>Tagged, never clobbered</b> — a new run gets a new tag (<span class="mono">--tag=</span>); an old result can't be overwritten by accident. Two overwriting incidents happened early; both files were restored byte-identical from git and the guards came after.</li>
+            <li><b>Pre-registered predictions</b> — for the evidence test, the expected outcome was written down and committed before the first live call.</li>
+            <li><b>The mock is the scoring anchor</b> — its answers replay the expectations, so it scores 24/24 by construction. It exists to prove the scoring works, not to compete.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Where to look</h4>
+          <ul>
+            <li><span class="mono">results/2026-09-18-postfix/</span> — the 12 head-to-head cases, 4 engines × 3 runs</li>
+            <li><span class="mono">results/2026-09-18-access-day2/</span> — the other 12 cases</li>
+            <li><span class="mono">results/2026-09-18-access-day/</span> — claim probes (calibration, consistency, latency, cost, type-safety)</li>
+            <li><span class="mono">results/2026-09-19-evidence-v2b/</span> — the evidence-test flips, plus pre-registered predictions</li>
+          </ul>
+        </div>
+        <div class="lesson">
+          <b>WAVE-1 · INVALID · KEPT FOR THE RECORD</b>
+          The first evidence wave measured 0/5 — and the honest entry is that the measurement was broken, not the
+          model: the harness whitelisted fields and silently dropped the new evidence before the model saw it.
+          Proven by the token delta (700→1087 in-tokens) and a live debug run. Fixed, re-run, waves kept append-only in git.
+          <em>"Trust measurements, not fixture files."</em>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="wrap">
+  <div class="endnote">
+    <span>typesafe · decision-engine comparison · numbers generated from committed run files</span>
+    <span class="mint">one accent · every number from a committed run file</span>
+    <span>no external calls · fonts: archivo + jetbrains mono with system fallback</span>
+  </div>
+</div>
+
+</main>
+
+<div id="toast" role="status"></div>
+
+<script src="data.js"></script>
+<script>
+/* ---------- data ---------- */
+const D = window.DEMO_DATA;
+const ENG = D.engines;
+const CASES = D.cases;
+const AGG = D.domainAgreement;
+
+/* fill the per-domain agreement chips from generated data */
+document.querySelectorAll('[data-agg]').forEach(el=>{
+  const [dom,eng] = el.getAttribute('data-agg').split('-');
+  const label = eng==='jev' ? 'Jev' : (eng==='glm' ? 'GLM' : 'qwen');
+  el.textContent = label+' '+D.domainAgreement[dom][eng];
+});
+// desktop chips show Jev bold via <b>, mobile ones plain <span> — both fed here
+
+/* case stories (plain words) + why explanations, keyed by scenario id */
+const STORY = {
+ triage:{
+  "known-flake":{story:"Same race-condition test flaked 5× this week — passed on every retry.",gloss:"just run it again",
+   why:"A known flaky test that passes on retry should simply be re-run. Jev read the 5× flake as a broken test and wanted it fixed; GLM punted to a person; qwen copied Jev's error. The '5 passes on retry' pattern is exactly the auto_retry signature — and in the evidence test (card 05) even a registered-flake note doesn't move Jev off this read."},
+  "infra-outage":{story:"Test needs Kafka — Kafka is down (connection refused). DB is healthy.",gloss:"restart the infrastructure",
+   why:"The dependency (Kafka) is down while the service itself is healthy — restart the infrastructure. GLM escalated to a human; qwen agreed only 2 of 3 runs."},
+  "environment-drift":{story:"Test pins Node 24, the CI runner image has Node 18 — environment drifted.",gloss:"repair environment, queue again",
+   why:"Version pin vs runner image mismatch is a mechanical fix. Both LLMs sent it to a person instead of repairing and re-queuing."},
+  "bad-test":{story:"Test seeds 3 products, then counts 12 — its own setup is broken, not the code.",gloss:"fix the test, not the code",
+   why:"The test's own math is wrong (3 seeded, 12 counted), so fix_test. Jev and qwen blamed the environment and wanted a requeue — the evidence that isolates setup from environment wasn't in the original cases (fixed in the evidence test, card 03)."},
+  "error-contract-regression":{story:"A duplicate product used to answer 409 Conflict — now it answers 400.",gloss:"file a P1 regression bug",
+   why:"Jev got the shape right (file a regression) but scored severity 1.04, just under the 1.5 P1 threshold. It had no way to know partners pinned the documented 409 — evidence-test card 02 supplies exactly that, and severity moves to 1.85."},
+  "ambiguous-failure":{story:"A test got a 500 with a raw DB error — real bug or test problem? Genuinely mixed.",gloss:"send to a person",
+   why:"Sometimes the right decision is to refuse to decide. All four engines agree — the signal is genuinely mixed."}
+ },
+ checkout:{
+  "clean-repeat-buyer":{story:"Giulia · 2 years, 31 orders, $2.1k spent · known iPhone, face-id · $84.50",gloss:"approve instantly — skip the credit bureau",
+   why:"Two years of clean history at a tiny amount is as safe as it gets — approving without a bureau call is the whole point of the fast path. qwen wanted extra verification."},
+  "stolen-card-pattern":{story:"'J. Smith' · 1-day account, VPN, typed card, ships US→Romania · $1,240",gloss:"decline instantly — skip the credit bureau",
+   why:"Every risk flag fires at once and the amount is high: decline on the spot. GLM hedged to review — a human in the loop for an obvious fraud pattern."},
+  "thin-file-new-customer":{story:"Marco · account is 2 days old, zero history, disposable email · $129",gloss:"step up — ask for extra verification",
+   why:"New customer, no history: not a decline, just more verification before lending. Both LLMs routed to a human instead of using the built-in step-up."},
+  "bopis-edge":{story:"Elena · only 2 orders, but known laptop + home wifi · $310 pick-up in store",gloss:"approve — after a credit-bureau check",
+   why:"Thin history but strong device identity, and buy-online-pickup-in-store caps the risk. All three real engines played safe with review — the pickup-channel evidence that flips this to approve (and skips the bureau) arrives in the evidence test, card 01."},
+  "bureau-contradiction":{story:"Luca · 9 clean orders — but the bureau says 'poor', 4 missed payments · $890",gloss:"human review",
+   why:"On-file history and the bureau flatly disagree at a meaningful amount. When two trusted sources contradict, the correct routing is a person."},
+  "ambiguous-checkout":{story:"Sara · 4 orders, 120 days · new tablet, card typed by hand · $540",gloss:"human review",
+   why:"A genuinely mixed profile: decent history, but new device, hand-typed card, mid-size amount. Everyone agrees: send to a person."}
+ },
+ dunning:{
+  "account-closed":{story:"Installment payment bounced — the customer's old payment method is closed.",gloss:"switch payment method, then retry",
+   why:"The method is gone; retrying it can't succeed. Switch to another method on file and retry. Note the WHEN still comes from data, not the model."},
+  "mandate-revoked-no-alt":{story:"Direct-debit mandate revoked, and no alternative method on file.",gloss:"send to a person",
+   why:"Nothing to switch to and retrying a revoked mandate is a compliance problem. A person has to contact the customer."},
+  "mandate-revoked":{story:"Direct-debit mandate revoked, but a card is on file.",gloss:"switch payment method, then retry",
+   why:"Same revocation as the case above — but here an alternative exists, so the mechanical fix is switch-then-retry."},
+  "nsf-repeat":{story:"Payment bounced for insufficient funds — second time this month.",gloss:"pause new spending until the balance recovers",
+   why:"Repeated NSF means the money isn't there; switching methods would just move the shortfall. Pause spending and let the account recover. qwen missed the 'repeat' part."},
+  "nsf-transient":{story:"Payment bounced for insufficient funds — one-off, paycheck lands Friday.",gloss:"retry in 3 days",
+   why:"A transient shortfall with a known payday: wait and retry. All engines got both the action and the 3-day delay — the delay itself comes from the data, not the model's guess."},
+  "processor-outage":{story:"Payment failed because the payment processor is having an outage.",gloss:"retry on the next scheduled run (2d)",
+   why:"Nothing is wrong with the customer — the pipe is down. Requeue for the next scheduled run rather than retrying into a dead endpoint."}
+ },
+ prreview:{
+  "direct-ssrf-untrusted":{story:"Dependency-upgrade PR: direct SSRF into an untrusted URL — a request the server makes to attacker-controlled input.",gloss:"reject the PR",
+   why:"Unambiguous security hole; reject. GLM agreed only 2 runs of 3 — its borderline reads wobble (see claim 04)."},
+  "gray-zone-reachable-admin":{story:"A gray-zone PR: the vulnerable path is only reachable from the admin panel — but reachable.",gloss:"a second reviewer signs off at 0.71 confidence",
+   why:"The right process, not just the right answer: all three real engines escalated to a second reviewer, who approved at 0.71. Escalation is a feature, not a failure."},
+  "major-runtime-breaking":{story:"Major runtime bump with breaking changes; CI still pending (12-min-old branch, ~20-min suite).",gloss:"send to a person [reviewer only 0.55 sure]",
+   why:"The right call is escalation: CI is pending, not failed. Jev and GLM both read the situation as 'sloppy' and rejected outright — the shared miss of this wave. qwen escalated. The evidence test (card 04) shows even strong supporting evidence doesn't move Jev across."},
+  "minor-transitive-safe":{story:"Minor-version bump of a transitive dependency, lockfile-compatible, no API change.",gloss:"approve the PR",
+   why:"The safe-boring end of the spectrum; everyone approves."},
+  "patch-lockfile-only":{story:"Patch bump, lockfile-only change, fully covered by tests.",gloss:"approve the PR",
+   why:"Smallest possible change with full coverage. Unanimous approve."},
+  "unsound-lockfile-drift":{story:"Lockfile drifted without a matching manifest change — the dependency tree no longer matches the declared one.",gloss:"reject the PR",
+   why:"An unsound lockfile is a supply-chain hygiene problem: reject. qwen escalated to a human instead."}
+ }
+};
+
+const EVIDENCE_META = [
+ {key:"bopis", id:"01 · bopis-edge-v2", title:"The money metric: pickup evidence flips review to approve — and skips the bureau", badge:["flip","FLIP"],
+  add:"added: pickup channel = ID checked at handover, card-present liability shift; the promo flag is a 90-day-old expired coupon",
+  note:"Same customer, same basket. With the pickup-channel facts in the case, the bureau call is unnecessary — the fast path fires. This is the card with a direct cost line attached to it."},
+ {key:"errorContract", id:"02 · error-contract-regression-v2", title:"Partner stakes lift severity past the P1 line", badge:["flip","FLIP"],
+  add:"added: public API contract, 3 partner integrations pinned to documented 409, no workaround, release-gating",
+  note:"Wave-1 Jev scored severity just under the 1.5 P1 line because it couldn't know partners pinned the documented 409. With partner stakes in evidence, severity crosses decisively and 3/3 runs agree."},
+ {key:"badTest", id:"03 · bad-test-v2", title:"Isolation contract proves it's the test's fault", badge:["flip","FLIP"],
+  add:"added: only test asserting raw db total; 40 siblings seed via token; violates the suite's documented isolation contract",
+  note:"The missing link was proof that the test, not the environment, broke isolation: 40 sibling tests seed through a token; this one asserts the raw db total. With that in the case, Jev routes to fix the test."},
+ {key:"majorRuntime", id:"04 · major-runtime-breaking-v2", title:"Even a strong case doesn't cross the line", badge:["hold","HOLD"],
+  add:"added: follows official pino v9 guide; log schema unchanged; CI pending is procedural (12-min-old branch, ~20-min suite); reviewer approve@0.72",
+  note:"Official guide followed, reviewer approving at 0.72, CI pending purely procedural — and Jev still says reject. The hold is informative: it wants CI green before trusting a major runtime bump."},
+ {key:"knownFlake", id:"05 · known-flake-v2", title:"The flake registry gets ignored", badge:["hold","HOLD"],
+  add:"added: registered flake FLAKE-88, zero code changes 30 days, 5/5 pass-on-retry",
+  note:"A registered flake with a month of clean history and 5/5 pass-on-retry — prediction was auto_retry (weakly). Measured: fix_test again, and the bad_test confidence actually rises. No 'it's a registered flake' note changes Jev's read of a race assertion."}
+];
+
+/* ---------- render cases ---------- */
+function fmtP50(ms){ return ms>=1000 ? (ms/1000).toFixed(ms>=10000?1:1).replace(/\.0$/,'')+"s" : ms+"ms"; }
+
+function caseEl(c, domain, i){
+  const s = STORY[domain][c.id];
+  const el = document.createElement('div');
+  el.className = 'case';
+  const jevOK = c.engines.jev.pass.startsWith('✓');
+  const v = jevOK ? ['hit','Jev ✓'] : ['miss','Jev ✗'];
+  let ansh = '';
+  for(const k of ["jev","glm","qwen","mock"]){
+    const e = c.engines[k];
+    const ok = e.pass.startsWith('✓');
+    const partial = /\((\d)\/(\d)\)/.exec(e.pass);
+    const sub = !ok ? 'miss' : (partial ? `matches right call (${partial[1]} of ${partial[2]} runs)` : 'matches right call');
+    ansh += `<div class="ans ${ok?'ok':'no'}"><div class="who">${ENG[k].split(' (')[0]}${k==='jev'?' (TypeSafe)':''}</div><div class="what">${e.value}</div><div class="sub">${sub}</div></div>`;
+  }
+  el.innerHTML = `
+   <div class="case-head" role="button" tabindex="0" aria-expanded="false">
+     <span class="idx mono">${String(i+1).padStart(2,'0')}/</span>
+     <span class="nm">${c.id}<small>${s.story.split('·')[0].trim().slice(0,44)}</small></span>
+     <span class="verdict ${v[0]}">${v[1]}</span>
+     <span class="chev mono">▾</span>
+   </div>
+   <div class="case-body"><div class="case-inner">
+     <p class="story">${s.story}</p>
+     <div class="ansgrid">${ansh}</div>
+     <div class="rc"><span class="k">right call</span><span class="v"><code>${c.right}</code> — ${s.gloss}</span></div>
+     <p class="why"><b>Why:</b> ${s.why}</p>
+   </div></div>`;
+  return el;
+}
+for(const [flow, target] of [["triage","#triage"],["checkout","#checkout"],["dunning","#dunning"],["prreview","#prreview"]]){
+  const host = document.querySelector(target);
+  CASES[flow].forEach((c,i)=>host.appendChild(caseEl(c,flow,i)));
+}
+
+/* ---------- evidence cards (numbers from data.js) ---------- */
+function meanConf(arr){ const m = arr.reduce((a,b)=>a+b.conf,0)/arr.length; return Math.round(m*100)/100; }
+const EV = D.evidence;
+const evidenceCards = [
+  {meta: EVIDENCE_META[0],
+   before:`review — human review, bureau called (risk band clear@${EV.bopis.before.match(/clear@([\d.]+)/)?.[1]}, below the 0.65 fast-path gate)`,
+   after:`approve FAST-PATH — bureau skipped (${EV.bopis.after.match(/\((.+)\)/)?.[1]})`},
+  {meta: EVIDENCE_META[1],
+   before:`file_regression_p2 (severity ${EV.errorContract.severityBefore})`,
+   after:`file_regression_p1 (severity ${EV.errorContract.severityAfter}, ${EV.errorContract.actions.filter(a=>a==='file_regression_p1').length}/3)`},
+  {meta: EVIDENCE_META[2],
+   before:`requeue_environment — blame the CI runner (environment@${meanConf(EV.badTest.before)})`,
+   after:`fix_test (${meanConf(EV.badTest.after)===1?'category certain, 2/3 runs':'2/3'})`},
+  {meta: EVIDENCE_META[3],
+   before:`reject (soundness sloppy ${EV.majorRuntime.before[0].conf})`,
+   after:`reject (soundness sloppy ${meanConf(EV.majorRuntime.after)}) — moved, not across`},
+  {meta: EVIDENCE_META[4],
+   before:`fix_test (bad_test ${EV.knownFlake.before[0].conf})`,
+   after:`fix_test (bad_test ${EV.knownFlake.after[0].conf}) — registry ignored`}
+];
+
+const evHost = document.getElementById('evgrid');
+const harness = document.createElement('div');
+harness.className = 'ev wide';
+harness.innerHTML = `
+ <div class="ev-top">
+   <span class="id">wave 1 · harness lesson</span>
+   <h3>First evidence wave measured 0/5 — INVALID, and kept for the record</h3>
+   <p>The harness whitelisted fields and silently dropped the new evidence before the model saw it.
+   Proven by the token delta — <span class="mono">700 → 1087</span> in-tokens with identical prompts — and a live debug run.
+   Fixed, re-run; waves stay append-only in git.</p>
+   <span class="badge invalid">INVALID · 0/5</span>
+ </div>`;
+evHost.appendChild(harness);
+evidenceCards.forEach(({meta:e, before, after})=>{
+  const el = document.createElement('div');
+  el.className = 'ev';
+  el.innerHTML = `
+   <div class="ev-top">
+     <span class="id">${e.id}</span>
+     <h3>${e.title}</h3>
+     <p><span class="mono" style="font-size:.7rem;color:var(--slate-dim)">evidence ${e.add.split(':')[0]}:</span> ${e.add.split(/:\s(.+)/)[1]||e.add}</p>
+     <span class="badge ${e.badge[0]}">${e.badge[1]}</span>
+   </div>
+   <div class="ev-body"><div class="ev-inner">
+     <div class="ba">
+       <div class="side before"><div class="lab">before evidence</div><div class="val">${before}</div></div>
+       <div class="arrow">→</div>
+       <div class="side after"><div class="lab">after evidence</div><div class="val">${after}</div></div>
+     </div>
+     <p class="banote">${e.note}</p>
+   </div></div>`;
+  evHost.appendChild(el);
+});
+
+/* ---------- claims (calibration numbers from data.js) ---------- */
+const CAL = D.calibration;
+const CLAIMS = [
+ {n:"01", title:"Calibration — “when it says 82% sure, it's right ~82% of the time”", stamp:["ok","measured · holds"],
+  body:`<p>Probe battery over the decision set. Brier <span class="mono">${CAL.brier}</span>, ECE <span class="mono">${CAL.ece}</span> over 10 bins. <span class="gloss">Brier = overall error, lower is better</span> <span class="gloss">ECE = how far stated confidence drifts from actual correctness</span></p>
+  <p>Per-bin stated vs empirical — gaps stay under ±0.06:</p>
+  <div class="kv">${CAL.bins.map(b=>`<div><div class="k">${b.bin} bin</div><div class="v">${b.stated} vs ${b.empirical} <small>gap ${b.gap.replace('-','−')}</small></div></div>`).join('')}</div>
+  <p>Plain reading: stated ≈ actual. The over-confident edge (−0.056 at the high bin) is where to watch.</p>`},
+ {n:"02", title:"Latency — “70–500ms”", stamp:["part","partly"],
+  body:`<p>Jev triage p50 <span class="mono">${fmtP50(D.latency.rows[0].p50)}</span> — inside the band. Jev checkout p50 <span class="mono">${D.latency.rows[1].p50}ms</span> — top edge. Tails: p95 <span class="mono">${fmtP50(D.latency.rows[0].p95)}–${fmtP50(D.latency.rows[1].p95)}</span> — exceeds the band.</p>
+  <p>The LLM comparison: GLM triage p50 <span class="mono">${fmtP50(D.latency.rows[2].p50)}</span> = <b>${Math.round(D.latency.rows[2].p50/D.latency.rows[0].p50)}× slower</b> than Jev's ${D.latency.rows[0].p50}ms. qwen triage p50 <span class="mono">${fmtP50(D.latency.rows[4].p50)}</span>. Mock p50s: ${D.latency.rows[6].p50}ms / ${D.latency.rows[7].p50}ms — the floor every real engine pays attention for.</p>
+  <p><span class="gloss">p50 = median ask · p95 = 95% of asks finish under this</span></p>`},
+ {n:"03", title:"Cost — “pennies per ask”", stamp:["ok","measured · holds"],
+  body:`<p>Pricing: input <span class="mono">$0.042/Mtok</span>, output free. A triage ask (${D.latency.tokens.jev.triage.inAsk} in / ${D.latency.tokens.jev.triage.outAsk} out tokens) costs <span class="mono">≈ $0.00004</span>; a checkout cascade (${D.latency.tokens.jev.checkout.inAsk} in / ${D.latency.tokens.jev.checkout.outAsk} out) <span class="mono">≈ $0.00007</span>.</p>
+  <p>The LLMs emit ~100× the output tokens: GLM ${Math.round(D.latency.tokens.glm.checkout.outAsk/100)/10}k out/ask with cloud thinking (${Math.round(D.latency.tokens.glm.triage.outAsk/100)/10}k triage), qwen ${D.latency.tokens.qwen.triage.outAsk} (checkout ${D.latency.tokens.qwen.checkout.outAsk}). <span class="gloss">Mtok = one million tokens of model input</span></p>`},
+ {n:"04", title:"Self-consistency — “same input, same decision”", stamp:["part","partly"],
+  body:`<p>5 re-runs × 3 fixtures: <b>not</b> byte-identical — ${D.selfConsistency.real[0].uniqueHashes}/${D.selfConsistency.real[0].runs} unique hashes per fixture — <b>but the chosen category never flipped across 30 runs</b>. Confidence wobbles ±0.03–0.08 (bad_test sat between 0.81 and 0.89).</p>
+  <p>The LLMs' category never flips either — but their confidence wobbles 0.16–0.26, 10× bigger, and <b>parks below the 0.5 act-on-it floor</b>. That is WHY GLM routes everything to a human: it never trusts itself enough to act.</p>
+  <p><span class="gloss">confidence floor 0.5 = below this, the engine must send to a person</span></p>`},
+ {n:"05", title:"Type-safety — “answers are data, not text to parse”", stamp:["ok","measured · holds"],
+  body:`<p>Across every committed wave: <span class="mono">${D.typeSafety.sweep.records}</span> records / <span class="mono">${D.typeSafety.sweep.answerSets}</span> answer sets (all engines, all flows, live API included), <span class="mono">0</span> unknown types, <span class="mono">0</span> schema violations. Every answer arrives as typed data you can branch on — no parsing strings and praying.</p>
+  <p><span class="gloss">schema violation = an answer that doesn't match the declared shape</span></p>`}
+];
+
+const clHost = document.getElementById('claimsList');
+CLAIMS.forEach(c=>{
+  const el = document.createElement('div');
+  el.className = 'claim';
+  el.innerHTML = `
+   <div class="claim-head" role="button" tabindex="0" aria-expanded="false">
+     <span class="idx">${c.n}/</span>
+     <span class="hwrap"><h3>${c.title}</h3><span class="stamp ${c.stamp[0]}">${c.stamp[1]}</span></span>
+     <span class="chev">▾</span>
+   </div>
+   <div class="claim-body"><div class="claim-inner">${c.body}</div></div>`;
+  clHost.appendChild(el);
+});
+
+/* ---------- generic expanders ---------- */
+function bindToggle(headSel, bodySel, openCls){
+  document.querySelectorAll(headSel).forEach(head=>{
+    const open = ()=> {
+      const box = head.parentElement;
+      const body = box.querySelector(bodySel);
+      const isOpen = box.classList.toggle(openCls);
+      head.setAttribute('aria-expanded', isOpen);
+      body.style.maxHeight = isOpen ? body.scrollHeight + 'px' : '0px';
+    };
+    head.addEventListener('click', open);
+    head.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();} });
+  });
+}
+bindToggle('.case-head','.case-body','open');
+bindToggle('.ev-top','.ev-body','open');
+bindToggle('.claim-head','.claim-body','open');
+
+const mHead = document.getElementById('methodHead'), mBody = document.getElementById('methodBody'), mFoot = document.getElementById('method');
+function mOpen(){
+  const isOpen = mFoot.classList.toggle('open');
+  mHead.setAttribute('aria-expanded', isOpen);
+  mBody.style.maxHeight = isOpen ? mBody.scrollHeight + 'px' : '0px';
+}
+mHead.addEventListener('click', mOpen);
+mHead.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();mOpen();} });
+
+/* open a box if content resizes while open (font load) */
+window.addEventListener('load', ()=>{
+  document.querySelectorAll('.open .case-body, .open .ev-body, .open .claim-body').forEach(b=> b.style.maxHeight = b.scrollHeight+'px');
+  if(mFoot.classList.contains('open')) mBody.style.maxHeight = mBody.scrollHeight+'px';
+});
+
+/* ---------- scoreboard count-up + bars ---------- */
+const sb = document.getElementById('scoreboard');
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting) return;
+    io.unobserve(e.target);
+    sb.querySelectorAll('.score').forEach((s,i)=>{
+      const n = +s.querySelector('.big').dataset.n;
+      const out = s.querySelector('.big small');
+      const t0 = performance.now(), dur = 900 + i*120;
+      const step = t => { const p = Math.min(1,(t-t0)/dur); out.textContent = Math.round(n*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); else out.textContent = n; };
+      requestAnimationFrame(step);
+      setTimeout(()=>{ s.querySelector('.bar i').style.width = s.querySelector('.bar i').dataset.w + '%'; }, 150);
+    });
+  });
+},{threshold:.35});
+io.observe(sb);
+
+/* ---------- latency chart (log scale, inline SVG) ---------- */
+const LROW = D.latency.rows;
+const LATCOL = [
+  {key:"jev",  eng:"Jev",  col:"#E935C1"},
+  {key:"glm",  eng:"GLM",  col:"#8892B0"},
+  {key:"qwen", eng:"qwen", col:"#5A6478"},
+  {key:"mock", eng:"mock", col:"#2A3342"}
+];
+(function(){
+  const svg = document.getElementById('latsvg');
+  const NS = "http://www.w3.org/2000/svg";
+  const W=980,H=420, padL=64, padR=16, padT=46, padB=58;
+  const plotW = W-padL-padR, plotH = H-padT-padB;
+  const lo=Math.log10(50), hi=Math.log10(40000);
+  const y = ms => padT + plotH - ((Math.log10(ms)-lo)/(hi-lo))*plotH;
+  const el = (t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  [50,100,300,500,1000,3000,10000,30000].forEach(ms=>{
+    const gy=y(ms);
+    svg.appendChild(el('line',{x1:padL,x2:W-padR,y1:gy,y2:gy,stroke:"#1E2530","stroke-width":1}));
+    const tx=el('text',{x:padL-10,y:gy+4,"text-anchor":"end",fill:"#5A6478","font-size":11});
+    tx.textContent = ms>=1000 ? (ms/1000)+"s" : ms+"ms";
+    svg.appendChild(tx);
+  });
+  const b1=y(500), b2=y(70);
+  svg.appendChild(el('rect',{x:padL,y:b1,width:plotW,height:b2-b1,fill:"rgba(111,191,98,.07)"}));
+  [b1,b2].forEach(gy=> svg.appendChild(el('line',{x1:padL,x2:W-padR,y1:gy,y2:gy,stroke:"rgba(111,191,98,.5)","stroke-width":1,"stroke-dasharray":"3 4"})));
+  const bl = el('text',{x:W-padR,y:b1+14,"text-anchor":"end",fill:"#6FBF62","font-size":10.5,"letter-spacing":"1"});
+  bl.textContent="CLAIMED BAND 70–500MS"; svg.appendChild(bl);
+  const groups=[{lab:"CI TRIAGE",vals:0},{lab:"CHECKOUT",vals:1}];
+  const gW = plotW/2, barSlot = gW/(LATCOL.length+1);
+  groups.forEach((g,gi)=>{
+    const gx = padL + gi*gW;
+    LATCOL.forEach((e,ei)=>{
+      const row = LROW.find(r=>r.engine===e.key && (gi===0?r.domain==='triage':r.domain==='checkout'));
+      const bx = gx + barSlot*(ei+0.5);
+      const p50=row.p50,p95=row.p95;
+      const g = el('g',{class:"lrow"});
+      const w=34;
+      g.appendChild(el('line',{x1:bx,x2:bx,y1:y(p50),y2:y(p95),stroke:e.col,"stroke-width":2,opacity:.85}));
+      g.appendChild(el('rect',{x:bx-4,y:y(p95)-4,width:8,height:8,fill:e.col,opacity:.85}));
+      const r=el('rect',{x:bx-w/2,y:y(p50),width:w,height:padT+plotH-y(p50),fill:e.col,opacity:gi===0&&ei===0?1:.28,stroke:e.col,"stroke-width":1});
+      g.appendChild(r);
+      const t=el('text',{x:bx,y:y(p95)-14,"text-anchor":"middle",fill:ei===0?"#E935C1":"#8892B0","font-size":11.5,"font-weight":ei===0?700:400});
+      t.textContent = p50>=1000 ? (p50/1000).toFixed(1).replace(/\.0$/,'')+"s" : p50+"ms";
+      g.appendChild(t);
+      const hit=el('rect',{x:bx-w/2-6,y:padT,width:w+12,height:plotH,fill:"transparent"});
+      hit.style.cursor='crosshair';
+      hit.addEventListener('mouseenter',()=>{ r.setAttribute('opacity',1); t.setAttribute('fill', ei===0?'#E935C1':'#E6E1D8'); });
+      hit.addEventListener('mouseleave',()=>{ r.setAttribute('opacity', gi===0&&ei===0?1:.28); t.setAttribute('fill', ei===0?'#E935C1':'#8892B0'); });
+      g.appendChild(hit);
+      svg.appendChild(g);
+      const lx=el('text',{x:bx,y:padT+plotH+20,"text-anchor":"middle",fill:"#8892B0","font-size":10.5});
+      lx.textContent=e.eng; svg.appendChild(lx);
+      const lv=el('text',{x:bx,y:padT+plotH+36,"text-anchor":"middle",fill:"#5A6478","font-size":9.5});
+      lv.textContent="p95 "+(p95>=1000?(p95/1000).toFixed(1)+"s":p95+"ms"); svg.appendChild(lv);
+    });
+  });
+  groups.forEach((g,gi)=>{
+    const t=el('text',{x:padL+gi*gW+gW/2,y:24,"text-anchor":"middle",fill:"#E6E1D8","font-size":12,"letter-spacing":"2"});
+    t.textContent=g.lab; svg.appendChild(t);
+  });
+  svg.appendChild(el('line',{x1:padL,x2:W-padR,y1:padT+plotH,y2:padT+plotH,stroke:"#2A3342","stroke-width":1.5}));
+})();
+
+/* ---------- calibration scatter (numbers from data.js) ---------- */
+(function(){
+  const host = document.querySelector('#claimsList .claim:nth-child(1) .claim-inner');
+  const NS="http://www.w3.org/2000/svg";
+  const W=560,H=240,pl=48,pr=16,pt=18,pb=40;
+  const X=v=>pl+(v)*(W-pl-pr), Y=v=>pt+(1-v)*(H-pt-pb);
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const s=el('svg',{viewBox:`0 0 ${W} ${H}`,class:"cal-svg",role:"img","aria-label":"Calibration: stated vs empirical confidence"});
+  s.appendChild(el('line',{x1:pl,y1:H-pb,x2:W-pr,y2:H-pb,stroke:"#2A3342","stroke-width":1.5}));
+  s.appendChild(el('line',{x1:pl,y1:pt,x2:pl,y2:H-pb,stroke:"#2A3342","stroke-width":1.5}));
+  s.appendChild(el('line',{x1:X(0),y1:Y(0),x2:X(1),y2:Y(1),stroke:"#2A3342","stroke-width":1,"stroke-dasharray":"4 5"}));
+  const dl=el('text',{x:X(0.62),y:Y(0.70),fill:"#5A6478","font-size":10.5,transform:`rotate(-21 ${X(0.62)} ${Y(0.70)})`});
+  dl.textContent="stated = actual"; s.appendChild(dl);
+  CAL.bins.forEach(b=>{
+    s.appendChild(el('line',{x1:X(b.stated),y1:Y(b.stated),x2:X(b.stated),y2:Y(b.empirical),stroke:"#E935C1","stroke-width":1.5,opacity:.8}));
+    s.appendChild(el('circle',{cx:X(b.empirical),cy:Y(b.empirical),r:6.5,fill:"#0B0E14",stroke:"#E935C1","stroke-width":2}));
+    const gapUp = b.empirical < b.stated;
+    const gap = b.gap.replace('-','−');
+    const tx=el('text',{x:X(b.stated)+12,y:Y(b.empirical)+(gapUp?-8:16),fill:"#8892B0","font-size":11});
+    tx.textContent=`${b.bin}  stated ${b.stated} · empirical ${b.empirical}  gap ${gap}`; s.appendChild(tx);
+  });
+  const ax=el('text',{x:W/2,y:H-8,"text-anchor":"middle",fill:"#5A6478","font-size":11});
+  ax.textContent="empirical correctness →"; s.appendChild(ax);
+  const ay=el('text',{x:14,y:H/2,fill:"#5A6478","font-size":11,transform:`rotate(-90 14 ${H/2})`,"text-anchor":"middle"});
+  ay.textContent="stated confidence →"; s.appendChild(ay);
+  host.insertBefore(s, host.children[2]);
+  s.querySelectorAll('circle').forEach(c=>{
+    c.style.cursor='crosshair';
+    c.addEventListener('mouseenter',()=>c.setAttribute('r','9'));
+    c.addEventListener('mouseleave',()=>c.setAttribute('r','6.5'));
+  });
+})();
+
+/* ---------- mobile nav ---------- */
+const burger=document.getElementById('burger'), mnav=document.getElementById('mnav');
+burger.addEventListener('click', ()=>{
+  const open = mnav.classList.toggle('open');
+  burger.setAttribute('aria-expanded', open);
+  burger.setAttribute('aria-label', open?'Close section menu':'Open section menu');
+});
+mnav.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>{
+  mnav.classList.remove('open');
+  burger.setAttribute('aria-expanded','false');
+}));
+
+/* ---------- rail active section (desktop only) ---------- */
+const links=[...document.querySelectorAll('.rail nav a')];
+if(links.length && links[0].offsetParent !== null){
+  const spyTargets={top:'scoreboard',cases:'cases',flows:'flows',evidence:'evidence',claims:'claims',method:'method'};
+  const secs=links.map(a=>document.getElementById(spyTargets[a.getAttribute('href').slice(1)]));
+  const spy=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        const i=secs.indexOf(e.target);
+        if(i>-1) links.forEach((l,j)=>l.classList.toggle('active', j===i));
+      }
+    });
+  },{rootMargin:"-25% 0px -65% 0px"});
+  secs.forEach(s=>{ if(s) spy.observe(s); });
+}
+
+/* ---------- toast ---------- */
+let tt;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2400);
+}
+sb.addEventListener('click', e=>{
+  const s=e.target.closest('.score'); if(!s) return;
+  const eng=s.querySelector('.eng').textContent;
+  toast(eng+' — head-to-head cases plus the other two flows = '+s.querySelector('.big').dataset.n+'/24. Per-flow split in the note below.');
+});
+</script>
+</body>
+</html>

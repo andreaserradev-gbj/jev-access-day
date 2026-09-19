@@ -7,10 +7,10 @@ via waitlist).
 
 This project is the instrument, not the experiment: it taught the paradigm
 against a mock and an LLM stand-in, then became the eval harness that measured
-the real Jev on access day (2026-09-18). All measured numbers below come from
-the committed waves in `results/` (`2026-09-18/`, `2026-09-18-postfix/`,
-`2026-09-18-access-day/`) — claimed vs measured, per claim, in
-`results/2026-09-18-access-day/claims.md`.
+the real Jev in a live comparison day (2026-09-18). All measured numbers below
+come from the committed waves in `results/` (`2026-09-18/`,
+`2026-09-18-postfix/`, `2026-09-18-access-day/`) — claimed vs measured, per
+claim, in `results/2026-09-18-access-day/claims.md`.
 
 ## The mental model
 
@@ -55,7 +55,7 @@ selected by `TYPESAFE_PROVIDER`:
 | `mock` | Deterministic hand-written probabilities keyed by scenario | Pure wiring: how questions, answers, and decide() compose. Probabilities are **fiction**. |
 | `llm` | A classic LLM (Ollama Cloud, `glm-5.3-flash:cloud`) forced into the same contract: JSON-schema-constrained output, N=5 self-consistency samples, agreement → confidence | The stand-in experiment: real model behavior under the same contract. This mirrors TypeSafe's own eval methodology (their `system-one-adapter` wrapper for frontier LLMs). |
 | `llm-local` | Same stand-in via local Ollama (`qwen3.6:35b` MoE, native `/api/chat`, `think:false`) | Isolates think-mode cost from sampling cost: cloud burns ~15.6k out-tok/ask on server-default thinking vs local's 814; categories read nearly identically (0.78 vs 0.79). |
-| `real` | The actual TypeSafe API via `@typesafe-ai/sdk` (`jev-latest`) | Measured on access day. Flip one env var; zero code changes. |
+| `real` | The actual TypeSafe API via `@typesafe-ai/sdk` (`jev-latest`) | Measured live against the others. Flip one env var; zero code changes. |
 
 ### What the comparison measured
 
@@ -69,14 +69,14 @@ provider with identical questions and identical decide() code:
 - **Consistency** — re-run; the LLM stand-in varies, Jev claims
   self-consistency.
 - **Latency and calls** — ~1 mocked 100ms call per stage vs N sampled
-  generations; measured on access day: the stand-in is 30–53x slower per ask
+  generations; measured live: the stand-in is 30–53x slower per ask
   (and ~220x at p50 wall-clock, N=5 + thinking).
 - **Tokens** — LLM output tokens × 5 samples vs Jev's near-free outputs;
   measured: llm emits ~100x Jev's out-tokens per ask.
 - **Bureau skip rate** — the checkout cascade's money metric: how many
   checkouts never paid for a bureau call.
 
-### Measured on access day (2026-09-18)
+### Measured results (2026-09-18)
 
 Post-fix wave (`results/2026-09-18-postfix/`, 4 providers × 4 domains × 3 runs,
 144 records, 0 schema violations) — pass rate / agreement vs expectations
@@ -138,7 +138,7 @@ progress lines stream to stderr. `--compare` runs mock + llm together and
 takes roughly twice as long. Mock runs take seconds. Run llm evals detached
 (`nohup`) — the cloud run took ~57 min wall-clock, local ~33 min.
 
-### Provider: real (access-day runbook, measured)
+### Provider: real (live runbook, measured)
 
 1. Install the TypeSafe agent skill so coding agents batch questions correctly:
 
@@ -157,7 +157,7 @@ takes roughly twice as long. Mock runs take seconds. Run llm evals detached
    ```
 
 4. Smoke first, one fixture, 3 re-runs — verify typed answers before any bulk
-   run (access day: 3/3 clean first attempt):
+   run (live: 3/3 clean first attempt):
 
    ```bash
    node dist/scripts/debug-real.js
@@ -196,7 +196,7 @@ src/
     client.ts   # SystemOneClient interface, question/answer types, confidence math
     mock.ts     # provider 1: fixture-keyed canned answers
     llm.ts      # provider 2: Ollama Cloud stand-in, self-consistency sampling
-    real.ts     # provider 3: @typesafe-ai/sdk wrapper (measured on access day)
+    real.ts     # provider 3: @typesafe-ai/sdk wrapper (measured live)
     index.ts    # createClient(): provider selection
   triage/       # domain 1: state.ts, questions.ts, decide.ts
   checkout/     # domain 2: state.ts (+ mock bureau), questions.ts, decide.ts, cascade.ts

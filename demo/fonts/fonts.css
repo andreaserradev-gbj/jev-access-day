@@ -1,0 +1,15 @@
+/* Google Fonts, latin subset, variable weight — bundled so the page makes zero external calls */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('fonts/Archivo-var.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('fonts/JetBrainsMono-var.woff2') format('woff2');
+}

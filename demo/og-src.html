@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --ink:#0B0E14; --panel:#11151E; --hairline:#1E2530; --grid:#2A3342;
+  --warm:#E6E1D8; --slate:#8892B0; --slate-dim:#5A6478;
+  --accent:#E935C1; --accent-line:rgba(233,53,193,.42);
+  --right-bright:#6FBF62;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:"Archivo",Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1200px;height:630px;overflow:hidden;background:var(--ink);color:var(--slate);font-family:var(--sans);-webkit-font-smoothing:antialiased;position:relative}
+.frame{position:absolute;inset:24px;border:1px solid var(--hairline);pointer-events:none}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--hairline) 1px,transparent 1px),linear-gradient(90deg,var(--hairline) 1px,transparent 1px);background-size:60px 60px;opacity:.25}
+.brandrow{position:absolute;top:52px;left:56px;display:flex;align-items:center;gap:12px}
+.brandrow img{width:34px;height:34px}
+.brandrow span{font-family:var(--mono);font-size:15px;letter-spacing:.16em;color:var(--warm);text-transform:uppercase}
+.brandrow .sep{color:var(--grid)}
+.brandrow .tag{font-family:var(--mono);font-size:13px;color:var(--slate-dim);letter-spacing:.05em}
+.datenum{position:absolute;top:56px;right:56px;font-family:var(--mono);font-size:13px;color:var(--slate-dim);letter-spacing:.06em}
+h1{position:absolute;top:140px;left:56px;width:1090px;font-size:52px;line-height:1.12;letter-spacing:-0.02em;color:var(--warm);font-weight:700}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{position:absolute;top:300px;left:56px;width:1000px;font-size:21px;line-height:1.5;color:var(--slate)}
+.lede b{color:var(--warm)}
+.scores{position:absolute;left:56px;right:56px;bottom:120px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.score{background:var(--panel);border:1px solid var(--hairline);padding:18px 20px 16px;position:relative}
+.score.lead{border-color:var(--accent-line)}
+.score .eng{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--slate-dim);text-transform:uppercase}
+.score .big{font-family:var(--mono);font-size:44px;font-weight:700;color:var(--warm);line-height:1.1;margin-top:6px}
+.score .big small{font-size:22px;color:var(--slate-dim);font-weight:400}
+.score .bar{height:3px;background:var(--grid);margin-top:10px;position:relative}
+.score .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--slate-dim)}
+.score.lead .bar i{background:var(--accent)}
+.flows{position:absolute;bottom:52px;left:56px;display:flex;gap:26px;font-family:var(--mono);font-size:13px;color:var(--slate-dim)}
+.flows span::before{content:"— ";color:var(--accent)}
+.cta{position:absolute;bottom:52px;right:56px;font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="frame"></div>
+<div class="brandrow">
+  <img src="assets/ts-mark.png" alt="">
+  <span>TypeSafe</span><span class="sep">/</span><span class="tag">decision-engine comparison</span>
+</div>
+<div class="datenum">2026-09-18 → 19</div>
+<h1>A decision model and a frontier LLM. Same <em>24 decisions</em>.</h1>
+<p class="lede">Four engines, same inputs, same scoring — every number traced to a committed run file.</p>
+<div class="scores scores">
+  <div class="score lead"><div class="eng">Jev (TypeSafe)</div><div class="big">19<small>/24</small></div><div class="bar"><i style="width:79%"></i></div></div>
+  <div class="score"><div class="eng">Frontier LLM (GLM)</div><div class="big">15<small>/24</small></div><div class="bar"><i style="width:62%"></i></div></div>
+  <div class="score"><div class="eng">Local model (qwen)</div><div class="big">15<small>/24</small></div><div class="bar"><i style="width:62%"></i></div></div>
+  <div class="score"><div class="eng">Mock (anchor)</div><div class="big">24<small>/24</small></div><div class="bar"><i style="width:100%"></i></div></div>
+</div>
+<div class="flows"><span>CI triage</span><span>checkout fraud</span><span>payment retries</span><span>dependency-PR review</span></div>
+<div class="cta">every number → committed run file</div>
+</body>
+</html>
