@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "provider": "nimble",
+  "domain": "dunning",
+  "runIndex": 0,
+  "model": {
+    "model": "nimble:latest",
+    "baseUrl": "http://localhost:11434/v1/systemone"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "nimble",
+      "scenario": "account-closed",
+      "timestamp": "2026-10-06T07:42:06.124Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "account_closed",
+          "probabilities": {
+            "transient_funds": 0.007060348473526748,
+            "mandate_revoked": 0.0004104476804010235,
+            "account_closed": 0.992348163172375,
+            "technical": 0.0001810406736972086
+          },
+          "confidence": 0.9658405865602485
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9748915183656529,
+            "strained": 0.003161264938158224,
+            "unknown": 0.021947216696188893
+          },
+          "confidence": 0.884574155120312
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.002200065955340768
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.7496464728337753,
+            "moderate": 0.14715985581544555,
+            "high": 0.10319367135077914
+          },
+          "confidence": 0.3333641310641705
+        }
+      },
+      "confidence": 0.9658405865602485,
+      "usage": {
+        "inputTokens": 3207,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 5376
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "nimble",
+      "scenario": "mandate-revoked-no-alt",
+      "timestamp": "2026-10-06T07:42:11.481Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "needs_human",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "transient_funds": 0.010775848063563185,
+            "mandate_revoked": 0.9885769690857901,
+            "account_closed": 0.0004685884082944524,
+            "technical": 0.00017859444235240703
+          },
+          "confidence": 0.9528885081622759
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.6201387217251698,
+            "strained": 0.36329462138040375,
+            "unknown": 0.01656665689442627
+          },
+          "confidence": 0.3336231140466043
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.012186321896723291
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.8742764379421339,
+            "moderate": 0.07669066384972731,
+            "high": 0.04903289820813873
+          },
+          "confidence": 0.5792387613677508
+        }
+      },
+      "confidence": 0.9528885081622759,
+      "usage": {
+        "inputTokens": 3347,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 5357
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "nimble",
+      "scenario": "mandate-revoked",
+      "timestamp": "2026-10-06T07:42:16.822Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "transient_funds": 0.005017621065619171,
+            "mandate_revoked": 0.994681456465873,
+            "account_closed": 0.0001040944588305819,
+            "technical": 0.00019682800967729037
+          },
+          "confidence": 0.9751093203710002
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9842755612071395,
+            "strained": 0.015339715829943172,
+            "unknown": 0.0003847229629173013
+          },
+          "confidence": 0.924719596120284
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.009753911187761971
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.9444632481180565,
+            "moderate": 0.03874338026010768,
+            "high": 0.016793371621835685
+          },
+          "confidence": 0.7737667005258357
+        }
+      },
+      "confidence": 0.9751093203710002,
+      "usage": {
+        "inputTokens": 3311,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 5341
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "nimble",
+      "scenario": "nsf-repeat",
+      "timestamp": "2026-10-06T07:42:22.259Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "pause_spending",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 0.9060348193766774,
+            "mandate_revoked": 0.06676730345755802,
+            "account_closed": 0.025647776962143914,
+            "technical": 0.0015501002036207034
+          },
+          "confidence": 0.7301456823462494
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "strained",
+          "probabilities": {
+            "good": 0.1521533718162927,
+            "strained": 0.7727988513443038,
+            "unknown": 0.07504777683940364
+          },
+          "confidence": 0.38102922014565044
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.3861700920725514
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "low": 0.024497518847077855,
+            "moderate": 0.6392028967789436,
+            "high": 0.3362995843739785
+          },
+          "confidence": 0.3233155497086512
+        }
+      },
+      "confidence": 0.7301456823462494,
+      "usage": {
+        "inputTokens": 3239,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 5436
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "nimble",
+      "scenario": "nsf-transient",
+      "timestamp": "2026-10-06T07:42:27.487Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "retry_in_3d",
+      "waitDays": 3,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 0.9854330147885455,
+            "mandate_revoked": 0.012850984465243546,
+            "account_closed": 0.001023807430432683,
+            "technical": 0.0006921933157781154
+          },
+          "confidence": 0.9404872909637217
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9921536846577418,
+            "strained": 0.007390285005225209,
+            "unknown": 0.0004560303370329711
+          },
+          "confidence": 0.9566797558593034
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.7720879359440408
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.9533785951969358,
+            "moderate": 0.03729397380957725,
+            "high": 0.009327430993486907
+          },
+          "confidence": 0.8072311798601823
+        }
+      },
+      "confidence": 0.9404872909637217,
+      "usage": {
+        "inputTokens": 3151,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 5228
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "nimble",
+      "scenario": "processor-outage",
+      "timestamp": "2026-10-06T07:42:32.759Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "retry_next_schedule",
+      "waitDays": 2,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "technical",
+          "probabilities": {
+            "transient_funds": 0.0007671042680168134,
+            "mandate_revoked": 0.003963732696353853,
+            "account_closed": 0.004395727919297495,
+            "technical": 0.9908734351163319
+          },
+          "confidence": 0.9564558618081602
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9907945589234108,
+            "strained": 0.0050265775345082605,
+            "unknown": 0.004178863542081023
+          },
+          "confidence": 0.946605983321845
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.9982188622954367
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "high",
+          "probabilities": {
+            "low": 0.050114782940546526,
+            "moderate": 0.31994843475367474,
+            "high": 0.6299367823057787
+          },
+          "confidence": 0.2665804960393373
+        }
+      },
+      "confidence": 0.9564558618081602,
+      "usage": {
+        "inputTokens": 3243,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 5272
+      }
+    }
+  ]
+}

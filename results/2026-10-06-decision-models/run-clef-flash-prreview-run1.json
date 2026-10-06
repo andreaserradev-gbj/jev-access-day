@@ -1,0 +1,419 @@
+{
+  "schemaVersion": 1,
+  "provider": "clef-flash",
+  "domain": "prreview",
+  "runIndex": 1,
+  "model": {
+    "model": "tev1:4b-q4_K_M",
+    "baseUrl": "http://localhost:11434/v1/systemone",
+    "resolvedModel": "clef-flash:latest"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "clef-flash",
+      "scenario": "direct-ssrf-untrusted",
+      "timestamp": "2026-10-06T07:51:29.996Z",
+      "model": {
+        "model": "tev1:4b-q4_K_M",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "clef-flash:latest",
+      "action": "needs_llm_review",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 0.8539738621614203,
+            "indirect": 0.07970831178975751,
+            "none": 0.06631782604882205
+          },
+          "confidence": 0.5299921210301609
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.02852956632359587,
+            "routine": 0.037927109764578325,
+            "trivial": 0.9335433239118257
+          },
+          "confidence": 0.7362371815153264
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.03125258959953001
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.032086175940863194,
+            "sound": 0.9679138240591368
+          },
+          "confidence": 0.7952516141406997
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.5299921210301609,
+      "usage": {
+        "inputTokens": 837,
+        "outputTokens": 0,
+        "calls": 1,
+        "elapsedMs": 1899
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "clef-flash",
+      "scenario": "gray-zone-reachable-admin",
+      "timestamp": "2026-10-06T07:51:31.966Z",
+      "model": {
+        "model": "tev1:4b-q4_K_M",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "clef-flash:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "indirect",
+          "probabilities": {
+            "direct": 0.061098800863610137,
+            "indirect": 0.5146758186186492,
+            "none": 0.42422538051774084
+          },
+          "confidence": 0.20225415805241476
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.8559626988615309,
+            "routine": 0.11187854596282787,
+            "trivial": 0.0321587551756412
+          },
+          "confidence": 0.5551563510360943
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9582704983199702
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.009012404916716248,
+            "sound": 0.9909875950832837
+          },
+          "confidence": 0.9258274884820183
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.20225415805241476,
+      "usage": {
+        "inputTokens": 857,
+        "outputTokens": 0,
+        "calls": 1,
+        "elapsedMs": 1970
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "clef-flash",
+      "scenario": "major-runtime-breaking-v2",
+      "timestamp": "2026-10-06T07:51:34.133Z",
+      "model": {
+        "model": "tev1:4b-q4_K_M",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "clef-flash:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.3740663400750693,
+            "indirect": 0.2514299718070466,
+            "none": 0.3745036881178842
+          },
+          "confidence": 0.014420491034200622
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.837196282739377,
+            "routine": 0.13392055058404526,
+            "trivial": 0.028883166676577764
+          },
+          "confidence": 0.526319032269499
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9762182111624006
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.20623009930601785,
+            "sound": 0.7937699006939822
+          },
+          "confidence": 0.265785356832393
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.014420491034200622,
+      "usage": {
+        "inputTokens": 925,
+        "outputTokens": 0,
+        "calls": 1,
+        "elapsedMs": 2167
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "clef-flash",
+      "scenario": "major-runtime-breaking",
+      "timestamp": "2026-10-06T07:51:35.985Z",
+      "model": {
+        "model": "tev1:4b-q4_K_M",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "clef-flash:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "direct": 0.5210976077078802,
+            "indirect": 0.23332346473462282,
+            "none": 0.24557892755749697
+          },
+          "confidence": 0.06786978318266323
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "breaking": 0.9675924321446159,
+            "routine": 0.023811068647561374,
+            "trivial": 0.008596499207822808
+          },
+          "confidence": 0.8527584010883225
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9754797367181516
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.2473358126554659,
+            "sound": 0.7526641873445341
+          },
+          "confidence": 0.19297188457338854
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.06786978318266323,
+      "usage": {
+        "inputTokens": 824,
+        "outputTokens": 0,
+        "calls": 1,
+        "elapsedMs": 1852
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "clef-flash",
+      "scenario": "minor-transitive-safe",
+      "timestamp": "2026-10-06T07:51:37.815Z",
+      "model": {
+        "model": "tev1:4b-q4_K_M",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "clef-flash:latest",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.015579169614736979,
+            "indirect": 0.017304609427538264,
+            "none": 0.9671162209577248
+          },
+          "confidence": 0.8476479591486926
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.019106540237999785,
+            "routine": 0.03231918229161485,
+            "trivial": 0.9485742774703854
+          },
+          "confidence": 0.7846182306113926
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.03220584770350612
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.03224537157081847,
+            "sound": 0.9677546284291815
+          },
+          "confidence": 0.7944697784321793
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.8476479591486926,
+      "usage": {
+        "inputTokens": 817,
+        "outputTokens": 0,
+        "calls": 1,
+        "elapsedMs": 1830
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "clef-flash",
+      "scenario": "patch-lockfile-only",
+      "timestamp": "2026-10-06T07:51:39.607Z",
+      "model": {
+        "model": "tev1:4b-q4_K_M",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "clef-flash:latest",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.0369709112989451,
+            "indirect": 0.09958824128064736,
+            "none": 0.8634408474204076
+          },
+          "confidence": 0.5645266344206618
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.016143726922688194,
+            "routine": 0.028170663376786705,
+            "trivial": 0.955685609700525
+          },
+          "confidence": 0.808408517128884
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.01747235862041493
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sloppy": 0.023740170816371465,
+            "sound": 0.9762598291836285
+          },
+          "confidence": 0.838045531509602
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.5645266344206618,
+      "usage": {
+        "inputTokens": 772,
+        "outputTokens": 0,
+        "calls": 1,
+        "elapsedMs": 1792
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "clef-flash",
+      "scenario": "unsound-lockfile-drift",
+      "timestamp": "2026-10-06T07:51:41.301Z",
+      "model": {
+        "model": "tev1:4b-q4_K_M",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "clef-flash:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "direct": 0.17043782716999784,
+            "indirect": 0.29914998987771324,
+            "none": 0.530412182952289
+          },
+          "confidence": 0.09074185860555051
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "breaking": 0.010677386389224214,
+            "routine": 0.4039560235956293,
+            "trivial": 0.5853665900151466
+          },
+          "confidence": 0.3372450434781751
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.024060079709837184
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sloppy": 0.9751391555774356,
+            "sound": 0.024860844422564338
+          },
+          "confidence": 0.8320751358013669
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.09074185860555051,
+      "usage": {
+        "inputTokens": 765,
+        "outputTokens": 0,
+        "calls": 1,
+        "elapsedMs": 1694
+      }
+    }
+  ]
+}

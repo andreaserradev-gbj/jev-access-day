@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 1,
+  "provider": "tev1",
+  "domain": "prreview",
+  "runIndex": 1,
+  "model": {
+    "model": "tev1:latest",
+    "baseUrl": "http://localhost:11434/v1/systemone"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "tev1",
+      "scenario": "direct-ssrf-untrusted",
+      "timestamp": "2026-10-06T07:47:19.126Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "none": 0.0038938086242959274,
+            "indirect": 0.001118603391939749,
+            "direct": 0.9949875879837643
+          },
+          "confidence": 0.9688645622667963
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.919857312287314,
+            "routine": 0.027967607143630356,
+            "breaking": 0.05217508056905558
+          },
+          "confidence": 0.6987520620555138
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.06831038901676467
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9965249870078632,
+            "sloppy": 0.0034750129921368705
+          },
+          "confidence": 0.966608769206818
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.9688645622667963,
+      "usage": {
+        "inputTokens": 3016,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3089
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "tev1",
+      "scenario": "gray-zone-reachable-admin",
+      "timestamp": "2026-10-06T07:47:22.652Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_llm_review",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.8042282309565674,
+            "indirect": 0.1876896365740634,
+            "direct": 0.00808213246936927
+          },
+          "confidence": 0.5192500770901438
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "trivial": 0.004101366170220179,
+            "routine": 0.03249539329177403,
+            "breaking": 0.9634032405380057
+          },
+          "confidence": 0.8454302431494263
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9954568426764142
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9954293295880852,
+            "sloppy": 0.004570670411914823
+          },
+          "confidence": 0.9578914580844824
+        }
+      },
+      "reviewerChain": {
+        "verdict": "approve",
+        "confidence": 0.71,
+        "rationale": "ReDoS payload requires adversarial markdown input; only staff in admin UI author notes, so exposure is indirect at worst. Major bump touches one runtime path but options migration is mechanical and CI is green."
+      },
+      "confidence": 0.5192500770901438,
+      "usage": {
+        "inputTokens": 3100,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3109
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "tev1",
+      "scenario": "major-runtime-breaking-v2",
+      "timestamp": "2026-10-06T07:47:25.746Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.8187439875651455,
+            "indirect": 0.04396903076787467,
+            "direct": 0.1372869816669798
+          },
+          "confidence": 0.4777821618558894
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "trivial": 0.0003762212940499307,
+            "routine": 0.005188149135257719,
+            "breaking": 0.9944356295706924
+          },
+          "confidence": 0.9674022344367585
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9997244117896015
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9117860305945075,
+            "sloppy": 0.08821396940549267
+          },
+          "confidence": 0.5695199850084526
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.4777821618558894,
+      "usage": {
+        "inputTokens": 3384,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3094
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "tev1",
+      "scenario": "major-runtime-breaking",
+      "timestamp": "2026-10-06T07:47:28.750Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.7474405821579044,
+            "indirect": 0.03261875763906256,
+            "direct": 0.21994066020303316
+          },
+          "confidence": 0.3971416600427564
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "trivial": 0.0003323746439148146,
+            "routine": 0.0028146907816935544,
+            "breaking": 0.9968529345743917
+          },
+          "confidence": 0.9796701849309243
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9997315549006958
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.5429465737653343,
+            "sloppy": 0.4570534262346657
+          },
+          "confidence": 0.005328400269451694
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.3971416600427564,
+      "usage": {
+        "inputTokens": 2968,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3004
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "tev1",
+      "scenario": "minor-transitive-safe",
+      "timestamp": "2026-10-06T07:47:31.791Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.9933202885718236,
+            "indirect": 0.00430217477596678,
+            "direct": 0.002377536652209511
+          },
+          "confidence": 0.9595283327409219
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.9081621296057475,
+            "routine": 0.019042131986348076,
+            "breaking": 0.07279573840790449
+          },
+          "confidence": 0.6780982913558573
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.01159675098037768
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9982910583617751,
+            "sloppy": 0.0017089416382248881
+          },
+          "confidence": 0.98182687066208
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.9595283327409219,
+      "usage": {
+        "inputTokens": 2928,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3041
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "tev1",
+      "scenario": "patch-lockfile-only",
+      "timestamp": "2026-10-06T07:47:34.874Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.93505636299294,
+            "indirect": 0.005086250970390373,
+            "direct": 0.05985738603666966
+          },
+          "confidence": 0.764980745338395
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.9932491619872422,
+            "routine": 0.0008048872702209033,
+            "breaking": 0.005945950742536877
+          },
+          "confidence": 0.960918031058905
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.003835865356187443
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9991845497572286,
+            "sloppy": 0.0008154502427712998
+          },
+          "confidence": 0.990457420075531
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.764980745338395,
+      "usage": {
+        "inputTokens": 2752,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3082
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 1,
+      "provider": "tev1",
+      "scenario": "unsound-lockfile-drift",
+      "timestamp": "2026-10-06T07:47:37.904Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.9624251878778859,
+            "indirect": 0.010504800133108574,
+            "direct": 0.027070011989005525
+          },
+          "confidence": 0.8339509749569305
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.916209021913895,
+            "routine": 0.044535227420387555,
+            "breaking": 0.039255750665717584
+          },
+          "confidence": 0.6851982738900099
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.008768889903389828
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sound": 0.030238289952895826,
+            "sloppy": 0.9697617100471042
+          },
+          "confidence": 0.8044145338379757
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.8339509749569305,
+      "usage": {
+        "inputTokens": 2720,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3030
+      }
+    }
+  ]
+}

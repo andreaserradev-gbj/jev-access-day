@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "provider": "real",
+  "domain": "dunning",
+  "runIndex": 2,
+  "model": {
+    "model": "jev-latest",
+    "resolvedModel": "jev-1.13.0"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "account-closed",
+      "timestamp": "2026-10-06T07:53:01.761Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "account_closed",
+          "probabilities": {
+            "transient_funds": 0,
+            "account_closed": 1,
+            "mandate_revoked": 0,
+            "technical": 0
+          },
+          "confidence": 1
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "unknown": 0,
+            "good": 1,
+            "strained": 0
+          },
+          "confidence": 1
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.07
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.66,
+            "moderate": 0.32,
+            "high": 0.02
+          },
+          "confidence": 0.48
+        }
+      },
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1055,
+        "outputTokens": 154,
+        "calls": 1,
+        "elapsedMs": 237
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "mandate-revoked-no-alt",
+      "timestamp": "2026-10-06T07:53:02.005Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "needs_human",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "transient_funds": 0,
+            "mandate_revoked": 1,
+            "technical": 0,
+            "account_closed": 0
+          },
+          "confidence": 1
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "unknown": 0.01,
+            "strained": 0.49,
+            "good": 0.5
+          },
+          "confidence": 0.25
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.02
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "moderate": 0.54,
+            "low": 0.2,
+            "high": 0.26
+          },
+          "confidence": 0.3
+        }
+      },
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1101,
+        "outputTokens": 157,
+        "calls": 1,
+        "elapsedMs": 244
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "mandate-revoked",
+      "timestamp": "2026-10-06T07:53:02.236Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "transient_funds": 0,
+            "mandate_revoked": 1,
+            "technical": 0,
+            "account_closed": 0
+          },
+          "confidence": 1
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 1,
+            "strained": 0,
+            "unknown": 0
+          },
+          "confidence": 1
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.03
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.9299999999999999,
+            "high": 0.01,
+            "moderate": 0.06
+          },
+          "confidence": 0.91
+        }
+      },
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1088,
+        "outputTokens": 156,
+        "calls": 1,
+        "elapsedMs": 231
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "nsf-repeat",
+      "timestamp": "2026-10-06T07:53:02.517Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "pause_spending",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 1,
+            "account_closed": 0,
+            "technical": 0,
+            "mandate_revoked": 0
+          },
+          "confidence": 1
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "strained",
+          "probabilities": {
+            "strained": 0.97,
+            "unknown": 0,
+            "good": 0.03
+          },
+          "confidence": 0.96
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.76
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "high": 0.35,
+            "moderate": 0.64,
+            "low": 0.01
+          },
+          "confidence": 0.47
+        }
+      },
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1076,
+        "outputTokens": 157,
+        "calls": 1,
+        "elapsedMs": 281
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "nsf-transient",
+      "timestamp": "2026-10-06T07:53:02.774Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "retry_in_3d",
+      "waitDays": 3,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 1,
+            "account_closed": 0,
+            "technical": 0,
+            "mandate_revoked": 0
+          },
+          "confidence": 1
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "strained": 0,
+            "good": 1,
+            "unknown": 0
+          },
+          "confidence": 1
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.88
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.65,
+            "high": 0.01,
+            "moderate": 0.34
+          },
+          "confidence": 0.48
+        }
+      },
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1049,
+        "outputTokens": 156,
+        "calls": 1,
+        "elapsedMs": 257
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 2,
+      "provider": "real",
+      "scenario": "processor-outage",
+      "timestamp": "2026-10-06T07:53:03.019Z",
+      "model": {
+        "model": "jev-latest"
+      },
+      "responseModel": "jev-1.13.0",
+      "action": "retry_next_schedule",
+      "waitDays": 2,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "technical",
+          "probabilities": {
+            "account_closed": 0,
+            "transient_funds": 0,
+            "mandate_revoked": 0,
+            "technical": 1
+          },
+          "confidence": 1
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "unknown": 0,
+            "strained": 0,
+            "good": 1
+          },
+          "confidence": 1
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.94
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "high": 0.19,
+            "moderate": 0.7,
+            "low": 0.11
+          },
+          "confidence": 0.55
+        }
+      },
+      "confidence": 1,
+      "usage": {
+        "inputTokens": 1073,
+        "outputTokens": 154,
+        "calls": 1,
+        "elapsedMs": 245
+      }
+    }
+  ]
+}
