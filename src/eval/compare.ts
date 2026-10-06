@@ -6,7 +6,12 @@ import { TRIAGE_QUESTIONS } from '../triage/questions.js';
 import { DUNNING_QUESTIONS } from '../dunning/questions.js';
 import { PR_REVIEW_QUESTIONS } from '../prreview/questions.js';
 import { PRE_BUREAU_QUESTIONS, SYNTHESIS_QUESTIONS } from '../checkout/questions.js';
-import { RUN_RECORD_SCHEMA_VERSION, type EvalDomain, type RunFilePayload, type RunRecord } from './run-record.js';
+import {
+  RUN_RECORD_SCHEMA_VERSION,
+  type EvalDomain,
+  type RunFilePayload,
+  type RunRecord,
+} from './run-record.js';
 
 /**
  * The adjudication view: per-scenario × per-question comparison of every
@@ -14,7 +19,15 @@ import { RUN_RECORD_SCHEMA_VERSION, type EvalDomain, type RunFilePayload, type R
  * built offline from persisted run files — zero provider calls.
  */
 
-const PROVIDER_ORDER = ['mock', 'real', 'tev1', 'nimble', 'llm', 'llm-local'] as const;
+const PROVIDER_ORDER = [
+  'mock',
+  'real',
+  'tev1',
+  'nimble',
+  'clef-flash',
+  'llm',
+  'llm-local',
+] as const;
 
 const DOMAIN_QUESTIONS: Record<EvalDomain, string[]> = {
   triage: Object.keys(TRIAGE_QUESTIONS),
@@ -63,7 +76,8 @@ function questionCell(records: RunRecord[], id: string): string {
     .filter((a) => a !== undefined);
   if (answers.length === 0) return '—';
   if (answers[0]!.type === 'noul') {
-    const mean = (answers as NoulAnswer[]).reduce((s, a) => s + a.noul, 0) / answers.length;
+    const mean =
+      (answers as NoulAnswer[]).reduce((s, a) => s + a.noul, 0) / answers.length;
     return mean.toFixed(2);
   }
   if (answers[0]!.type === 'score') {
@@ -77,7 +91,10 @@ function questionCell(records: RunRecord[], id: string): string {
   if (!mod) return '—';
   const sameChoice = choices.filter((a) => a.choice === mod.value);
   const meanConf = sameChoice.reduce((s, a) => s + a.confidence, 0) / sameChoice.length;
-  const agreement = sameChoice.length === choices.length ? '' : ` (${sameChoice.length}/${choices.length})`;
+  const agreement =
+    sameChoice.length === choices.length
+      ? ''
+      : ` (${sameChoice.length}/${choices.length})`;
   return `${mod.value} ${meanConf.toFixed(2)}${agreement}`;
 }
 
@@ -86,12 +103,22 @@ function actionCell(domain: EvalDomain, records: RunRecord[]): ScenarioCell {
   const texts = records.map((r) => {
     if (domain === 'triage' || domain === 'dunning') {
       const rec = r as { action: string; waitDays?: number };
-      return domain === 'dunning' ? `${rec.action} (${rec.waitDays}d)` : String(rec.action);
+      return domain === 'dunning'
+        ? `${rec.action} (${rec.waitDays}d)`
+        : String(rec.action);
     }
     if (domain === 'prreview') {
-      const rec = r as { action: string; finalAction: string; reviewerChain: { verdict: string; confidence: number } | null };
-      const chain = rec.reviewerChain ? ` ⇡${rec.reviewerChain.verdict}@${rec.reviewerChain.confidence}` : '';
-      return rec.finalAction === rec.action ? `${rec.action}${chain}` : `${rec.finalAction} [${rec.action}${chain}]`;
+      const rec = r as {
+        action: string;
+        finalAction: string;
+        reviewerChain: { verdict: string; confidence: number } | null;
+      };
+      const chain = rec.reviewerChain
+        ? ` ⇡${rec.reviewerChain.verdict}@${rec.reviewerChain.confidence}`
+        : '';
+      return rec.finalAction === rec.action
+        ? `${rec.action}${chain}`
+        : `${rec.finalAction} [${rec.action}${chain}]`;
     }
     const rec = r as { stage1Route: string; finalAction: string | null };
     const route = rec.stage1Route;
@@ -103,12 +130,17 @@ function actionCell(domain: EvalDomain, records: RunRecord[]): ScenarioCell {
   const mod = modal(texts);
   if (!mod) return { text: '—', matchesExpected: false };
   const exp = EXPECTATIONS[domain][first.scenario];
-  const expectedText = exp === undefined
-    ? ''
-    : 'stage1Route' in exp
-      ? `${exp.finalAction} [${exp.stage1Route}]`
-      : exp.action;
-  const normal = (s: string): string => s.replace(/ \[.*\]/, '').replace(/ \(\d+d\)/, '').replace(/ ⇡.*/, '');
+  const expectedText =
+    exp === undefined
+      ? ''
+      : 'stage1Route' in exp
+        ? `${exp.finalAction} [${exp.stage1Route}]`
+        : exp.action;
+  const normal = (s: string): string =>
+    s
+      .replace(/ \[.*\]/, '')
+      .replace(/ \(\d+d\)/, '')
+      .replace(/ ⇡.*/, '');
   return {
     text: `${mod.value}${mod.n < records.length ? ` (${mod.n}/${records.length})` : ''}`,
     matchesExpected: normal(mod.value) === normal(expectedText),
@@ -121,7 +153,10 @@ function expectedCell(domain: EvalDomain, scenario: string): string {
   return 'stage1Route' in exp ? `${exp.finalAction} [${exp.stage1Route}]` : exp.action;
 }
 
-export function buildComparison(dir: string): { markdown: string; domains: EvalDomain[] } {
+export function buildComparison(dir: string): {
+  markdown: string;
+  domains: EvalDomain[];
+} {
   const payloads = loadPayloads(dir);
   if (payloads.length === 0) throw new Error(`no run-*.json files in ${dir}`);
 
@@ -141,13 +176,16 @@ export function buildComparison(dir: string): { markdown: string; domains: EvalD
   const lines: string[] = [];
   lines.push(`# Provider comparison — ${dir}`);
   lines.push('');
-  lines.push('Offline from persisted run-*.json (mock column = anchor: mock answers are engineered to pass every expectation).');
+  lines.push(
+    'Offline from persisted run-*.json (mock column = anchor: mock answers are engineered to pass every expectation).',
+  );
   lines.push('');
   const domains = [...byDomain.keys()].sort();
   for (const domain of domains) {
     const scenarios = byDomain.get(domain)!;
-    const providers = [...new Set(payloads.filter((p) => p.domain === domain).map((p) => p.provider))]
-      .sort((a, b) => PROVIDER_ORDER.indexOf(a) - PROVIDER_ORDER.indexOf(b));
+    const providers = [
+      ...new Set(payloads.filter((p) => p.domain === domain).map((p) => p.provider)),
+    ].sort((a, b) => PROVIDER_ORDER.indexOf(a) - PROVIDER_ORDER.indexOf(b));
 
     lines.push(`## ${domain} — decisions`);
     lines.push('');
@@ -160,14 +198,24 @@ export function buildComparison(dir: string): { markdown: string; domains: EvalD
         const cell = actionCell(domain, records);
         return cell.matchesExpected ? cell.text : `**${cell.text}**`;
       });
-      lines.push(`| ${scenario} | ${expectedCell(domain, scenario)} | ${cells.join(' | ')} |`);
+      lines.push(
+        `| ${scenario} | ${expectedCell(domain, scenario)} | ${cells.join(' | ')} |`,
+      );
     }
     lines.push('');
-    lines.push(`Agreement vs expected — ${providers.map((p) => {
-      const rows = [...scenarios.entries()].filter(([, byProvider]) => (byProvider.get(p) ?? []).length > 0);
-      const hits = rows.filter(([, byProvider]) => actionCell(domain, byProvider.get(p)!).matchesExpected).length;
-      return `${p} ${hits}/${rows.length}`;
-    }).join(', ')}`);
+    lines.push(
+      `Agreement vs expected — ${providers
+        .map((p) => {
+          const rows = [...scenarios.entries()].filter(
+            ([, byProvider]) => (byProvider.get(p) ?? []).length > 0,
+          );
+          const hits = rows.filter(
+            ([, byProvider]) => actionCell(domain, byProvider.get(p)!).matchesExpected,
+          ).length;
+          return `${p} ${hits}/${rows.length}`;
+        })
+        .join(', ')}`,
+    );
     lines.push('');
 
     const questionIds = DOMAIN_QUESTIONS[domain];

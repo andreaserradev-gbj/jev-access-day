@@ -1,6 +1,5 @@
 import type {
   Answers,
-  Question,
   Questions,
   SystemOneClient,
   SystemOneRequest,
@@ -34,7 +33,7 @@ export function systemoneLocalConfigFromEnv(
   prefix: string,
   env: NodeJS.ProcessEnv = process.env,
 ): SystemOneLocalConfig {
-  let rawModel = env[`${prefix}_MODEL`] ?? '';
+  const rawModel = env[`${prefix}_MODEL`] ?? '';
   const model = rawModel.replace(/\/v1\/systemone\/?$/, '');
 
   // Accept either per-model or shared base URL prefix.
@@ -70,14 +69,16 @@ export class SystemOneLocalSystemOneClient implements SystemOneClient {
   async ask(request: SystemOneRequest): Promise<SystemOneResponse> {
     const started = Date.now();
     const baseUrl = this.resolveBaseUrl();
-    const url = `${ baseUrl.endsWith('/') ? baseUrl : baseUrl + '/' }v1/systemone`;
+    const url = `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}v1/systemone`;
     const body = this.buildBody(request);
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(this.config.apiKey ? { Authorization: `Bearer ${this.config.apiKey}` } : {}),
+        ...(this.config.apiKey
+          ? { Authorization: `Bearer ${this.config.apiKey}` }
+          : {}),
       },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(this.config.timeoutMs),
@@ -102,10 +103,22 @@ export class SystemOneLocalSystemOneClient implements SystemOneClient {
     const rawUsage = raw.usage ?? {};
 
     const usage: Usage = {
-      inputTokens: toInt(rawUsage['input_tokens'] ?? rawUsage['inputTokens'] ?? rawUsage['prompt_tokens'] ?? 0),
-      outputTokens: toInt(rawUsage['output_tokens'] ?? rawUsage['outputTokens'] ?? rawUsage['completion_tokens'] ?? 0),
+      inputTokens: toInt(
+        rawUsage['input_tokens'] ??
+          rawUsage['inputTokens'] ??
+          rawUsage['prompt_tokens'] ??
+          0,
+      ),
+      outputTokens: toInt(
+        rawUsage['output_tokens'] ??
+          rawUsage['outputTokens'] ??
+          rawUsage['completion_tokens'] ??
+          0,
+      ),
       calls: 1,
-      elapsedMs: toInt(rawUsage['elapsed_ms'] ?? rawUsage['elapsedMs'] ?? (Date.now() - started)),
+      elapsedMs: toInt(
+        rawUsage['elapsed_ms'] ?? rawUsage['elapsedMs'] ?? Date.now() - started,
+      ),
     };
 
     return {
@@ -126,9 +139,8 @@ export class SystemOneLocalSystemOneClient implements SystemOneClient {
 
   private buildBody(req: SystemOneRequest): Record<string, unknown> {
     // tev1 uses string state; nimble uses object state — just pass through.
-    const stateBody = typeof req.state === 'string' || req.state == null
-      ? req.state
-      : req.state;
+    const stateBody =
+      typeof req.state === 'string' || req.state == null ? req.state : req.state;
     return {
       model: this.config.model,
       state: stateBody,
@@ -161,10 +173,7 @@ function reconstructAnswers(
   return out;
 }
 
-function buildAnswer(
-  type: string,
-  obj: Record<string, unknown>,
-): unknown {
+function buildAnswer(type: string, obj: Record<string, unknown>): unknown {
   if (type === 'noul') {
     return {
       type: 'noul',
@@ -173,9 +182,8 @@ function buildAnswer(
   }
   if (type === 'choice') {
     const probs = (obj['probabilities'] ?? {}) as Record<string, number>;
-    const choice = typeof obj['choice'] === 'string'
-      ? obj['choice']
-      : findMax(probs) ?? '';
+    const choice =
+      typeof obj['choice'] === 'string' ? obj['choice'] : (findMax(probs) ?? '');
     return {
       type: 'choice',
       choice,
@@ -201,7 +209,10 @@ function findMax(m: Record<string, number>): string | undefined {
   let best = '';
   let bestV = -Infinity;
   for (const [k, v] of Object.entries(m)) {
-    if (v > bestV) { bestV = v; best = k; }
+    if (v > bestV) {
+      bestV = v;
+      best = k;
+    }
   }
   return bestV > -Infinity ? best : undefined;
 }

@@ -20,11 +20,7 @@ import {
 } from '../dunning/state.js';
 import { DUNNING_QUESTIONS } from '../dunning/questions.js';
 import { decideDunning } from '../dunning/decide.js';
-import {
-  buildPrState,
-  StubReviewerLlm,
-  type PrFixture,
-} from '../prreview/state.js';
+import { buildPrState, StubReviewerLlm, type PrFixture } from '../prreview/state.js';
 import { PR_REVIEW_QUESTIONS } from '../prreview/questions.js';
 import { decidePr, resolvePrEscalation } from '../prreview/decide.js';
 import {
@@ -69,14 +65,18 @@ export function loadFixtures<T>(dir: string): Map<string, T> {
       scenario?: string;
       checkout?: { scenario?: string };
     };
-    const key = parsed.scenario ?? parsed.checkout?.scenario ?? file.replace(/\.json$/, '');
+    const key =
+      parsed.scenario ?? parsed.checkout?.scenario ?? file.replace(/\.json$/, '');
     out.set(key, parsed);
   }
   return out;
 }
 
 /** Per-provider model identity, persisted in every record for time-series diffing. */
-export function modelMetadataFor(provider: ProviderName, env: NodeJS.ProcessEnv): ModelMetadata {
+export function modelMetadataFor(
+  provider: ProviderName,
+  env: NodeJS.ProcessEnv,
+): ModelMetadata {
   switch (provider) {
     case 'mock':
       return { model: 'mock' };
@@ -89,9 +89,12 @@ export function modelMetadataFor(provider: ProviderName, env: NodeJS.ProcessEnv)
       return { model: config.model, baseUrl: config.baseUrl, samples: config.samples };
     }
     case 'real': {
-      const metadata: ModelMetadata = { model: env['TYPESAFE_DEFAULT_MODEL'] ?? 'jev-latest' };
+      const metadata: ModelMetadata = {
+        model: env['TYPESAFE_DEFAULT_MODEL'] ?? 'jev-latest',
+      };
       const baseURL = env['TYPESAFE_BASE_URL'];
-      if (baseURL !== undefined && baseURL.trim() !== '') metadata.baseUrl = baseURL.trim();
+      if (baseURL !== undefined && baseURL.trim() !== '')
+        metadata.baseUrl = baseURL.trim();
       return metadata;
     }
     case 'tev1': {
@@ -100,6 +103,10 @@ export function modelMetadataFor(provider: ProviderName, env: NodeJS.ProcessEnv)
     }
     case 'nimble': {
       const config = systemoneLocalConfigFromEnv('NIMBLE', env);
+      return { model: config.model, baseUrl: config.baseUrl };
+    }
+    case 'clef-flash': {
+      const config = systemoneLocalConfigFromEnv('CLEF-FLASH', env);
       return { model: config.model, baseUrl: config.baseUrl };
     }
   }
@@ -186,7 +193,10 @@ export async function runEval(options: RunEvalOptions): Promise<RunEvalResult> {
   const date = options.date ?? new Date();
   const baseDir = options.baseDir ?? 'results';
   const dir = ensureResultsDir(date, baseDir, options.tag);
-  const counter = { count: 0, max: resolveMaxRequests(options.env, options.maxRequests) };
+  const counter = {
+    count: 0,
+    max: resolveMaxRequests(options.env, options.maxRequests),
+  };
 
   const records: RunRecord[] = [];
   const runFiles: string[] = [];
@@ -237,7 +247,15 @@ export async function runEval(options: RunEvalOptions): Promise<RunEvalResult> {
     'utf8',
   );
 
-  return { dir, runFiles, csvFile, reportFile, records, summaries, requestsMade: counter.count };
+  return {
+    dir,
+    runFiles,
+    csvFile,
+    reportFile,
+    records,
+    summaries,
+    requestsMade: counter.count,
+  };
 }
 
 async function runTriageDomain(
@@ -247,7 +265,9 @@ async function runTriageDomain(
   model: ModelMetadata,
 ): Promise<RunRecord[]> {
   const records: RunRecord[] = [];
-  for (const [scenario, failure] of loadFixtures<JestFailure>(join(FIXTURE_ROOT, 'failures'))) {
+  for (const [scenario, failure] of loadFixtures<JestFailure>(
+    join(FIXTURE_ROOT, 'failures'),
+  )) {
     if (client.name !== 'mock') {
       console.error(`  [${client.name}/triage] asking ${scenario}...`);
     }
@@ -275,7 +295,9 @@ async function runCheckoutDomain(
   model: ModelMetadata,
 ): Promise<RunRecord[]> {
   const records: RunRecord[] = [];
-  for (const [scenario, fixture] of loadFixtures<CheckoutFixture>(join(FIXTURE_ROOT, 'checkouts'))) {
+  for (const [scenario, fixture] of loadFixtures<CheckoutFixture>(
+    join(FIXTURE_ROOT, 'checkouts'),
+  )) {
     if (client.name !== 'mock') {
       console.error(`  [${client.name}/checkout] running cascade ${scenario}...`);
     }
@@ -297,7 +319,9 @@ async function runDunningDomain(
   model: ModelMetadata,
 ): Promise<RunRecord[]> {
   const records: RunRecord[] = [];
-  for (const [scenario, fixture] of loadFixtures<DunningFixture>(join(FIXTURE_ROOT, 'dunning'))) {
+  for (const [scenario, fixture] of loadFixtures<DunningFixture>(
+    join(FIXTURE_ROOT, 'dunning'),
+  )) {
     if (client.name !== 'mock') {
       console.error(`  [${client.name}/dunning] asking ${scenario}...`);
     }
@@ -305,7 +329,10 @@ async function runDunningDomain(
       state: buildDunningState(fixture),
       questions: DUNNING_QUESTIONS,
     });
-    const decision = decideDunning(response.answers, dunningTemporalFromFixture(fixture));
+    const decision = decideDunning(
+      response.answers,
+      dunningTemporalFromFixture(fixture),
+    );
     records.push(
       buildDunningRunRecord(
         { provider, scenario, runIndex, model },
@@ -327,7 +354,9 @@ async function runPrReviewDomain(
 ): Promise<RunRecord[]> {
   const reviewer = new StubReviewerLlm();
   const records: RunRecord[] = [];
-  for (const [scenario, fixture] of loadFixtures<PrFixture>(join(FIXTURE_ROOT, 'security-pr'))) {
+  for (const [scenario, fixture] of loadFixtures<PrFixture>(
+    join(FIXTURE_ROOT, 'security-pr'),
+  )) {
     if (client.name !== 'mock') {
       console.error(`  [${client.name}/prreview] reviewing ${scenario}...`);
     }
@@ -342,7 +371,9 @@ async function runPrReviewDomain(
         // rather than letting an escalation hang.
         decision.reviewer = null;
         decision.finalAction = 'needs_human';
-        decision.rationale.push('no reviewer verdict available: degrading to needs_human');
+        decision.rationale.push(
+          'no reviewer verdict available: degrading to needs_human',
+        );
       } else {
         const verdict = await resolvePrEscalation(fixture, reviewer);
         decision.reviewer = {
@@ -388,7 +419,10 @@ function n3(n: number): string {
   return n.toFixed(3);
 }
 
-export function buildReportMarkdown(summaries: readonly DomainSummary[], meta: ReportMeta): string {
+export function buildReportMarkdown(
+  summaries: readonly DomainSummary[],
+  meta: ReportMeta,
+): string {
   const lines: string[] = [];
   lines.push(`# Eval report — ${meta.date.toISOString().slice(0, 10)}`);
   lines.push('');
@@ -406,6 +440,7 @@ export function buildReportMarkdown(summaries: readonly DomainSummary[], meta: R
   for (const s of summaries) {
     lines.push(
       [
+        '',
         s.provider,
         s.domain,
         String(s.scored),
@@ -421,7 +456,8 @@ export function buildReportMarkdown(summaries: readonly DomainSummary[], meta: R
         String(s.tokens.calls),
         s.costUsd === null ? 'n/a' : `$${s.costUsd.toFixed(6)}`,
         String(s.schemaViolations.count),
-      ].join(' | '),
+        '',
+      ].join('| '),
     );
   }
   lines.push('');

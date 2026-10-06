@@ -151,7 +151,7 @@ async function main(): Promise<void> {
 
   const providers = parseList<ProviderName>(
     providersArg?.split('=')[1] ?? 'mock',
-    ['mock', 'llm', 'llm-local', 'real', 'tev1', 'nimble'],
+    ['mock', 'llm', 'llm-local', 'real', 'tev1', 'nimble', 'clef-flash'],
     'providers',
   );
   const runs = runsArg ? Number(runsArg.split('=')[1]) : 1;

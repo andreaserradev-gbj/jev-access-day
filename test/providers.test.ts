@@ -4,7 +4,14 @@ import {
   mapQuestionsToSdk,
   realConfigFromEnv,
 } from '../src/typesafe/real.js';
-import { LlmSystemOneClient, llmConfigFromEnv, llmLocalConfigFromEnv, aggregateAnswers, stripCodeFences, parseModelJson } from '../src/typesafe/llm.js';
+import {
+  LlmSystemOneClient,
+  llmConfigFromEnv,
+  llmLocalConfigFromEnv,
+  aggregateAnswers,
+  stripCodeFences,
+  parseModelJson,
+} from '../src/typesafe/llm.js';
 import { TRIAGE_QUESTIONS } from '../src/triage/questions.js';
 import { MOCK_ANSWERS } from '../src/typesafe/mock.js';
 import type { Answers, Questions } from '../src/typesafe/client.js';
@@ -55,7 +62,9 @@ afterEach(() => {
 describe('mapQuestionsToSdk (pure)', () => {
   it('passes noul through untouched, including criteria', () => {
     const mapped = mapQuestionsToSdk(TRIAGE_QUESTIONS as Questions);
-    expect(mapped['is_known_flake_pattern']).toEqual(TRIAGE_QUESTIONS['is_known_flake_pattern']);
+    expect(mapped['is_known_flake_pattern']).toEqual(
+      TRIAGE_QUESTIONS['is_known_flake_pattern'],
+    );
   });
 
   it('passes choice criteria through keyed by label', () => {
@@ -81,9 +90,10 @@ describe('mapQuestionsToSdk (pure)', () => {
 
 describe('mapAnswerFromSdk (pure)', () => {
   it('maps all three SDK answer types to the contract shapes', () => {
-    expect(
-      mapAnswerFromSdk({ type: 'noul', noul: 0.42 }),
-    ).toEqual({ type: 'noul', noul: 0.42 });
+    expect(mapAnswerFromSdk({ type: 'noul', noul: 0.42 })).toEqual({
+      type: 'noul',
+      noul: 0.42,
+    });
 
     expect(
       mapAnswerFromSdk({
@@ -147,7 +157,12 @@ describe('RealSystemOneClient with a mocked SDK module', () => {
           type: 'choice',
           choice: 'infra',
           confidence: 0.7,
-          probabilities: { infra: 0.7, environment: 0.2, bad_test: 0.1, real_regression: 0.0 },
+          probabilities: {
+            infra: 0.7,
+            environment: 0.2,
+            bad_test: 0.1,
+            real_regression: 0.0,
+          },
         },
       },
       usage: { input_tokens: 500, output_tokens: 100 },
@@ -162,7 +177,10 @@ describe('RealSystemOneClient with a mocked SDK module', () => {
     });
 
     expect(requests).toHaveLength(1);
-    expect(response.answers['is_known_flake_pattern']).toEqual({ type: 'noul', noul: 0.93 });
+    expect(response.answers['is_known_flake_pattern']).toEqual({
+      type: 'noul',
+      noul: 0.93,
+    });
     expect(response.usage).toEqual({
       inputTokens: 500,
       outputTokens: 100,
@@ -201,9 +219,17 @@ describe('env gating', () => {
         TYPESAFE_BASE_URL: 'https://staging.typesafe.ai/',
         TYPESAFE_DEFAULT_MODEL: 'jev-beta',
       }),
-    ).toEqual({ apiKey: 'k', baseURL: 'https://staging.typesafe.ai/', defaultModel: 'jev-beta' });
+    ).toEqual({
+      apiKey: 'k',
+      baseURL: 'https://staging.typesafe.ai/',
+      defaultModel: 'jev-beta',
+    });
     // Blank values stay undefined so the SDK's own env fallbacks apply.
-    const blank = realConfigFromEnv({ TYPESAFE_API_KEY: 'k', TYPESAFE_BASE_URL: '  ', TYPESAFE_DEFAULT_MODEL: '' });
+    const blank = realConfigFromEnv({
+      TYPESAFE_API_KEY: 'k',
+      TYPESAFE_BASE_URL: '  ',
+      TYPESAFE_DEFAULT_MODEL: '',
+    });
     expect(blank.baseURL).toBeUndefined();
     expect(blank.defaultModel).toBeUndefined();
   });
@@ -223,7 +249,13 @@ describe('env gating', () => {
       OLLAMA_SAMPLES: '3',
       OLLAMA_TEMPERATURE: '0.2',
     });
-    expect(full).toEqual({ apiKey: 'k', model: 'm1', baseUrl: 'http://x', samples: 3, temperature: 0.2 });
+    expect(full).toEqual({
+      apiKey: 'k',
+      model: 'm1',
+      baseUrl: 'http://x',
+      samples: 3,
+      temperature: 0.2,
+    });
   });
 
   it('llm client refuses to construct without a key; samples must be >= 1', () => {
@@ -273,11 +305,22 @@ describe('env gating', () => {
 
   it('client names distinguish llm from llm-local', () => {
     const cloud = new LlmSystemOneClient({
-      apiKey: 'k', model: 'm', baseUrl: 'http://x', samples: 1, temperature: 0.7,
+      apiKey: 'k',
+      model: 'm',
+      baseUrl: 'http://x',
+      samples: 1,
+      temperature: 0.7,
     });
-    const local = new LlmSystemOneClient({
-      apiKey: 'k', model: 'm', baseUrl: 'http://x', samples: 1, temperature: 0.7,
-    }, 'llm-local');
+    const local = new LlmSystemOneClient(
+      {
+        apiKey: 'k',
+        model: 'm',
+        baseUrl: 'http://x',
+        samples: 1,
+        temperature: 0.7,
+      },
+      'llm-local',
+    );
     expect(cloud.name).toBe('llm');
     expect(local.name).toBe('llm-local');
   });
@@ -290,7 +333,9 @@ describe('env gating', () => {
 
   it('createClient rejects unknown providers with the valid names', async () => {
     const { createClient } = await import('../src/typesafe/index.js');
-    expect(() => createClient('nope' as never, {})).toThrow(/mock, llm, llm-local, real, tev1, nimble/);
+    expect(() => createClient('nope' as never, {})).toThrow(
+      /mock, llm, llm-local, real, tev1, nimble, clef-flash/,
+    );
   });
 
   it('sampleOnce sends think:false when configured and omits it otherwise', async () => {
@@ -307,11 +352,23 @@ describe('env gating', () => {
       );
     }) as typeof fetch;
     try {
-      const withThink = new LlmSystemOneClient({
-        apiKey: 'k', model: 'm', baseUrl: 'http://x', samples: 1, temperature: 0.7, think: false,
-      }, 'llm-local');
+      const withThink = new LlmSystemOneClient(
+        {
+          apiKey: 'k',
+          model: 'm',
+          baseUrl: 'http://x',
+          samples: 1,
+          temperature: 0.7,
+          think: false,
+        },
+        'llm-local',
+      );
       const withoutThink = new LlmSystemOneClient({
-        apiKey: 'k', model: 'm', baseUrl: 'http://x', samples: 1, temperature: 0.7,
+        apiKey: 'k',
+        model: 'm',
+        baseUrl: 'http://x',
+        samples: 1,
+        temperature: 0.7,
       });
       await withThink.ask({
         state: { scenario: 'x' },
@@ -353,10 +410,19 @@ describe('env gating', () => {
       );
     }) as typeof fetch;
     try {
-      const native = new LlmSystemOneClient({
-        apiKey: 'local', model: 'm', baseUrl: 'http://x', samples: 1, temperature: 0.7,
-        think: false, native: true, timeoutMs: 1000,
-      }, 'llm-local');
+      const native = new LlmSystemOneClient(
+        {
+          apiKey: 'local',
+          model: 'm',
+          baseUrl: 'http://x',
+          samples: 1,
+          temperature: 0.7,
+          think: false,
+          native: true,
+          timeoutMs: 1000,
+        },
+        'llm-local',
+      );
       const response = await native.ask({
         state: { scenario: 'x' },
         questions: { flake: { type: 'noul', instructions: 'x' } },
@@ -376,22 +442,21 @@ describe('env gating', () => {
 
 describe('llm JSON repair', () => {
   it('stripCodeFences unwraps ```json fences and outer prose', () => {
-    
     expect(stripCodeFences('```json\n{"a":1}\n```')).toBe('{"a":1}');
     expect(stripCodeFences('Here you go:\n{"a":1}\nDone.')).toBe('{"a":1}');
     expect(stripCodeFences('{"a":1}')).toBe('{"a":1}');
   });
 
   it('parseModelJson parses objects and tolerates the fenced shape', () => {
-    
-    expect(parseModelJson('{"failure_category": {"probabilities": {"infra": 1}}}')).toEqual({
+    expect(
+      parseModelJson('{"failure_category": {"probabilities": {"infra": 1}}}'),
+    ).toEqual({
       failure_category: { probabilities: { infra: 1 } },
     });
     expect(parseModelJson('```\n{"a": 1}\n```')).toEqual({ a: 1 });
   });
 
   it('parseModelJson rejects prose without recoverable keys', () => {
-    
     expect(() => parseModelJson('I cannot answer that question.')).toThrow(/non-JSON/);
   });
 });
@@ -410,13 +475,26 @@ describe('Usage aggregation (llm self-consistency)', () => {
       },
     };
     const samples = [
-      { raw: { flake: 0.8, category: { probabilities: { infra: 0.6, environment: 0.4 } } } },
-      { raw: { flake: 0.6, category: { probabilities: { infra: 0.2, environment: 0.8 } } } },
+      {
+        raw: {
+          flake: 0.8,
+          category: { probabilities: { infra: 0.6, environment: 0.4 } },
+        },
+      },
+      {
+        raw: {
+          flake: 0.6,
+          category: { probabilities: { infra: 0.2, environment: 0.8 } },
+        },
+      },
     ];
     const answers = aggregateAnswers(questions, samples);
     const flake = answers['flake'] as { noul: number };
     expect(flake.noul).toBeCloseTo(0.7, 5);
-    const choice = answers['category'] as { type: string; probabilities: Record<string, number> };
+    const choice = answers['category'] as {
+      type: string;
+      probabilities: Record<string, number>;
+    };
     expect(choice.type).toBe('choice');
     expect(choice.probabilities['infra']).toBeCloseTo(0.4, 5);
     expect(choice.probabilities['environment']).toBeCloseTo(0.6, 5);
@@ -463,14 +541,27 @@ describe('fixture ↔ MOCK_ANSWERS sync', () => {
         };
         const scenario = parsed.scenario ?? parsed.checkout?.scenario;
         expect(scenario, `${dir}/${file} carries a scenario id`).toBeTruthy();
-        expect(MOCK_ANSWERS, `${scenario} is in the mock registry`).toHaveProperty(scenario!);
+        expect(MOCK_ANSWERS, `${scenario} is in the mock registry`).toHaveProperty(
+          scenario!,
+        );
         const canned = MOCK_ANSWERS[scenario as keyof typeof MOCK_ANSWERS];
         for (const [id, answer] of Object.entries(canned)) {
           if (answer.type === 'choice') {
             expect(
               Object.keys(answer.probabilities),
               `${scenario}/${id} probabilities cover the question's criteria`,
-            ).toEqual(Object.keys((TRIAGE_QUESTIONS as Record<string, { criteria?: Record<string, unknown> }>)[id]?.criteria ?? answer.probabilities).length ? Object.keys(answer.probabilities) : Object.keys(answer.probabilities));
+            ).toEqual(
+              Object.keys(
+                (
+                  TRIAGE_QUESTIONS as Record<
+                    string,
+                    { criteria?: Record<string, unknown> }
+                  >
+                )[id]?.criteria ?? answer.probabilities,
+              ).length
+                ? Object.keys(answer.probabilities)
+                : Object.keys(answer.probabilities),
+            );
           }
         }
       }
@@ -482,8 +573,12 @@ describe('fixture ↔ MOCK_ANSWERS sync', () => {
     const { join } = await import('node:path');
     const { fileURLToPath } = await import('node:url');
     const root = fileURLToPath(new URL('../fixtures', import.meta.url));
-    for (const file of readdirSync(join(root, 'failures')).filter((f) => f.endsWith('.json'))) {
-      const parsed = JSON.parse(readFileSync(join(root, 'failures', file), 'utf8')) as { scenario?: string };
+    for (const file of readdirSync(join(root, 'failures')).filter((f) =>
+      f.endsWith('.json'),
+    )) {
+      const parsed = JSON.parse(readFileSync(join(root, 'failures', file), 'utf8')) as {
+        scenario?: string;
+      };
       const scenario = parsed.scenario!;
       const canned = MOCK_ANSWERS[scenario as keyof typeof MOCK_ANSWERS] as Answers;
       for (const required of Object.keys(TRIAGE_QUESTIONS)) {
@@ -527,7 +622,12 @@ describe('SystemOneLocal (tev1 / nimble)', () => {
       return new Response(
         JSON.stringify({
           questions: {
-            intent: { type: 'choice', choice: 'duplicate_charge', probabilities: { duplicate_charge: 0.87, none: 0.13 }, confidence: 0.72 },
+            intent: {
+              type: 'choice',
+              choice: 'duplicate_charge',
+              probabilities: { duplicate_charge: 0.87, none: 0.13 },
+              confidence: 0.72,
+            },
             refund: { type: 'noul', noul: 0.91 },
           },
           model: 'tev1:4b-q4_K_M',
@@ -542,7 +642,8 @@ describe('SystemOneLocal (tev1 / nimble)', () => {
       });
       const client = new SystemOneLocalSystemOneClient(config, 'tev1');
       const response = await client.ask({
-        state: 'Customer message: Hi, I checked my statement and your company charged my card twice for the October subscription.',
+        state:
+          'Customer message: Hi, I checked my statement and your company charged my card twice for the October subscription.',
         questions: {
           intent: {
             type: 'choice',
@@ -560,8 +661,13 @@ describe('SystemOneLocal (tev1 / nimble)', () => {
       expect(response.usage.inputTokens).toBe(340);
       expect(response.usage.outputTokens).toBe(45);
       expect(response.usage.calls).toBe(1);
-      expect((response.answers['intent'] as { choice: string; confidence: number }).choice).toBe('duplicate_charge');
-      expect((response.answers['refund'] as { noul: number }).noul).toBeCloseTo(0.91, 4);
+      expect(
+        (response.answers['intent'] as { choice: string; confidence: number }).choice,
+      ).toBe('duplicate_charge');
+      expect((response.answers['refund'] as { noul: number }).noul).toBeCloseTo(
+        0.91,
+        4,
+      );
     } finally {
       globalThis.fetch = originalFetch;
     }
@@ -573,7 +679,12 @@ describe('SystemOneLocal (tev1 / nimble)', () => {
       return new Response(
         JSON.stringify({
           answers: {
-            intent: { type: 'choice', choice: 'none', probabilities: { none: 1 }, confidence: 0.5 },
+            intent: {
+              type: 'choice',
+              choice: 'none',
+              probabilities: { none: 1 },
+              confidence: 0.5,
+            },
           },
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
@@ -584,7 +695,9 @@ describe('SystemOneLocal (tev1 / nimble)', () => {
       const client = new SystemOneLocalSystemOneClient(config, 'nimble');
       const response = await (client as any).ask({
         state: { ticket: 'Hello' },
-        questions: { intent: { type: 'choice', instructions: 'x', criteria: { none: 'n' } } },
+        questions: {
+          intent: { type: 'choice', instructions: 'x', criteria: { none: 'n' } },
+        },
       });
       expect(response.answers['intent']).toBeDefined();
     } finally {
