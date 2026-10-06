@@ -7,7 +7,12 @@ import {
 } from './llm.js';
 import { realConfigFromEnv, RealSystemOneClient } from './real.js';
 
-export type ProviderName = 'mock' | 'llm' | 'llm-local' | 'real';
+import {
+  SystemOneLocalSystemOneClient,
+  systemoneLocalConfigFromEnv,
+} from './systemone-local.js';
+
+export type ProviderName = 'mock' | 'llm' | 'llm-local' | 'real' | 'tev1' | 'nimble';
 
 export function createClient(
   provider?: ProviderName,
@@ -23,9 +28,13 @@ export function createClient(
       return new LlmSystemOneClient(llmLocalConfigFromEnv(env), 'llm-local');
     case 'real':
       return new RealSystemOneClient(realConfigFromEnv(env));
+    case 'tev1':
+      return new SystemOneLocalSystemOneClient(systemoneLocalConfigFromEnv('TEV1', env), 'tev1');
+    case 'nimble':
+      return new SystemOneLocalSystemOneClient(systemoneLocalConfigFromEnv('NIMBLE', env), 'nimble');
     default:
       throw new Error(
-        `Unknown provider "${String(selected)}". Valid: mock, llm, llm-local, real.`,
+        `Unknown provider "${String(selected)}". Valid: mock, llm, llm-local, real, tev1, nimble.`,
       );
   }
 }

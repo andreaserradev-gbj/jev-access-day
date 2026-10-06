@@ -8,6 +8,10 @@ import { LlmSystemOneClient, llmConfigFromEnv, llmLocalConfigFromEnv, aggregateA
 import { TRIAGE_QUESTIONS } from '../src/triage/questions.js';
 import { MOCK_ANSWERS } from '../src/typesafe/mock.js';
 import type { Answers, Questions } from '../src/typesafe/client.js';
+import {
+  SystemOneLocalSystemOneClient,
+  systemoneLocalConfigFromEnv,
+} from '../src/typesafe/systemone-local.js';
 
 // The real.ts SdkModule type is not exported at runtime (type-only), so we
 // rebuild a minimal module shape for the mocked import.
@@ -284,9 +288,9 @@ describe('env gating', () => {
     expect(client.name).toBe('llm-local');
   });
 
-  it('createClient rejects unknown providers with the four valid names', async () => {
+  it('createClient rejects unknown providers with the valid names', async () => {
     const { createClient } = await import('../src/typesafe/index.js');
-    expect(() => createClient('nope' as never, {})).toThrow(/mock, llm, llm-local, real/);
+    expect(() => createClient('nope' as never, {})).toThrow(/mock, llm, llm-local, real, tev1, nimble/);
   });
 
   it('sampleOnce sends think:false when configured and omits it otherwise', async () => {
@@ -486,5 +490,110 @@ describe('fixture ↔ MOCK_ANSWERS sync', () => {
         expect(canned, `${scenario} answers "${required}"`).toHaveProperty(required);
       }
     }
+  });
+});
+
+describe('SystemOneLocal (tev1 / nimble)', () => {
+  it('systemoneLocalConfigFromEnv applies per-model prefix fallbacks', () => {
+    const tev1 = systemoneLocalConfigFromEnv('TEV1', {
+      TEV1_MODEL: 'tev1:4b-q4_K_M',
+      TEV1_BASE_URL: 'http://gpu:11434',
+      TEV1_TIMEOUT_MS: '120000',
+    });
+    expect(tev1.model).toBe('tev1:4b-q4_K_M');
+    expect(tev1.baseUrl).toBe('http://gpu:11434');
+    expect(tev1.timeoutMs).toBe(120000);
+    expect(tev1.apiKey).toBe('');
+
+    const nimble = systemoneLocalConfigFromEnv('NIMBLE', {
+      NIMBLE_MODEL: 'nimble:9b-q4_K_M',
+    });
+    expect(nimble.model).toBe('nimble:9b-q4_K_M');
+    expect(nimble.timeoutMs).toBe(60000);
+
+    // Shared fallback when per-model vars unset
+    const shared = systemoneLocalConfigFromEnv('TEV1', {
+      SYSTEMONE_LOCAL_BASE_URL: 'http://shared:8080/v1/systemone',
+    });
+    expect(shared.baseUrl).toBe('http://shared:8080/v1/systemone');
+  });
+
+  it('client posts to /v1/systemone and maps a sample response', async () => {
+    const calls: Array<{ url: string; body: Record<string, unknown> }> = [];
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async (input: unknown, init?: { body?: string }) => {
+      const url = String(input);
+      calls.push({ url, body: JSON.parse(init?.body ?? '{}') });
+      return new Response(
+        JSON.stringify({
+          questions: {
+            intent: { type: 'choice', choice: 'duplicate_charge', probabilities: { duplicate_charge: 0.87, none: 0.13 }, confidence: 0.72 },
+            refund: { type: 'noul', noul: 0.91 },
+          },
+          model: 'tev1:4b-q4_K_M',
+          usage: { input_tokens: 340, output_tokens: 45, elapsed_ms: 87 },
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    }) as typeof fetch;
+    try {
+      const config = systemoneLocalConfigFromEnv('TEV1', {
+        TEV1_MODEL: 'tev1:4b-q4_K_M',
+      });
+      const client = new SystemOneLocalSystemOneClient(config, 'tev1');
+      const response = await client.ask({
+        state: 'Customer message: Hi, I checked my statement and your company charged my card twice for the October subscription.',
+        questions: {
+          intent: {
+            type: 'choice',
+            instructions: 'Which intent?',
+            criteria: { duplicate_charge: 'charged more than once', none: 'none' },
+          },
+          refund: { type: 'noul', instructions: 'Asking for refund?' },
+        },
+      });
+
+      expect(calls).toHaveLength(1);
+      expect(calls[0]!.url).toBe('http://localhost:11434/v1/systemone');
+      expect(calls[0]!.body.model).toBe('tev1:4b-q4_K_M');
+      expect(response.model).toBe('tev1:4b-q4_K_M');
+      expect(response.usage.inputTokens).toBe(340);
+      expect(response.usage.outputTokens).toBe(45);
+      expect(response.usage.calls).toBe(1);
+      expect((response.answers['intent'] as { choice: string; confidence: number }).choice).toBe('duplicate_charge');
+      expect((response.answers['refund'] as { noul: number }).noul).toBeCloseTo(0.91, 4);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it('accepts answers key as alias for questions', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async (_input: unknown, init?: { body?: string }) => {
+      return new Response(
+        JSON.stringify({
+          answers: {
+            intent: { type: 'choice', choice: 'none', probabilities: { none: 1 }, confidence: 0.5 },
+          },
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    }) as typeof fetch;
+    try {
+      const config = systemoneLocalConfigFromEnv('NIMBLE');
+      const client = new SystemOneLocalSystemOneClient(config, 'nimble');
+      const response = await (client as any).ask({
+        state: { ticket: 'Hello' },
+        questions: { intent: { type: 'choice', instructions: 'x', criteria: { none: 'n' } } },
+      });
+      expect(response.answers['intent']).toBeDefined();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it('uses default model tev1:4b-q4_K_M when prefix vars are unset', () => {
+    const config = systemoneLocalConfigFromEnv('TEV1', {});
+    expect(config.model).toBe('tev1:4b-q4_K_M');
   });
 });

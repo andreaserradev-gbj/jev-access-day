@@ -58,9 +58,9 @@ decision patterns:
 | **Dunning retries** (`src/dunning/`) | bounce-cause, customer-standing, schedule-risk questions | temporal kernel owns WHEN: retry-in-3d / method-switch / next-schedule / pause — from fixture-data temporals, not the model |
 | **Dependabot PR review** (`src/prreview/`) | attack-path, semver-triviality, runtime-touch, lockfile questions | 4-action taxonomy with model-to-model escalation (`needs_llm_review` → typed reviewer verdict, 0.6 confidence gate) |
 
-## The four providers
+## The six providers
 
-One interface (`src/typesafe/client.ts`), four interchangeable engines,
+One interface (`src/typesafe/client.ts`), six interchangeable engines,
 selected by `TYPESAFE_PROVIDER`:
 
 | Provider | What it is | What it teaches |
@@ -69,6 +69,8 @@ selected by `TYPESAFE_PROVIDER`:
 | `llm` | A classic LLM (Ollama Cloud, `glm-5.3-flash:cloud`) forced into the same contract: JSON-schema-constrained output, N=5 self-consistency samples, agreement → confidence | The stand-in experiment: real model behavior under the same contract. This mirrors TypeSafe's own eval methodology (their `system-one-adapter` wrapper for frontier LLMs). |
 | `llm-local` | Same stand-in via local Ollama (`qwen3.6:35b` MoE, native `/api/chat`, `think:false`) | Isolates think-mode cost from sampling cost: cloud burns ~15.6k out-tok/ask on server-default thinking vs local's 814; categories read nearly identically (0.78 vs 0.79). |
 | `real` | The actual TypeSafe API via `@typesafe-ai/sdk` (`jev-latest`) | Measured live against the others. Flip one env var; zero code changes. |
+| `tev1` | Local decision model (`tev1:4b-q4_K_M`) via `localhost:11434` `/v1/systemone` | One-shot typed decisions — no sampling. POST state + questions, typed answers back. |
+| `nimble` | Local decision model (`nimble:9b-q4_K_M`) via `localhost:11434` `/v1/systemone` | Same endpoint, 9B model. Set `NIMBLE_MODEL` and `TYPESAFE_PROVIDER=nimble`. |
 
 ### What the comparison measured
 

@@ -14,7 +14,7 @@ import { RUN_RECORD_SCHEMA_VERSION, type EvalDomain, type RunFilePayload, type R
  * built offline from persisted run files — zero provider calls.
  */
 
-const PROVIDER_ORDER = ['mock', 'real', 'llm', 'llm-local'] as const;
+const PROVIDER_ORDER = ['mock', 'real', 'tev1', 'nimble', 'llm', 'llm-local'] as const;
 
 const DOMAIN_QUESTIONS: Record<EvalDomain, string[]> = {
   triage: Object.keys(TRIAGE_QUESTIONS),

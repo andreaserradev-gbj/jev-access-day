@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createClient, type ProviderName } from '../typesafe/index.js';
 import { llmConfigFromEnv, llmLocalConfigFromEnv } from '../typesafe/llm.js';
+import { systemoneLocalConfigFromEnv } from '../typesafe/systemone-local.js';
 import type {
   SystemOneClient,
   SystemOneRequest,
@@ -92,6 +93,14 @@ export function modelMetadataFor(provider: ProviderName, env: NodeJS.ProcessEnv)
       const baseURL = env['TYPESAFE_BASE_URL'];
       if (baseURL !== undefined && baseURL.trim() !== '') metadata.baseUrl = baseURL.trim();
       return metadata;
+    }
+    case 'tev1': {
+      const config = systemoneLocalConfigFromEnv('TEV1', env);
+      return { model: config.model, baseUrl: config.baseUrl };
+    }
+    case 'nimble': {
+      const config = systemoneLocalConfigFromEnv('NIMBLE', env);
+      return { model: config.model, baseUrl: config.baseUrl };
     }
   }
 }
