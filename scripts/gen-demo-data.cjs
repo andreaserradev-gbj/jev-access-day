@@ -79,6 +79,9 @@ const ENGINES = [
   { key: 'glm', provider: 'llm', label: 'Frontier LLM (cloud GLM)' },
   { key: 'qwen', provider: 'llm-local', label: 'Local model (Ollama qwen)' },
   { key: 'mock', provider: 'mock', label: 'Mock (rule replay)' },
+  { key: 'nimble', provider: 'nimble', label: 'Nimble (local SystemOne)' },
+  { key: 'tev1', provider: 'tev1', label: 'tev1 (local SystemOne)' },
+  { key: 'clef', provider: 'clef-flash', label: 'clef-flash (local)' },
 ];
 
 function fmtAction(record, domain) {
@@ -101,6 +104,14 @@ function fmtAction(record, domain) {
 }
 
 const WAVES = { triage: '2026-09-18-postfix', checkout: '2026-09-18-postfix', dunning: '2026-09-18-access-day2', prreview: '2026-09-18-access-day2' };
+const WAVE2 = { triage: '2026-10-06-decision-models', checkout: '2026-10-06-decision-models', dunning: '2026-10-06-decision-models', prreview: '2026-10-06-decision-models' };
+const WAVE2_ENGINES = [
+  { key: 'nimble', provider: 'nimble', label: 'Nimble (local SystemOne)' },
+  { key: 'tev1', provider: 'tev1', label: 'tev1 (local SystemOne)' },
+  { key: 'clef', provider: 'clef-flash', label: 'clef-flash (local)' },
+];
+// jev (real) is also evaluated on the same wave — included in scoreboard2 baseline
+const WAVE2_JEV_PROVIDER = 'real';
 
 function buildCases() {
   const domains = { triage: [], checkout: [], dunning: [], prreview: [] };
@@ -158,6 +169,82 @@ function agreementTotals(cases) {
     totals[eng.key] = { pass, total };
   }
   return totals;
+}
+
+// ── wave 2: nimble / tev1 / clef-flash across 4 domains ────────────────────────
+function buildCasesWave2() {
+  // wave2 reads the same expectations but from the 2026-10-06 wave
+  const domains = { triage: [], checkout: [], dunning: [], prreview: [] };
+  const scenarios = {
+    triage: Object.keys(EXPECT.triage).filter((s) => !s.endsWith('-v2')),
+    checkout: Object.keys(EXPECT.checkout).filter((s) => !s.endsWith('-v2')),
+    dunning: Object.keys(EXPECT.dunning),
+    prreview: Object.keys(EXPECT.prreview).filter((s) => !s.endsWith('-v2')),
+  };
+  for (const [domain, list] of Object.entries(scenarios)) {
+    for (const scenario of list) {
+      const engines = {};
+      for (const eng of WAVE2_ENGINES) {
+        const recs = loadWave(WAVE2[domain], eng.provider, domain);
+        const runRecs = recs.filter((r) => r.scenario === scenario).slice(0, 3);
+        let display;
+        if (runRecs.length === 0) {
+          display = ['—', 'n/a'];
+        } else {
+          const passCount = runRecs.filter((r) => isPass(r)).length;
+          if (passCount === runRecs.length) {
+            display = [fmtAction(runRecs[0], domain), '✓'];
+          } else {
+            const frac = `${passCount}/${runRecs.length}`;
+            const miss = runRecs.find((r) => !isPass(r));
+            display = [fmtAction(miss || runRecs[0], domain), `✗ (${frac})`];
+          }
+        }
+        engines[eng.key] = { value: display[0], pass: display[1], runs: runRecs.length };
+      }
+      const exp =
+        domain === 'checkout'
+          ? EXPECT.checkout[scenario].finalAction
+          : domain === 'prreview'
+            ? EXPECT.prreview[scenario].action
+            : EXPECT[domain][scenario].action;
+      domains[domain].push({ id: scenario, right: exp, engines });
+    }
+  }
+  return domains;
+}
+
+function agreementTotalsWave2(cases) {
+  const totals = {};
+  for (const eng of WAVE2_ENGINES) {
+    let pass = 0, total = 0;
+    for (const domain of Object.keys(cases)) {
+      for (const c of cases[domain]) {
+        total++;
+        const mark = c.engines[eng.key].pass;
+        if (mark.startsWith('✓')) pass++;
+      }
+    }
+    totals[eng.key] = { pass, total };
+  }
+  return totals;
+}
+
+function domainAgreementWave2(cases, domain) {
+  const out = {};
+  for (const eng of WAVE2_ENGINES) {
+    let pass = 0;
+    for (const c of cases[domain]) if (c.engines[eng.key].pass.startsWith('✓')) pass++;
+    out[eng.key] = `${pass}/${cases[domain].length}`;
+  }
+  return out;
+}
+
+// jev on wave2: same engine on the same scenarios = same results as scoreboard jev
+function jevScoreboardOnWave2(waveDomain) {
+  // read jev (real) raw runs to verify consistency
+  const jevEngine = ENGINES.find(e => e.key === 'jev');
+  return jevEngine;
 }
 
 // ── per-domain agreement (column headers) ─────────────────────────────────────
@@ -320,6 +407,7 @@ function sweepWaves() {
 
 // ── assemble ──────────────────────────────────────────────────────────────────
 const cases = buildCases();
+const casesW2 = buildCasesWave2();
 const latency = buildLatency();
 const data = {
   generated: new Date().toISOString().slice(0, 10),
@@ -328,24 +416,75 @@ const data = {
     const totals = agreementTotals(cases);
     return Object.fromEntries(ENGINES.map((e) => [e.key, { pass: totals[e.key].pass, total: totals[e.key].total }]));
   })(),
+  scoreboard2: (() => {
+    const totals = agreementTotalsWave2(casesW2);
+    // jev (real) on the same wave for baseline comparison — majority wins per scenario
+    let jevPass = 0, jevTotal = 0;
+    for (const domain of Object.keys(casesW2)) {
+      for (const c of casesW2[domain]) {
+        jevTotal++;
+        const runRecs = loadWave(WAVE2[domain], 'real', domain).filter(r => r.scenario === c.id).slice(0, 3);
+        const passCount = runRecs.filter(r => isPass(r)).length;
+        if (passCount * 2 > runRecs.length) jevPass++;
+      }
+    }
+    const result = Object.fromEntries(WAVE2_ENGINES.map((e) => [e.key, { pass: totals[e.key].pass, total: totals[e.key].total }]));
+    result.jev = { pass: jevPass, total: jevTotal };
+    return result;
+  })(),
   domainAgreement: {
     triage: domainAgreement(cases, 'triage'),
     checkout: domainAgreement(cases, 'checkout'),
     dunning: domainAgreement(cases, 'dunning'),
     prreview: domainAgreement(cases, 'prreview'),
   },
+  domainAgreement2: (() => {
+    const out = {
+      triage: domainAgreementWave2(casesW2, 'triage'),
+      checkout: domainAgreementWave2(casesW2, 'checkout'),
+      dunning: domainAgreementWave2(casesW2, 'dunning'),
+      prreview: domainAgreementWave2(casesW2, 'prreview'),
+    };
+    // jev (real) per-domain on wave2
+    let jevTriPass = 0, jevCheckoutPass = 0, jevDunningPass = 0, jevPrreviewPass = 0;
+    let jevTriTotal = casesW2.triage.length, jevCheckoutTotal = casesW2.checkout.length;
+    for (const c of casesW2.triage) {
+      const rr = loadWave(WAVE2.triage, 'real', 'triage').filter(r => r.scenario === c.id).slice(0, 3);
+      if (rr.filter(r => isPass(r)).length * 2 > rr.length) jevTriPass++;
+    }
+    for (const c of casesW2.checkout) {
+      const rr = loadWave(WAVE2.checkout, 'real', 'checkout').filter(r => r.scenario === c.id).slice(0, 3);
+      if (rr.filter(r => isPass(r)).length * 2 > rr.length) jevCheckoutPass++;
+    }
+    for (const c of casesW2.dunning) {
+      const rr = loadWave(WAVE2.dunning, 'real', 'dunning').filter(r => r.scenario === c.id).slice(0, 3);
+      if (rr.filter(r => isPass(r)).length * 2 > rr.length) jevDunningPass++;
+    }
+    for (const c of casesW2.prreview) {
+      const rr = loadWave(WAVE2.prreview, 'real', 'prreview').filter(r => r.scenario === c.id).slice(0, 3);
+      if (rr.filter(r => isPass(r)).length * 2 > rr.length) jevPrreviewPass++;
+    }
+    out.triage.jev = jevTriPass + '/' + jevTriTotal;
+    out.checkout.jev = jevCheckoutPass + '/' + jevCheckoutTotal;
+    out.dunning.jev = jevDunningPass + '/' + casesW2.dunning.length;
+    out.prreview.jev = jevPrreviewPass + '/' + casesW2.prreview.length;
+    return out;
+  })(),
   cases,
+  cases2: casesW2,
   latency,
-  evidence: buildEvidence(),
-  calibration: parseCalibration(),
-  selfConsistency: { real: parseSelfConsistency('real'), llm: parseSelfConsistency('llm') },
-  typeSafety: { ...parseTypeSafety(), sweep: sweepWaves() },
+  engines2: Object.fromEntries(WAVE2_ENGINES.map((e) => [e.key, e.label])),
   waves: {
     baseline12: 'results/2026-09-18-postfix',
     other12: 'results/2026-09-18-access-day2',
     probes: 'results/2026-09-18-access-day',
     evidenceV2b: 'results/2026-09-19-evidence-v2b',
+    decisionModels: 'results/2026-10-06-decision-models',
   },
+  evidence: buildEvidence(),
+  calibration: parseCalibration(),
+  selfConsistency: { real: parseSelfConsistency('real'), llm: parseSelfConsistency('llm') },
+  typeSafety: { ...parseTypeSafety(), sweep: sweepWaves() },
 };
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });

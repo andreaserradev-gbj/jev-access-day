@@ -1,7 +1,14 @@
-# Demo page — 24 decisions, 4 engines
+# Demo page — 24 decisions, 7 engines
 
 Static, self-contained page presenting the measured comparison. All numbers
 are generated from committed run files.
+
+## Waves
+
+| wave | date | providers | scenarios |
+|---|---|---|---|
+| baseline 1 & 2 | 2026-09-18/19 | jev, glm, qwen, mock | 24 |
+| decision models | 2026-10-06 | nimble, tev1, clef-flash, jev (real) | 24 |
 
 ## Regenerate data
 
