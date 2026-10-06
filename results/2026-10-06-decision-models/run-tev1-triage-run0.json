@@ -1,0 +1,561 @@
+{
+  "schemaVersion": 1,
+  "provider": "tev1",
+  "domain": "triage",
+  "runIndex": 0,
+  "model": {
+    "model": "tev1:latest",
+    "baseUrl": "http://localhost:11434/v1/systemone"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "ambiguous-failure",
+      "timestamp": "2026-10-06T07:43:18.489Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.12663911314253132
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.49555218031606707
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.7704647921040524
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "infra": 0.24933237173325287,
+            "real_regression": 0.724301955615697,
+            "bad_test": 0.019876149099422497,
+            "environment": 0.006489523551627652
+          },
+          "confidence": 0.5019045046487995
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.4385903030794096,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.08922061598017447,
+            "1": 0.38296846496024156,
+            "2": 0.527810919059584
+          },
+          "confidence": 0.16215322022298728
+        }
+      },
+      "confidence": 0.5019045046487995,
+      "usage": {
+        "inputTokens": 3405,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3664
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "bad-test-v2",
+      "timestamp": "2026-10-06T07:43:22.203Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.028879036203182197
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.055222214866992275
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.8302288005757049
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "bad_test",
+          "probabilities": {
+            "infra": 0.014857111054782431,
+            "real_regression": 0.052786077350833266,
+            "bad_test": 0.5955108008500717,
+            "environment": 0.3368460107443127
+          },
+          "confidence": 0.3558258911164559
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.6561665261469646,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.4355180863829369,
+            "1": 0.4727973010871615,
+            "2": 0.09168461252990154
+          },
+          "confidence": 0.1486994933890794
+        }
+      },
+      "confidence": 0.3558258911164559,
+      "usage": {
+        "inputTokens": 4545,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3714
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "bad-test",
+      "timestamp": "2026-10-06T07:43:25.748Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.08262271175944483
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.09091125388402764
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.8327143865260829
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "environment",
+          "probabilities": {
+            "infra": 0.04956365365016984,
+            "real_regression": 0.07147602938930708,
+            "bad_test": 0.2804760914417083,
+            "environment": 0.5984842255188147
+          },
+          "confidence": 0.27772149652125444
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.8016855119225279,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.2842911539292727,
+            "1": 0.6297321802189266,
+            "2": 0.08597666585180067
+          },
+          "confidence": 0.21741769152478907
+        }
+      },
+      "confidence": 0.27772149652125444,
+      "usage": {
+        "inputTokens": 3775,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3545
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "environment-drift",
+      "timestamp": "2026-10-06T07:43:29.367Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.11778127080512191
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.39862040663835807
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.23978436392086425
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "infra": 0.27326781608165784,
+            "real_regression": 0.682783540397562,
+            "bad_test": 0.014708708863799843,
+            "environment": 0.029239934656980264
+          },
+          "confidence": 0.4370687113181714
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.936046993491412,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.1498926190549946,
+            "1": 0.7641677683985987,
+            "2": 0.08593961254640667
+          },
+          "confidence": 0.362001001460707
+        }
+      },
+      "confidence": 0.4370687113181714,
+      "usage": {
+        "inputTokens": 3445,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3619
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "error-contract-regression-v2",
+      "timestamp": "2026-10-06T07:43:33.099Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.06451428678244073
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.8295502722317942
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.7178610055319127
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "infra": 0.25484311615838234,
+            "real_regression": 0.7368562201858334,
+            "bad_test": 0.006229564991631881,
+            "environment": 0.0020710986641524418
+          },
+          "confidence": 0.5543216772616641
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 1.5356799066852698,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.013990005860820727,
+            "1": 0.4363400815930889,
+            "2": 0.5496699125460904
+          },
+          "confidence": 0.3168258871170486
+        }
+      },
+      "confidence": 0.5543216772616641,
+      "usage": {
+        "inputTokens": 4240,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3731
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "error-contract-regression",
+      "timestamp": "2026-10-06T07:43:36.727Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.10094923092023966
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.6267205044090908
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.6827208493513096
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "infra": 0.2500202983610748,
+            "real_regression": 0.744443611019364,
+            "bad_test": 0.004693565661288991,
+            "environment": 0.0008425249582722832
+          },
+          "confidence": 0.5690601829824661
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.9379348507424907,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.15613862733422337,
+            "1": 0.7497878945890621,
+            "2": 0.09407347807671429
+          },
+          "confidence": 0.3371426049409173
+        }
+      },
+      "confidence": 0.5690601829824661,
+      "usage": {
+        "inputTokens": 3570,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3628
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "infra-outage",
+      "timestamp": "2026-10-06T07:43:40.384Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "restart_infra",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.18311040052285174
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.13998134149108754
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.501153943874077
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "infra",
+          "probabilities": {
+            "infra": 0.9819920959243055,
+            "real_regression": 0.0065693271469160815,
+            "bad_test": 0.0008415224074922497,
+            "environment": 0.010597054521286146
+          },
+          "confidence": 0.9242564598031535
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.37959727310081215,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.733491342318697,
+            "1": 0.15342004226179415,
+            "2": 0.11308861541950901
+          },
+          "confidence": 0.3069242774864652
+        }
+      },
+      "confidence": 0.9242564598031535,
+      "usage": {
+        "inputTokens": 3450,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3657
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "known-flake-v2",
+      "timestamp": "2026-10-06T07:43:43.983Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.9816546998051978
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.8155104438596972
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.3482207617944281
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "infra": 0.018651891296175466,
+            "real_regression": 0.9691557698728539,
+            "bad_test": 0.00479404304159545,
+            "environment": 0.0073982957893751885
+          },
+          "confidence": 0.8798713853232362
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.7612957315207416,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.2962460253459536,
+            "1": 0.6462122177873512,
+            "2": 0.05754175686669522
+          },
+          "confidence": 0.2655714473578412
+        }
+      },
+      "confidence": 0.8798713853232362,
+      "usage": {
+        "inputTokens": 4710,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3599
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "triage",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "known-flake",
+      "timestamp": "2026-10-06T07:43:47.698Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "answers": {
+        "is_known_flake_pattern": {
+          "type": "noul",
+          "noul": 0.9587416188189181
+        },
+        "asserts_error_contract": {
+          "type": "noul",
+          "noul": 0.7289247250019599
+        },
+        "plausibly_from_commit": {
+          "type": "noul",
+          "noul": 0.6704683867166829
+        },
+        "failure_category": {
+          "type": "choice",
+          "choice": "real_regression",
+          "probabilities": {
+            "infra": 0.03919151503427248,
+            "real_regression": 0.9505238496144605,
+            "bad_test": 0.006650974403299036,
+            "environment": 0.0036336609479680725
+          },
+          "confidence": 0.8348562791408688
+        },
+        "regression_severity": {
+          "type": "score",
+          "score": 0.8494827953686219,
+          "legend": {
+            "0": "patch-level annoyance: cosmetic, log noise, nothing user-facing",
+            "1": "degraded feature: a user-visible endpoint misbehaves under some inputs",
+            "2": "data-loss or payment risk: money, stock, or stored data can be wrong or lost"
+          },
+          "probabilities": {
+            "0": 0.23503884138975403,
+            "1": 0.6804395218518703,
+            "2": 0.08452163675837579
+          },
+          "confidence": 0.261660115212221
+        }
+      },
+      "confidence": 0.8348562791408688,
+      "usage": {
+        "inputTokens": 3995,
+        "outputTokens": 6,
+        "calls": 1,
+        "elapsedMs": 3715
+      }
+    }
+  ]
+}

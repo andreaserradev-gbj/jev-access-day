@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 1,
+  "provider": "nimble",
+  "domain": "prreview",
+  "runIndex": 2,
+  "model": {
+    "model": "nimble:latest",
+    "baseUrl": "http://localhost:11434/v1/systemone"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 2,
+      "provider": "nimble",
+      "scenario": "direct-ssrf-untrusted",
+      "timestamp": "2026-10-06T07:41:39.299Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "none": 0.0028449242207715664,
+            "indirect": 0.0004968011182696498,
+            "direct": 0.9966582746609588
+          },
+          "confidence": 0.9783426513189777
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.9884985758729588,
+            "routine": 0.0049929784464963324,
+            "breaking": 0.006508445680544844
+          },
+          "confidence": 0.9356786688805665
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.003126739323416581
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9996060489784183,
+            "sloppy": 0.0003939510215817776
+          },
+          "confidence": 0.9949762944470444
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.9783426513189777,
+      "usage": {
+        "inputTokens": 3168,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3441
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 2,
+      "provider": "nimble",
+      "scenario": "gray-zone-reachable-admin",
+      "timestamp": "2026-10-06T07:41:43.108Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "needs_llm_review",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "indirect",
+          "probabilities": {
+            "none": 0.024846187433686186,
+            "indirect": 0.9641389800459503,
+            "direct": 0.01101483252036347
+          },
+          "confidence": 0.8391801847099716
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "trivial": 0.0006117883461773276,
+            "routine": 0.0058977831245692084,
+            "breaking": 0.9934904285292534
+          },
+          "confidence": 0.9624167584828449
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9995360147392657
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9956367950169173,
+            "sloppy": 0.004363204983082676
+          },
+          "confidence": 0.9595097234855435
+        }
+      },
+      "reviewerChain": {
+        "verdict": "approve",
+        "confidence": 0.71,
+        "rationale": "ReDoS payload requires adversarial markdown input; only staff in admin UI author notes, so exposure is indirect at worst. Major bump touches one runtime path but options migration is mechanical and CI is green."
+      },
+      "confidence": 0.8391801847099716,
+      "usage": {
+        "inputTokens": 3252,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3537
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 2,
+      "provider": "nimble",
+      "scenario": "major-runtime-breaking-v2",
+      "timestamp": "2026-10-06T07:41:46.721Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "direct",
+          "probabilities": {
+            "none": 0.3364864062626364,
+            "indirect": 0.21875386929857538,
+            "direct": 0.44475972443878836
+          },
+          "confidence": 0.03576741717605003
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "trivial": 0.000037840348183734954,
+            "routine": 0.002710692734359939,
+            "breaking": 0.9972514669174564
+          },
+          "confidence": 0.9825673388891546
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9999676720588555
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sound": 0.00022539170181680454,
+            "sloppy": 0.9997746082981832
+          },
+          "confidence": 0.9969441820362362
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.03576741717605003,
+      "usage": {
+        "inputTokens": 3536,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3613
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 2,
+      "provider": "nimble",
+      "scenario": "major-runtime-breaking",
+      "timestamp": "2026-10-06T07:41:50.221Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "needs_human",
+      "finalAction": "needs_human",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.5295363529093214,
+            "indirect": 0.04748089302174499,
+            "direct": 0.42298275406893354
+          },
+          "confidence": 0.23058058353931254
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "breaking",
+          "probabilities": {
+            "trivial": 0.0000649017900770809,
+            "routine": 0.002240434026764773,
+            "breaking": 0.9976946641831581
+          },
+          "confidence": 0.9848922309647691
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.9999584207649878
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sound": 0.01399050683035935,
+            "sloppy": 0.9860094931696407
+          },
+          "confidence": 0.893784581545085
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.23058058353931254,
+      "usage": {
+        "inputTokens": 3120,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3500
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 2,
+      "provider": "nimble",
+      "scenario": "minor-transitive-safe",
+      "timestamp": "2026-10-06T07:41:53.934Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.9990798181651857,
+            "indirect": 0.0005265434528413412,
+            "direct": 0.00039363838197294977
+          },
+          "confidence": 0.9927354867983073
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.9983499733454312,
+            "routine": 0.0009682270740688554,
+            "breaking": 0.0006817995804998975
+          },
+          "confidence": 0.9878582732284855
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.0027323515307690702
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9991938640014923,
+            "sloppy": 0.0008061359985076986
+          },
+          "confidence": 0.9905530514357118
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.9927354867983073,
+      "usage": {
+        "inputTokens": 3080,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3712
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 2,
+      "provider": "nimble",
+      "scenario": "patch-lockfile-only",
+      "timestamp": "2026-10-06T07:41:57.288Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "approve",
+      "finalAction": "approve",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.9779466054577028,
+            "indirect": 0.008851059364037043,
+            "direct": 0.013202335178260133
+          },
+          "confidence": 0.8900607811703362
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "trivial",
+          "probabilities": {
+            "trivial": 0.997525924467633,
+            "routine": 0.001829088651190496,
+            "breaking": 0.0006449868811763859
+          },
+          "confidence": 0.9829423649227724
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.0025124762555640908
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sound",
+          "probabilities": {
+            "sound": 0.9979892243334105,
+            "sloppy": 0.0020107756665894492
+          },
+          "confidence": 0.9790893893740157
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.8900607811703362,
+      "usage": {
+        "inputTokens": 2904,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3354
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "prreview",
+      "runIndex": 2,
+      "provider": "nimble",
+      "scenario": "unsound-lockfile-drift",
+      "timestamp": "2026-10-06T07:42:00.746Z",
+      "model": {
+        "model": "nimble:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "nimble:latest",
+      "action": "reject",
+      "finalAction": "reject",
+      "answers": {
+        "attack_path_exposure": {
+          "type": "choice",
+          "choice": "none",
+          "probabilities": {
+            "none": 0.9012483974914762,
+            "indirect": 0.06460393123932821,
+            "direct": 0.03414767126919558
+          },
+          "confidence": 0.6486415813105553
+        },
+        "semver_triviality": {
+          "type": "choice",
+          "choice": "routine",
+          "probabilities": {
+            "trivial": 0.07182369353834206,
+            "routine": 0.9227522680621432,
+            "breaking": 0.005424038399514695
+          },
+          "confidence": 0.7345455095709379
+        },
+        "runtime_code_touched": {
+          "type": "noul",
+          "noul": 0.021493208357529447
+        },
+        "change_soundness": {
+          "type": "choice",
+          "choice": "sloppy",
+          "probabilities": {
+            "sound": 0.0008389377700347331,
+            "sloppy": 0.9991610622299654
+          },
+          "confidence": 0.9902169467567129
+        }
+      },
+      "reviewerChain": null,
+      "confidence": 0.6486415813105553,
+      "usage": {
+        "inputTokens": 2872,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 3458
+      }
+    }
+  ]
+}

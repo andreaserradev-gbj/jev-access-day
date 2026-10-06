@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "provider": "tev1",
+  "domain": "dunning",
+  "runIndex": 0,
+  "model": {
+    "model": "tev1:latest",
+    "baseUrl": "http://localhost:11434/v1/systemone"
+  },
+  "records": [
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "account-closed",
+      "timestamp": "2026-10-06T07:48:03.755Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "account_closed",
+          "probabilities": {
+            "transient_funds": 0.0006100250931155711,
+            "mandate_revoked": 0.0007700386946708956,
+            "account_closed": 0.9985796564484801,
+            "technical": 0.00004027976373334272
+          },
+          "confidence": 0.9914427804407336
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.7556402015415273,
+            "strained": 0.14871948173510255,
+            "unknown": 0.09564031672337006
+          },
+          "confidence": 0.3449738978446357
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.0016803015436688024
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "low": 0.3488214850005275,
+            "moderate": 0.46221214301053626,
+            "high": 0.18896637198893626
+          },
+          "confidence": 0.054321714357221995
+        }
+      },
+      "confidence": 0.9914427804407336,
+      "usage": {
+        "inputTokens": 3055,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 4220
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "mandate-revoked-no-alt",
+      "timestamp": "2026-10-06T07:48:08.068Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "needs_human",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "transient_funds": 0.0003638220509528901,
+            "mandate_revoked": 0.9994818891280292,
+            "account_closed": 0.00013424052966949377,
+            "technical": 0.00002004829134838204
+          },
+          "confidence": 0.9965283209255936
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "strained",
+          "probabilities": {
+            "good": 0.07500902856792052,
+            "strained": 0.8279753830277975,
+            "unknown": 0.09701558840428187
+          },
+          "confidence": 0.4748748706972796
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.00685868719235578
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "low": 0.2652704954329206,
+            "moderate": 0.529077018351756,
+            "high": 0.20565248621532342
+          },
+          "confidence": 0.0769352252670441
+        }
+      },
+      "confidence": 0.9965283209255936,
+      "usage": {
+        "inputTokens": 3195,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 4313
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "mandate-revoked",
+      "timestamp": "2026-10-06T07:48:12.428Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "switch_method_then_retry",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "mandate_revoked",
+          "probabilities": {
+            "transient_funds": 0.00022336976317373618,
+            "mandate_revoked": 0.9997355794112879,
+            "account_closed": 0.00003014183579872059,
+            "technical": 0.000010908989739865971
+          },
+          "confidence": 0.9981384950407186
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9293846534963182,
+            "strained": 0.05974037944691266,
+            "unknown": 0.01087496705676916
+          },
+          "confidence": 0.7400689811279013
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.009524355564737352
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "low",
+          "probabilities": {
+            "low": 0.5489733208713475,
+            "moderate": 0.40585750089428363,
+            "high": 0.04516917823436886
+          },
+          "confidence": 0.23985022270432255
+        }
+      },
+      "confidence": 0.9981384950407186,
+      "usage": {
+        "inputTokens": 3159,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 4360
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "nsf-repeat",
+      "timestamp": "2026-10-06T07:48:16.646Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "pause_spending",
+      "waitDays": 0,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 0.978539195086381,
+            "mandate_revoked": 0.011780300495835878,
+            "account_closed": 0.009148086902653991,
+            "technical": 0.0005324175151291748
+          },
+          "confidence": 0.913073677114225
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "strained",
+          "probabilities": {
+            "good": 0.05905238071216137,
+            "strained": 0.8793448415167316,
+            "unknown": 0.06160277777110688
+          },
+          "confidence": 0.5887237470545018
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.5768287967486286
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "low": 0.07358116515143577,
+            "moderate": 0.6391212914352058,
+            "high": 0.28729754341335834
+          },
+          "confidence": 0.2386413342268907
+        }
+      },
+      "confidence": 0.913073677114225,
+      "usage": {
+        "inputTokens": 3087,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 4217
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "nsf-transient",
+      "timestamp": "2026-10-06T07:48:20.892Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "retry_next_schedule",
+      "waitDays": 30,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "transient_funds",
+          "probabilities": {
+            "transient_funds": 0.996440114674853,
+            "mandate_revoked": 0.002240093278277591,
+            "account_closed": 0.0011694205290618386,
+            "technical": 0.00015037151780751654
+          },
+          "confidence": 0.9809278886952418
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9634226096299664,
+            "strained": 0.026771131032467563,
+            "unknown": 0.009806259337566039
+          },
+          "confidence": 0.8378185708837033
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.4073536459908813
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "low": 0.40725673752011066,
+            "moderate": 0.5266836291850623,
+            "high": 0.066059633294827
+          },
+          "confidence": 0.19623469961134166
+        }
+      },
+      "confidence": 0.9809278886952418,
+      "usage": {
+        "inputTokens": 2999,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 4246
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "domain": "dunning",
+      "runIndex": 0,
+      "provider": "tev1",
+      "scenario": "processor-outage",
+      "timestamp": "2026-10-06T07:48:25.094Z",
+      "model": {
+        "model": "tev1:latest",
+        "baseUrl": "http://localhost:11434/v1/systemone"
+      },
+      "responseModel": "tev1:latest",
+      "action": "retry_next_schedule",
+      "waitDays": 2,
+      "answers": {
+        "bounce_cause": {
+          "type": "choice",
+          "choice": "technical",
+          "probabilities": {
+            "transient_funds": 0.00028972818727963337,
+            "mandate_revoked": 0.0011322269038530784,
+            "account_closed": 0.00032298589854686785,
+            "technical": 0.9982550590103203
+          },
+          "confidence": 0.9896267514029778
+        },
+        "customer_standing": {
+          "type": "choice",
+          "choice": "good",
+          "probabilities": {
+            "good": 0.9534974287310211,
+            "strained": 0.029686273527891584,
+            "unknown": 0.016816297741087352
+          },
+          "confidence": 0.8010997132695787
+        },
+        "retry_worthwhile": {
+          "type": "noul",
+          "noul": 0.9787491755421706
+        },
+        "schedule_cascade_risk": {
+          "type": "choice",
+          "choice": "moderate",
+          "probabilities": {
+            "low": 0.09376461861596251,
+            "moderate": 0.6147103236335537,
+            "high": 0.2915250577504839
+          },
+          "confidence": 0.198624707402285
+        }
+      },
+      "confidence": 0.9896267514029778,
+      "usage": {
+        "inputTokens": 3091,
+        "outputTokens": 5,
+        "calls": 1,
+        "elapsedMs": 4202
+      }
+    }
+  ]
+}
