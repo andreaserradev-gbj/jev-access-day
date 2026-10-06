@@ -2,7 +2,12 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ProviderName } from '../typesafe/index.js';
-import { runEval, resolveMaxRequests, SpendCapError, buildReportMarkdown } from './runner.js';
+import {
+  runEval,
+  resolveMaxRequests,
+  SpendCapError,
+  buildReportMarkdown,
+} from './runner.js';
 import { summarizeRecords } from './metrics.js';
 import { EXPECTATIONS } from './expectations.js';
 import { assertSafeTag, RUN_RECORD_SCHEMA_VERSION } from './run-record.js';
@@ -44,11 +49,17 @@ function loadEnvInto(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   return env;
 }
 
-function parseList<T extends string>(arg: string, valid: readonly T[], flag: string): T[] {
+function parseList<T extends string>(
+  arg: string,
+  valid: readonly T[],
+  flag: string,
+): T[] {
   const raw = arg.split(',').map((s) => s.trim());
   const invalid = raw.filter((s) => !valid.includes(s as T));
   if (raw.length === 0 || invalid.length > 0) {
-    throw new Error(`--${flag}=... invalid values: ${invalid.join(', ')}. Valid: ${valid.join(',')}`);
+    throw new Error(
+      `--${flag}=... invalid values: ${invalid.join(', ')}. Valid: ${valid.join(',')}`,
+    );
   }
   return raw as T[];
 }
@@ -69,7 +80,9 @@ async function reportFrom(dir: string): Promise<void> {
     .filter((p) => p.schemaVersion === RUN_RECORD_SCHEMA_VERSION);
   const records: RunRecord[] = payloads.flatMap((p) => p.records);
   if (records.length === 0) {
-    throw new Error(`report-from: zero records parsed from ${files.length} file(s) in ${dir}`);
+    throw new Error(
+      `report-from: zero records parsed from ${files.length} file(s) in ${dir}`,
+    );
   }
   const providers = [...new Set(records.map((r) => r.provider))];
   const domains = [...new Set(records.map((r) => r.domain))] as EvalDomain[];
@@ -91,7 +104,9 @@ async function reportFrom(dir: string): Promise<void> {
     'utf8',
   );
 
-  console.log(`report-from: ${records.length} records from ${payloads.length} run file(s) in ${dir}`);
+  console.log(
+    `report-from: ${records.length} records from ${payloads.length} run file(s) in ${dir}`,
+  );
   console.log(`  providers: ${providers.join(', ')}`);
   console.log(`  report    : ${reportFile}`);
   for (const s of summaries) {
@@ -136,7 +151,7 @@ async function main(): Promise<void> {
 
   const providers = parseList<ProviderName>(
     providersArg?.split('=')[1] ?? 'mock',
-    ['mock', 'llm', 'llm-local', 'real'],
+    ['mock', 'llm', 'llm-local', 'real', 'tev1', 'nimble'],
     'providers',
   );
   const runs = runsArg ? Number(runsArg.split('=')[1]) : 1;
@@ -150,7 +165,9 @@ async function main(): Promise<void> {
         'domains',
       )
     : (['triage', 'checkout'] as EvalDomain[]);
-  const maxRequests: number | undefined = maxArg ? Number(maxArg.split('=')[1]) : undefined;
+  const maxRequests: number | undefined = maxArg
+    ? Number(maxArg.split('=')[1])
+    : undefined;
   const options: Parameters<typeof runEval>[0] = {
     providers,
     runs,
